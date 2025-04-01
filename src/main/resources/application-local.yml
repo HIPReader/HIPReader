@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: shopping
+
+  data:
+    redis:
+      host: ${spring.data.redis.host:localhost}
+      port: ${spring.data.redis.port:6379}
+      lettuce:
+        pool:
+          max-idle: 5
+          min-idle: 2
+          max-active: 5
+
+  datasource:
+    url: ${DB_URL}?rewriteBatchedStatements=true
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10  # HikariCP 커넥션 풀 설정 추가
+      connection-timeout: 3000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+        jdbc:
+          batch_size: 1000     # JPA 배치 크기 설정
+          order_inserts: true   # INSERT 순서 최적화
+          order_updates: true   # UPDATE 순서 최적화
+        cache:
+          prep_stmt: true     # PreparedStatement 캐싱
+
+jwt:
+  secret:
+    key: ${jwt.secret.key}
