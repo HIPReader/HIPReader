@@ -1,5 +1,7 @@
 package com.example.heapreader.user.entity;
 
+import java.time.LocalDateTime;
+
 import com.example.heapreader.common.entity.TimeStamped;
 import com.example.heapreader.user.gender.Gender;
 import com.example.heapreader.user.role.UserRole;
@@ -45,5 +47,9 @@ public class User extends TimeStamped {
 
 	public void changePassword(String password) {
 		this.password = password;
+	}
+
+	public void deleteUser() {
+		this.getDeletedAt() = LocalDateTime.now();
 	}
 }

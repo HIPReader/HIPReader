@@ -17,6 +17,7 @@ public enum ErrorCode {
 	USER_NOT_LOGIN("로그인이 필요합니다. 로그인을 해주세요.", UNAUTHORIZED),
 	USER_NOT_FOUND("해당하는 유저를 찾을 수 없습니다.", NOT_FOUND),
 	INVALID_PASSWORD("패스워드가 올바르지 않습니다.", BAD_REQUEST),
+	INVALID_NEW_PASSWORD_FORMAT("새 비밀번호는 8자 이상이어야 하고, 숫자와 대문자를 포함해야 합니다.", BAD_REQUEST),
 	PASSWORD_SAME_AS_OLD("이전 패스워드와 동일할 수 없습니다.", BAD_REQUEST),
 	USER_ACCESS_DENIED("사용자가 접근할 수 있는 권한이 없습니다.", FORBIDDEN),
 	USER_ROLE_SAME_AS_OLD("이전 역활과 동일할 수 없습니다.", BAD_REQUEST),
