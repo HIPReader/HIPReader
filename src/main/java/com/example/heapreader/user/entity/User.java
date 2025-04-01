@@ -12,10 +12,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Table(name = "users")
 public class User extends TimeStamped {
 	//닉네임, 이메일, 비밀번호, 권한 ,성별 ,나이
@@ -36,4 +43,7 @@ public class User extends TimeStamped {
 
 	private Integer age;
 
+	public void changePassword(String password) {
+		this.password = password;
+	}
 }
