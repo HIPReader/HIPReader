@@ -125,7 +125,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	void deleteUser_잘못된_비밀번호() {
+	void deleteUserButNotValidPassword() {
 		// Given
 		AuthUser authUser = new AuthUser(1L, "user@example.com", UserRole.ROLE_ADMIN);
 		DeleteUserRequestDto request = new DeleteUserRequestDto("wrongPass");
