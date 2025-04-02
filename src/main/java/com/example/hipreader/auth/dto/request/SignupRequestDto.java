@@ -2,6 +2,7 @@ package com.example.hipreader.auth.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ public class SignupRequestDto {
 	private String password;
 	@NotBlank
 	private String nickname;
-	@NotBlank
+	@NotNull
 	private Integer age;
 	@NotBlank
 	private String gender;
