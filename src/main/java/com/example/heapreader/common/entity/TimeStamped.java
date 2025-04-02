@@ -3,6 +3,7 @@ package com.example.heapreader.common.entity;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Column;
@@ -18,12 +19,11 @@ import lombok.Getter;
 public class TimeStamped {
 
 	@CreatedDate
-	@Column(nullable = false)
-	@Temporal(TemporalType.TIMESTAMP)
+	@Column(updatable = false, nullable = false)
 	private LocalDateTime createdAt;
 
-	@Column
-	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable = false)
+	@LastModifiedDate
 	private LocalDateTime updatedAt;
 
 	private LocalDateTime deletedAt;
