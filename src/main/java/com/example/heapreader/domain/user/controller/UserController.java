@@ -1,4 +1,4 @@
-package com.example.heapreader.user.controller;
+package com.example.heapreader.domain.user.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.heapreader.auth.dto.AuthUser;
-import com.example.heapreader.user.dto.request.ChangePasswordRequestDto;
-import com.example.heapreader.user.dto.request.DeleteUserRequestDto;
-import com.example.heapreader.user.dto.response.GetUserResponseDto;
-import com.example.heapreader.user.service.UserService;
+import com.example.heapreader.domain.user.dto.request.ChangePasswordRequestDto;
+import com.example.heapreader.domain.user.dto.request.DeleteUserRequestDto;
+import com.example.heapreader.domain.user.dto.response.GetUserResponseDto;
+import com.example.heapreader.domain.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 

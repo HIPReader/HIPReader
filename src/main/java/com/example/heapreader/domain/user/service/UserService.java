@@ -1,4 +1,4 @@
-package com.example.heapreader.user.service;
+package com.example.heapreader.domain.user.service;
 
 import static com.example.heapreader.common.exception.ErrorCode.*;
 
@@ -8,11 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.heapreader.auth.dto.AuthUser;
-import com.example.heapreader.user.dto.request.ChangePasswordRequestDto;
-import com.example.heapreader.user.dto.request.DeleteUserRequestDto;
-import com.example.heapreader.user.dto.response.GetUserResponseDto;
-import com.example.heapreader.user.entity.User;
-import com.example.heapreader.user.repository.UserRepository;
+import com.example.heapreader.domain.user.dto.request.ChangePasswordRequestDto;
+import com.example.heapreader.domain.user.dto.request.DeleteUserRequestDto;
+import com.example.heapreader.domain.user.dto.response.GetUserResponseDto;
+import com.example.heapreader.domain.user.entity.User;
+import com.example.heapreader.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 

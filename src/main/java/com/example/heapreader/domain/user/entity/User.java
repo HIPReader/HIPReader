@@ -1,10 +1,8 @@
-package com.example.heapreader.user.entity;
-
-import java.time.LocalDateTime;
+package com.example.heapreader.domain.user.entity;
 
 import com.example.heapreader.common.entity.TimeStamped;
-import com.example.heapreader.user.gender.Gender;
-import com.example.heapreader.user.role.UserRole;
+import com.example.heapreader.domain.user.gender.Gender;
+import com.example.heapreader.domain.user.role.UserRole;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,10 +30,10 @@ public class User extends TimeStamped {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(unique = true)
 	private String nickname;
 	private String email;
 	private String password;
+	private Integer age;
 
 	@Enumerated(EnumType.STRING)
 	private UserRole userRole;
@@ -43,13 +41,11 @@ public class User extends TimeStamped {
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
 
-	private Integer age;
-
 	public void changePassword(String password) {
 		this.password = password;
 	}
 
 	public void deleteUser() {
-		this.getDeletedAt() = LocalDateTime.now();
+		this.setDeletedAt();
 	}
 }

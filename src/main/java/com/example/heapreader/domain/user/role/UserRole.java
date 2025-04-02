@@ -1,8 +1,9 @@
-package com.example.heapreader.user.role;
+package com.example.heapreader.domain.user.role;
 
 
 import java.util.Arrays;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.heapreader.common.exception.ErrorCode;
@@ -12,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum UserRole {
+public enum UserRole implements GrantedAuthority {
 
 	ROLE_USER(Authority.USER),
 	ROLE_ADMIN(Authority.ADMIN);
