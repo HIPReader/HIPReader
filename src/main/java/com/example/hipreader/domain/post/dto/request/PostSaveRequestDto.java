@@ -1,4 +1,4 @@
-package com.example.heapreader.domain.post.dto.request;
+package com.example.hipreader.domain.post.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

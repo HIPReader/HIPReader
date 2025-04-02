@@ -1,4 +1,4 @@
-package com.example.heapreader.domain.post.dto.response;
+package com.example.hipreader.domain.post.dto.response;
 
 import java.time.LocalDateTime;
 

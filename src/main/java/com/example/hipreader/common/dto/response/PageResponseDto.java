@@ -1,4 +1,4 @@
-package com.example.heapreader.common.dto.response;
+package com.example.hipreader.common.dto.response;
 
 import java.util.List;
 

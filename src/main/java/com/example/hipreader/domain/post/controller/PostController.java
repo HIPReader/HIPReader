@@ -1,7 +1,5 @@
-package com.example.heapreader.domain.post.controller;
+package com.example.hipreader.domain.post.controller;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.heapreader.common.dto.response.PageResponseDto;
-import com.example.heapreader.domain.post.dto.request.PostSaveRequestDto;
-import com.example.heapreader.domain.post.dto.request.PostUpdateRequestDto;
-import com.example.heapreader.domain.post.dto.response.PostSaveResponseDto;
-import com.example.heapreader.domain.post.dto.response.PostUpdateResponseDto;
-import com.example.heapreader.domain.post.dto.response.PostGetResponseDto;
-import com.example.heapreader.domain.post.service.PostService;
+import com.example.hipreader.common.dto.response.PageResponseDto;
+import com.example.hipreader.domain.post.dto.request.PostSaveRequestDto;
+import com.example.hipreader.domain.post.dto.request.PostUpdateRequestDto;
+import com.example.hipreader.domain.post.dto.response.PostSaveResponseDto;
+import com.example.hipreader.domain.post.dto.response.PostUpdateResponseDto;
+import com.example.hipreader.domain.post.dto.response.PostGetResponseDto;
+import com.example.hipreader.domain.post.service.PostService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

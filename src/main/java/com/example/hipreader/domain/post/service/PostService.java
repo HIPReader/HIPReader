@@ -1,9 +1,8 @@
-package com.example.heapreader.domain.post.service;
+package com.example.hipreader.domain.post.service;
 
-import static com.example.heapreader.common.exception.ErrorCode.*;
+import static com.example.hipreader.common.exception.ErrorCode.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,16 +11,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.example.heapreader.common.dto.response.PageResponseDto;
-import com.example.heapreader.domain.post.dto.request.PostSaveRequestDto;
-import com.example.heapreader.domain.post.dto.request.PostUpdateRequestDto;
-import com.example.heapreader.domain.post.dto.response.PostSaveResponseDto;
-import com.example.heapreader.domain.post.dto.response.PostUpdateResponseDto;
-import com.example.heapreader.domain.post.dto.response.PostGetResponseDto;
-import com.example.heapreader.domain.post.entity.Post;
-import com.example.heapreader.domain.post.repository.PostRepository;
-import com.example.heapreader.domain.user.entity.User;
-import com.example.heapreader.domain.user.repository.UserRepository;
+import com.example.hipreader.common.dto.response.PageResponseDto;
+import com.example.hipreader.domain.post.dto.request.PostSaveRequestDto;
+import com.example.hipreader.domain.post.dto.request.PostUpdateRequestDto;
+import com.example.hipreader.domain.post.dto.response.PostSaveResponseDto;
+import com.example.hipreader.domain.post.dto.response.PostUpdateResponseDto;
+import com.example.hipreader.domain.post.dto.response.PostGetResponseDto;
+import com.example.hipreader.domain.post.entity.Post;
+import com.example.hipreader.domain.post.repository.PostRepository;
+import com.example.hipreader.domain.user.entity.User;
+import com.example.hipreader.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
