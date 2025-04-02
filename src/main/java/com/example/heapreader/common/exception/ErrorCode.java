@@ -30,7 +30,10 @@ public enum ErrorCode {
 	TOKEN_DUPLICATED("중복된 토큰입니다.", CONFLICT),
 
 	// 리뷰 관련 예외 코드
-	REVIEW_NOT_FOUND("해당 리뷰를 찾을 수 없습니다.", NOT_FOUND);
+	REVIEW_NOT_FOUND("해당 리뷰를 찾을 수 없습니다.", NOT_FOUND),
+
+	// 자유게시판 관련 예외 코드
+	POST_NOT_FOUND("해당 게시물을 찾을 수 없습니다.", NOT_FOUND);
 
 	private final String message;
 	private final HttpStatus status;
