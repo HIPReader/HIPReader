@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @EnableJpaAuditing
 @SpringBootApplication
-public class HeapreaderApplication {
+public class HipreaderApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(HeapreaderApplication.class, args);
+		SpringApplication.run(HipreaderApplication.class, args);
 	}
 
 }
