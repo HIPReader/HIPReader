@@ -30,6 +30,7 @@ public class User extends TimeStamped {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(unique = true)
 	private String nickname;
 	private String email;
 	private String password;

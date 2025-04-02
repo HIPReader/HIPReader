@@ -5,7 +5,15 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum Gender {;
+public enum Gender {
+
+	MALE("Male"),
+	FEMALE("Female");
 
 	private final String gender;
+
+	@Override
+	public String toString() {
+		return gender;
+	}
 }

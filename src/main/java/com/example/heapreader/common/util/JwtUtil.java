@@ -5,9 +5,11 @@ import static com.example.heapreader.common.exception.ErrorCode.*;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtUtil {
 
 	private final RefreshTokenRepository refreshTokenRepository;
-	private final RedisUtil redisUtil;
+	private final RedisTemplate<String, String> redisTemplate;
 
 	private static final String BEARER_PREFIX = "Bearer ";
 	private static final long ACCESS_TOKEN_TIME = 60 * 60 * 7 *24 *1000L;  //1주일(테스트중이라 1주일로 바꿈)
@@ -63,22 +65,27 @@ public class JwtUtil {
 			.compact();
 	}
 
-	public String createRefreshToken(Long userId, String accessToken) {
-		Date date = new Date();
-
-		Claims claims = Jwts.claims().setSubject(Long.toString(userId));
-
-		String refreshToken = Jwts.builder()
-			.setClaims(claims)
-			.setIssuedAt(date)
-			.setExpiration(new Date(date.getTime()+ REFRESH_TOKEN_TIME))
-			.signWith(key)
+	// Refresh Token 생성 로직 분리
+	private String generateRefreshTokenValue(Long userId) {
+		return Jwts.builder()
+			.setClaims(new HashMap<>() {{ put("sub", userId); }})
+			.setIssuedAt(new Date())
+			.setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_TIME))
+			.signWith(key, SignatureAlgorithm.HS512) // 알고리즘 강화
 			.compact();
+	}
 
-		refreshTokenRepository.save(new RefreshToken());
+	// 저장 전 중복 토큰 체크 추가
+	public String createRefreshToken(Long userId) {
 
-		// Redis에 저장
-		redisUtil.save("refreshToken:" + userId, refreshToken, REFRESH_TOKEN_TIME, TimeUnit.MILLISECONDS);
+		String refreshToken = generateRefreshTokenValue(userId);
+
+		refreshTokenRepository.findByToken(refreshToken)
+			.ifPresent(t -> { throw new ResponseStatusException(TOKEN_DUPLICATED.getStatus(), TOKEN_DUPLICATED.getMessage());
+			});
+		// Redis 저장 (Repository 사용)
+		refreshTokenRepository.save(new RefreshToken(userId, refreshToken));
+
 		return refreshToken;
 	}
 

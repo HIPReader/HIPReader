@@ -12,6 +12,7 @@ import com.example.heapreader.auth.dto.request.SignupRequestDto;
 import com.example.heapreader.auth.dto.response.SigninResponseDto;
 import com.example.heapreader.auth.dto.response.SignupResponseDto;
 import com.example.heapreader.auth.service.AuthService;
+import com.example.heapreader.domain.refreshtoken.service.RefreshTokenService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +22,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthController {
 
-	private final AuthService authservice;
+	private final AuthService authService;
+	private final RefreshTokenService refreshTokenService;
 
 	public ResponseEntity<SignupResponseDto> signup(
 		@Valid SignupRequestDto signupRequestDto
 	) {
-		SignupResponseDto signupResponseDto = authservice.signUp(signupRequestDto);
+		SignupResponseDto signupResponseDto = authService.signUp(signupRequestDto);
 
 		String token = signupResponseDto.getToken();
 
@@ -39,7 +41,7 @@ public class AuthController {
 	public ResponseEntity<SigninResponseDto> signIn(
 		@Valid @RequestBody SigninRequestDto signinRequestDto
 	) {
-		SigninResponseDto signinResponseDto = authservice.signIn(signinRequestDto);
+		SigninResponseDto signinResponseDto = authService.signIn(signinRequestDto);
 
 		String bearerToken = signinResponseDto.getToken();
 
@@ -52,7 +54,7 @@ public class AuthController {
 	public ResponseEntity<String> refreshAccessToken(
 		@RequestBody RefreshTokenRequestDto request) {
 
-		String newAccessToken = authservice.refreshAccessToken(request.getRefreshToken());
+		String newAccessToken = refreshTokenService.refreshAccessToken(request.getRefreshToken());
 
 		return ResponseEntity.ok(newAccessToken);
 	}

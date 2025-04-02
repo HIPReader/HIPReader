@@ -76,7 +76,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private void handleExpiredToken(HttpServletResponse response, String expiredToken) throws IOException {
 		RefreshToken refreshToken = getRefreshToken(expiredToken);
-		if (refreshToken != null && jwtUtil.validateRefreshToken(refreshToken.getToken())) {
+		if (refreshToken != null && jwtUtil.validateRefreshToken(refreshToken.getRefreshToken())) {
 			String newAccessToken = reCreateAccessToken(refreshToken); // AuthService 메서드 대신 내부 메서드 사용
 			response.setHeader("New-Access-Token", newAccessToken);
 			response.setStatus(HttpServletResponse.SC_OK);
@@ -96,16 +96,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	}
 
 	public RefreshToken getRefreshToken(String accessToken) {
-		return refreshTokenRepository.findByAccessToken(accessToken).orElse(null);
+		return refreshTokenRepository.findByToken(accessToken).orElse(null);
 	}
 
 	public String reCreateAccessToken(RefreshToken refreshToken) {
-		Long userId = refreshToken.getId();
+		Long userId = refreshToken.getUserId();
 		User user = userRepository.findById(userId).orElseThrow(
 			() -> new ResponseStatusException(USER_NOT_FOUND.getStatus(), USER_NOT_FOUND.getMessage()));
 		String newAccessToken = jwtUtil.createAccessToken(user.getId(), user.getEmail(), user.getUserRole(),user.getNickname());
 
-		refreshTokenRepository.save(new RefreshToken(userId, newAccessToken, refreshToken.getRefreshToken()));
+		refreshTokenRepository.save(new RefreshToken(userId, newAccessToken));
 		return newAccessToken;
 	}
 }

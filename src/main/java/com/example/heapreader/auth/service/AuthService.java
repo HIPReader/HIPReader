@@ -71,32 +71,10 @@ public class AuthService {
 
 		String accessToken = jwtUtil.createAccessToken(user.getId(),user.getEmail(),user.getUserRole(),user.getNickname());
 
-		String refreshToken = jwtUtil.createRefreshToken(user.getId(),accessToken);
+		String refreshToken = jwtUtil.createRefreshToken(user.getId());
 
 		return new SigninResponseDto(accessToken);
 	}
 
-	public String refreshAccessToken(String refreshTokenValue) {
-		// Refresh Token 조회 및 검증
-		RefreshToken refreshToken = refreshTokenRepository.findByRefreshToken(refreshTokenValue)
-			.orElseThrow(() -> new ResponseStatusException(TOKEN_NOT_FOUND.getStatus(), TOKEN_NOT_FOUND.getMessage()));
 
-		if (!jwtUtil.validateRefreshToken(refreshToken.getRefreshToken())) {
-			throw new ResponseStatusException(EXPIRED_TOKEN.getStatus(), EXPIRED_TOKEN.getMessage());
-		}
-
-		// 사용자 정보 조회
-		Long userId = refreshToken.getId();
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new ResponseStatusException(USER_NOT_FOUND.getStatus(),USER_NOT_FOUND.getMessage()));
-
-		// 새로운 Access Token 생성
-		String newAccessToken = jwtUtil.createAccessToken(
-			user.getId(), user.getEmail(), user.getUserRole(),user.getNickname());
-
-		// Refresh Token 업데이트
-		refreshTokenRepository.save(new RefreshToken(userId, newAccessToken));
-
-		return newAccessToken;
-	}
 }

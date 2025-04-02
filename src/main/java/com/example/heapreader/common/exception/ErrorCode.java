@@ -27,6 +27,7 @@ public enum ErrorCode {
 	TOKEN_NOT_FOUND("해당 토큰을 찾을 수 없습니다.", NOT_FOUND),
 	INVALID_TOKEN("유효하지 않은 토큰입니다.", UNAUTHORIZED),
 	EXPIRED_TOKEN("만료된 토큰입니다.", UNAUTHORIZED),
+	TOKEN_DUPLICATED("중복된 토큰입니다.", CONFLICT),
 
 	// 리뷰 관련 예외 코드
 	REVIEW_NOT_FOUND("해당 리뷰를 찾을 수 없습니다.", NOT_FOUND);

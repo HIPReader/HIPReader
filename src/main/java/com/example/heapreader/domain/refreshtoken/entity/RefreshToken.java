@@ -3,7 +3,7 @@ package com.example.heapreader.domain.refreshtoken.entity;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
-import jakarta.persistence.Id;
+import org.springframework.data.annotation.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -11,17 +11,16 @@ import lombok.ToString;
 @RedisHash(value = "token", timeToLive = 604800) // 7일
 @NoArgsConstructor
 @Getter
-@ToString
 public class RefreshToken {
 
 	@Id
-	private Long id;
+	private Long userId;
 
 	@Indexed
-	private String token;
+	private String refreshToken;
 
-	public RefreshToken(Long id, String token) {
-		this.id = id;
-		this.token = token;
+	public RefreshToken(Long userId, String refreshToken) {
+		this.userId = userId;
+		this.refreshToken = refreshToken;
 	}
 }
