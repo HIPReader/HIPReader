@@ -19,11 +19,9 @@ public class TimeStamped {
 
 	@CreatedDate
 	@Column(nullable = false)
-	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime createdAt;
 
 	@Column
-	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime updatedAt;
 
 	private LocalDateTime deletedAt;
