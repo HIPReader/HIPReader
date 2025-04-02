@@ -30,9 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class JwtUtil {
 
-	private final RefreshTokenRepository refreshTokenRepository;
-	private final RedisTemplate<String, String> redisTemplate;
-
 	private static final String BEARER_PREFIX = "Bearer ";
 	private static final long ACCESS_TOKEN_TIME = 60 * 60 * 7 *24 *1000L;  //1주일(테스트중이라 1주일로 바꿈)
 	private static final long REFRESH_TOKEN_TIME = 60 * 60 * 7 *24 *1000L; //1주일
@@ -70,7 +67,7 @@ public class JwtUtil {
 			.setSubject(String.valueOf(userId))
 			.setIssuedAt(now)
 			.setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_TIME))
-			.signWith(key, SignatureAlgorithm.HS512) // 알고리즘 강화
+			.signWith(key, signatureAlgorithm)
 			.compact();
 
 	}

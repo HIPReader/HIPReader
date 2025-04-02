@@ -27,7 +27,7 @@ public class AuthController {
 
 	@RequestMapping("/signup")
 	public ResponseEntity<SignupResponseDto> signup(
-		@Valid SignupRequestDto signupRequestDto
+		@Valid @RequestBody SignupRequestDto signupRequestDto
 	) {
 		SignupResponseDto signupResponseDto = authService.signUp(signupRequestDto);
 
