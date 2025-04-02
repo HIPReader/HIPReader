@@ -2,7 +2,7 @@ package com.example.heapreader.auth.dto;
 
 import java.util.List;
 
-import com.example.heapreader.user.role.UserRole;
+import com.example.heapreader.domain.user.role.UserRole;
 
 import lombok.Getter;
 
@@ -13,9 +13,9 @@ public class AuthUser {
 	private final String email;
 	private final List<UserRole> authority;
 
-	public AuthUser(List<UserRole> authority, String email, Long id) {
-		this.authority = authority;
-		this.email = email;
+	public AuthUser(Long id, String email, UserRole userRole) {
 		this.id = id;
+		this.email = email;
+		this.authority = List.of(userRole);
 	}
 }

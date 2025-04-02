@@ -1,6 +1,6 @@
 spring:
   application:
-    name: shopping
+    name: hipreader
 
   data:
     redis:
@@ -17,9 +17,6 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-    hikari:
-      maximum-pool-size: 10  # HikariCP 커넥션 풀 설정 추가
-      connection-timeout: 3000
 
   jpa:
     hibernate:
@@ -30,13 +27,6 @@ spring:
         format_sql: true
         use_sql_comments: true
         dialect: org.hibernate.dialect.MySQLDialect
-
-        jdbc:
-          batch_size: 1000     # JPA 배치 크기 설정
-          order_inserts: true   # INSERT 순서 최적화
-          order_updates: true   # UPDATE 순서 최적화
-        cache:
-          prep_stmt: true     # PreparedStatement 캐싱
 
 jwt:
   secret:
