@@ -7,16 +7,19 @@ import org.springframework.data.annotation.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@RedisHash(value = "token", timeToLive = 604800) // 7일
+
 @NoArgsConstructor
 @Getter
+@RedisHash(value = "refreshToken") // 7일
 public class RefreshToken {
 
 	@Id
-	private Long userId;
+	private String id;
 
 	@Indexed
 	private String refreshToken;
+
+	private Long userId;
 
 	public RefreshToken(Long userId, String refreshToken) {
 		this.userId = userId;

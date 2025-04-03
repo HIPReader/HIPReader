@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import com.example.hipreader.domain.refreshtoken.entity.RefreshToken;
 
 public interface RefreshTokenRepository extends CrudRepository<RefreshToken, Long> {
-	Optional<RefreshToken> findByToken(String token);
+	Optional<RefreshToken> findByRefreshToken(String token);
 
 	Optional<RefreshToken> findByUserId(Long userId);
 }
