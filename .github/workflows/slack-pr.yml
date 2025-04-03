@@ -1,0 +1,45 @@
+name: Notify Slack on PR Events
+
+on:
+  pull_request:
+    types: [ opened, closed ]  # PR이 생성될 때(opened)와 닫힐 때(closed) 실행됨
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Slack Notification for PR Opened
+        if: github.event.action == 'opened'
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{
+            "text": "📢 *New Pull Request Created!*",
+            "attachments": [
+              {
+                "title": "PR: #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}",
+                "title_link": "${{ github.event.pull_request.html_url }}",
+                "text": "Opened by: ${{ github.actor }}",
+                "color": "#3498db"
+              }
+            ]
+          }' $SLACK_WEBHOOK_URL
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Send Slack Notification for PR Merged
+        if: github.event.action == 'closed' && github.event.pull_request.merged == true
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{
+            "text": "🚀 *Pull Request Merged!*",
+            "attachments": [
+              {
+                "title": "PR: #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}",
+                "title_link": "${{ github.event.pull_request.html_url }}",
+                "text": "Merged by: ${{ github.actor }}",
+                "color": "#36a64f"
+              }
+            ]
+          }' $SLACK_WEBHOOK_URL
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
