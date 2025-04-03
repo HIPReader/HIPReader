@@ -12,6 +12,7 @@ import com.example.hipreader.auth.dto.request.SignupRequestDto;
 import com.example.hipreader.auth.dto.response.SigninResponseDto;
 import com.example.hipreader.auth.dto.response.SignupResponseDto;
 import com.example.hipreader.common.util.JwtUtil;
+import com.example.hipreader.domain.refreshtoken.entity.RefreshToken;
 import com.example.hipreader.domain.refreshtoken.repository.RefreshTokenRepository;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.gender.Gender;
@@ -40,14 +41,14 @@ public class AuthService {
 
 		String encodedPassword = passwordEncoder.encode(signupRequestDto.getPassword());
 
-		UserRole userRole = UserRole.of(signupRequestDto.getUserRole());
+		UserRole userRole = UserRole.of(signupRequestDto.getRole());
 		Gender gender = Gender.valueOf(signupRequestDto.getGender());
 
 		User newUser = User.builder()
 			.nickname(signupRequestDto.getNickname())
 			.email(signupRequestDto.getEmail())
 			.password(encodedPassword)
-			.userRole(userRole)
+			.role(userRole)
 			.age(signupRequestDto.getAge())
 			.gender(gender)
 			.build();
@@ -56,7 +57,9 @@ public class AuthService {
 
 		String accessToken = jwtUtil.createAccessToken(savedUser.getId(),savedUser.getEmail(),userRole,savedUser.getNickname());
 
-		return new SignupResponseDto(accessToken);
+		String refreshToken = jwtUtil.createRefreshToken(savedUser.getId());
+
+		return new SignupResponseDto(accessToken,refreshToken);
 	}
 
 	@Transactional(readOnly = true)
@@ -68,11 +71,13 @@ public class AuthService {
 			throw new ResponseStatusException(INVALID_PASSWORD.getStatus(), INVALID_PASSWORD.getMessage());
 		}
 
-		String accessToken = jwtUtil.createAccessToken(user.getId(),user.getEmail(),user.getUserRole(),user.getNickname());
+		String accessToken = jwtUtil.createAccessToken(user.getId(),user.getEmail(),user.getRole(),user.getNickname());
 
 		String refreshToken = jwtUtil.createRefreshToken(user.getId());
 
-		return new SigninResponseDto(accessToken);
+		refreshTokenRepository.save(new RefreshToken(user.getId(),refreshToken));
+
+		return new SigninResponseDto(accessToken,refreshToken);
 	}
 
 

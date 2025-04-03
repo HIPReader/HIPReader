@@ -2,6 +2,7 @@ package com.example.hipreader.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -13,26 +14,16 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
 
 import com.example.hipreader.common.util.JwtAuthenticationFilter;
-import com.example.hipreader.common.util.JwtUtil;
-import com.example.hipreader.domain.refreshtoken.repository.RefreshTokenRepository;
-import com.example.hipreader.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
-	private final JwtUtil jwtUtil;
-	private final RefreshTokenRepository refreshTokenRepository;
-	private final UserRepository userRepository;
-
-	@Bean
-	public JwtAuthenticationFilter jwtAuthenticationFilter() {
-		return new JwtAuthenticationFilter(jwtUtil, refreshTokenRepository, userRepository);
-	}
+	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -45,17 +36,15 @@ public class SecurityConfig {
 			.csrf(AbstractHttpConfigurer::disable)
 			.sessionManagement(session -> session
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.addFilterBefore(jwtAuthenticationFilter(), SecurityContextHolderAwareRequestFilter.class)
+			.authorizeHttpRequests(auth -> auth
+					.requestMatchers("/api/v1/**").permitAll()
+					.anyRequest().authenticated())
 			.formLogin(AbstractHttpConfigurer::disable)
 			.anonymous(AbstractHttpConfigurer::disable)
 			.httpBasic(AbstractHttpConfigurer::disable)
 			.logout(AbstractHttpConfigurer::disable)
 			.rememberMe(AbstractHttpConfigurer::disable)
-			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/api/v1/auth/**").permitAll()
-				.requestMatchers("/api/v1/**").permitAll()
-				.anyRequest().authenticated()
-			);
+			.addFilterBefore(jwtAuthenticationFilter, SecurityContextHolderAwareRequestFilter.class);
 
 		return http.build();
 	}
