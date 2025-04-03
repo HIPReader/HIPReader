@@ -16,12 +16,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(ResponseStatusException.class)
 	public ResponseEntity<Map<String, Object>> responseStatusExceptionException(ResponseStatusException ex) {
-		HttpStatus status = HttpStatus.BAD_REQUEST;
-		Map<String, Object> errorResponse = new HashMap<>();
-		errorResponse.put("status", status.name());
-		errorResponse.put("code", status.value());
-
-		return new ResponseEntity<>(errorResponse, status);
+		return getErrorResponse(HttpStatus.valueOf(ex.getStatusCode().value()), ex.getMessage());
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
