@@ -1,8 +1,9 @@
-package com.example.heapreader.domain.review.controller;
+package com.example.hipreader.domain.review.controller;
 
-import com.example.heapreader.domain.review.dto.request.ReviewRequestDto;
-import com.example.heapreader.domain.review.dto.response.ReviewResponseDto;
-import com.example.heapreader.domain.review.service.ReviewService;
+import com.example.hipreader.domain.review.dto.request.ReviewRequestDto;
+import com.example.hipreader.domain.review.dto.response.ReviewResponseDto;
+import com.example.hipreader.domain.review.service.ReviewService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping("/reviews")
-    public ResponseEntity<ReviewResponseDto> createReview(@RequestBody ReviewRequestDto requestDto) {
+    public ResponseEntity<ReviewResponseDto> createReview(@RequestBody @Valid ReviewRequestDto requestDto) {
         return ResponseEntity.ok(reviewService.createReview(requestDto));
     }
 
@@ -31,8 +32,14 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getReview(reviewId));
     }
 
-    @PutMapping("/reviews/{reviewId}")
+    @PatchMapping("/reviews/{reviewId}")
     public ResponseEntity<ReviewResponseDto> updateReview(@PathVariable Long reviewId, @RequestBody ReviewRequestDto requestDto) {
         return ResponseEntity.ok(reviewService.updateReview(reviewId, requestDto));
+    }
+
+    @DeleteMapping("/reviews/{reviewId}")
+    public ResponseEntity<Void> deleteReview(@PathVariable Long reviewId) {
+        reviewService.deleteReview(reviewId);
+        return ResponseEntity.noContent().build();
     }
 }

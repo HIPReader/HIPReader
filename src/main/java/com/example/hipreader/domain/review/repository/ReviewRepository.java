@@ -1,6 +1,6 @@
-package com.example.heapreader.domain.review.repository;
+package com.example.hipreader.domain.review.repository;
 
-import com.example.heapreader.domain.review.entity.Review;
+import com.example.hipreader.domain.review.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
