@@ -10,14 +10,14 @@ public class UserBookResponseDto {
     private final String username;
     private final String title;
     private final String author;
-    private final long progress;
+    private final double percentage;
     private final Status status;
 
-    public UserBookResponseDto(User user, Book book, long progress, Status status) {
+    public UserBookResponseDto(User user, Book book, int progress, Status status) {
         this.username = user.getNickname();
         this.title = book.getTitle();
         this.author = book.getAuthor();
-        this.progress = progress;
+        this.percentage = Math.round((progress / (double) book.getTotalPages()) * 100.0);
         this.status = status;
     }
 }

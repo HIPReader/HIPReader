@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class UserBookRequestDto {
+public class RegisterUserBookRequestDto {
     private Long bookId;
     private Status status;
 }
