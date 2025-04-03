@@ -34,7 +34,8 @@ public class RefreshTokenService {
 	private RefreshToken findValidRefreshToken(String token) {
 		RefreshToken refreshToken = refreshTokenRepository.findByRefreshToken(token)
 			.orElseThrow(() -> new ResponseStatusException(TOKEN_NOT_FOUND.getStatus(),TOKEN_NOT_FOUND.getMessage()));
-		if (!jwtUtil.validateRefreshToken(refreshToken.getRefreshToken())) {
+		String pureToken = refreshToken.getRefreshToken().replaceAll("Bearer ", "");
+		if (!jwtUtil.validateRefreshToken(pureToken)) {
 			throw new ResponseStatusException(INVALID_TOKEN.getStatus(),INVALID_TOKEN.getMessage());
 		}
 		return refreshToken;

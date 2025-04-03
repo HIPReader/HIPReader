@@ -1,5 +1,7 @@
 package com.example.hipreader.auth.controller;
 
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,7 +59,9 @@ public class AuthController {
 
 		String newAccessToken = refreshTokenService.refreshAccessToken(request.getRefreshToken());
 
-		return ResponseEntity.ok(newAccessToken);
+		return ResponseEntity.ok()
+			.header("Authorization",newAccessToken)
+			.build();
 	}
 
 }

@@ -72,7 +72,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		try {
 			String refreshToken = redisTemplate.opsForValue().get("RT:" + expiredToken);
 			if (refreshToken != null) {
-				String pureToken = refreshToken.replace("Bearer ", "");
+				String pureToken = refreshToken.replaceAll("Bearer ", "");
 				jwtUtil.validateRefreshToken(pureToken);
 				redisTemplate.delete("RT:" + expiredToken);
 

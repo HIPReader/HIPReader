@@ -15,8 +15,13 @@ import org.springframework.web.server.ResponseStatusException;
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(ResponseStatusException.class)
-	public ResponseEntity<Map<String, Object>> responseStatusExceptionException(ErrorCode ex) {
-		return getErrorResponse(ex.getStatus(), ex.getMessage());
+	public ResponseEntity<Map<String, Object>> responseStatusExceptionException(ResponseStatusException ex) {
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		Map<String, Object> errorResponse = new HashMap<>();
+		errorResponse.put("status", status.name());
+		errorResponse.put("code", status.value());
+
+		return new ResponseEntity<>(errorResponse, status);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
