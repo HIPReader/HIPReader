@@ -23,7 +23,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "books")
-public class Books extends TimeStamped {
+public class Book extends TimeStamped {
     //제목,작가,출판사,장르,총페이지수,이미지
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

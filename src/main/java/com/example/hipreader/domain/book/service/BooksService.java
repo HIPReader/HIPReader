@@ -3,8 +3,8 @@ package com.example.hipreader.domain.book.service;
 import com.example.hipreader.common.dto.response.PageResponseDto;
 import com.example.hipreader.domain.book.dto.request.BooksRequestDto;
 import com.example.hipreader.domain.book.dto.response.BooksResponseDto;
-import com.example.hipreader.domain.book.entity.Books;
-import com.example.hipreader.domain.book.repository.BooksRepository;
+import com.example.hipreader.domain.book.entity.Book;
+import com.example.hipreader.domain.book.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequiredArgsConstructor
 public class BooksService {
 
-    private final BooksRepository booksRepository;
+    private final BookRepository bookRepository;
 
     @Transactional
     public BooksResponseDto registerBook(BooksRequestDto dto) {
-        Books book = Books.builder()
+        Book book = Book.builder()
                 .genre(dto.getGenre())
                 .title(dto.getTitle())
                 .subtitle(dto.getSubtitle())
@@ -30,13 +30,13 @@ public class BooksService {
                 .totalPages(dto.getTotalPages())
                 .coverImage(dto.getCoverImage())
                 .build();
-        Books register = booksRepository.save(book);
+        Book register = bookRepository.save(book);
         return new BooksResponseDto(register);
     }
 
     @Transactional
     public BooksResponseDto updateBook(Long id, BooksRequestDto dto) {
-        Books book = booksRepository.findById(id).orElseThrow(
+        Book book = bookRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("Not found book with id: " + id)
         );
 
@@ -56,7 +56,7 @@ public class BooksService {
 
     @Transactional(readOnly = true)
     public BooksResponseDto findBook(@PathVariable Long id) {
-        Books book = booksRepository.findById(id).orElseThrow(
+        Book book = bookRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("Not found book with id: " + id)
         );
 
@@ -66,7 +66,7 @@ public class BooksService {
     @Transactional(readOnly = true)
     public PageResponseDto<BooksResponseDto> findAllBooks(Pageable pageable) {
 
-        Page<Books> books = booksRepository.findAll(pageable);
+        Page<Book> books = bookRepository.findAll(pageable);
         Page<BooksResponseDto> booksResponseDtos = books.map(BooksResponseDto::new);
 
         return new PageResponseDto<>(booksResponseDtos);
@@ -75,6 +75,6 @@ public class BooksService {
     @Transactional
     public void deleteBook(@PathVariable Long id) {
 
-        booksRepository.deleteById(id);
+        bookRepository.deleteById(id);
     }
 }
