@@ -51,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			try {
 				Claims claims = jwtUtil.extractClaims(token);
 				setAuthentication(claims); // 인증 설정 로직 분리
-				log.info("Extracted JWT: {}", token);
+				log.info("추출한 JWT: {}", token);
 
 			} catch (ExpiredJwtException e) {
 				log.error("만료된 JWT token 입니다.", e);
@@ -71,10 +71,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private void handleExpiredToken(HttpServletResponse response, String expiredToken) throws IOException {
 		try {
 			String refreshToken = redisTemplate.opsForValue().get("RT:" + expiredToken);
-			if (refreshToken != null && jwtUtil.validateRefreshToken(refreshToken)) {
+			if (refreshToken != null) {
+				String pureToken = refreshToken.replace("Bearer ", "");
+				jwtUtil.validateRefreshToken(pureToken);
 				redisTemplate.delete("RT:" + expiredToken);
 
-				Long userId = Long.valueOf(jwtUtil.extractClaims(refreshToken).getId());
+				Long userId = Long.valueOf(jwtUtil.extractClaims(pureToken).getId());
 				User user = userRepository.findById(userId)
 					.orElseThrow(
 						() -> new ResponseStatusException(USER_NOT_FOUND.getStatus(), USER_NOT_FOUND.getMessage()));

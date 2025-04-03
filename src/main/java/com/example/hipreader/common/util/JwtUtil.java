@@ -7,12 +7,10 @@ import java.util.Base64;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.example.hipreader.domain.refreshtoken.repository.RefreshTokenRepository;
 import com.example.hipreader.domain.user.role.UserRole;
 
 import io.jsonwebtoken.Claims;
@@ -59,11 +57,10 @@ public class JwtUtil {
 			.compact();
 	}
 
-	// 저장 전 중복 토큰 체크 추가
 	public String createRefreshToken(Long userId) {
 		Date now = new Date();
 
-		return Jwts.builder()
+		return BEARER_PREFIX + Jwts.builder()
 			.setSubject(String.valueOf(userId))
 			.setIssuedAt(now)
 			.setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_TIME))

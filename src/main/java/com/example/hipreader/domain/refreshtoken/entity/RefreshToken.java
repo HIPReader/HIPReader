@@ -14,10 +14,12 @@ import lombok.NoArgsConstructor;
 public class RefreshToken {
 
 	@Id
-	private Long userId;
+	private String id;
 
 	@Indexed
 	private String refreshToken;
+
+	private Long userId;
 
 	public RefreshToken(Long userId, String refreshToken) {
 		this.userId = userId;
