@@ -5,16 +5,12 @@ import static com.example.hipreader.common.exception.ErrorCode.*;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
-import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.example.hipreader.domain.refreshtoken.entity.RefreshToken;
-import com.example.hipreader.domain.refreshtoken.repository.RefreshTokenRepository;
 import com.example.hipreader.domain.user.role.UserRole;
 
 import io.jsonwebtoken.Claims;
@@ -31,9 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 public class JwtUtil {
-
-	private final RefreshTokenRepository refreshTokenRepository;
-	private final RedisTemplate<String, String> redisTemplate;
 
 	private static final String BEARER_PREFIX = "Bearer ";
 	private static final long ACCESS_TOKEN_TIME = 60 * 60 * 7 *24 *1000L;  //1주일(테스트중이라 1주일로 바꿈)
@@ -64,28 +57,16 @@ public class JwtUtil {
 			.compact();
 	}
 
-	// Refresh Token 생성 로직 분리
-	private String generateRefreshTokenValue(Long userId) {
-		return Jwts.builder()
-			.setClaims(new HashMap<>() {{ put("sub", userId); }})
-			.setIssuedAt(new Date())
-			.setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_TIME))
-			.signWith(key, SignatureAlgorithm.HS512) // 알고리즘 강화
-			.compact();
-	}
-
-	// 저장 전 중복 토큰 체크 추가
 	public String createRefreshToken(Long userId) {
+		Date now = new Date();
 
-		String refreshToken = generateRefreshTokenValue(userId);
+		return BEARER_PREFIX + Jwts.builder()
+			.setSubject(String.valueOf(userId))
+			.setIssuedAt(now)
+			.setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_TIME))
+			.signWith(key, signatureAlgorithm)
+			.compact();
 
-		refreshTokenRepository.findByToken(refreshToken)
-			.ifPresent(t -> { throw new ResponseStatusException(TOKEN_DUPLICATED.getStatus(), TOKEN_DUPLICATED.getMessage());
-			});
-		// Redis 저장 (Repository 사용)
-		refreshTokenRepository.save(new RefreshToken(userId, refreshToken));
-
-		return refreshToken;
 	}
 
 	public String substringToken(String token) {
@@ -107,20 +88,16 @@ public class JwtUtil {
 	public boolean validateRefreshToken(String refreshToken) {
 		try {
 			Jwts.parserBuilder()
-				.setSigningKey(getSigningKey()) // Signing Key 반환
+				.setSigningKey(key) // Signing Key 반환
 				.build()
 				.parseClaimsJws(refreshToken); // Refresh Token 검증
 			return true;
 		} catch (ExpiredJwtException e) {
 			log.error("만료된 RefreshToken 입니다");
-			throw new ResponseStatusException(INVALID_TOKEN.getStatus(),INVALID_TOKEN.getMessage());
+			throw new ResponseStatusException(EXPIRED_TOKEN.getStatus(),EXPIRED_TOKEN.getMessage());
 		} catch (JwtException e) {
 			log.error("검증되지 않은 RefreshToken 입니다");
 			throw new ResponseStatusException(INVALID_TOKEN.getStatus(),INVALID_TOKEN.getMessage());
 		}
-	}
-
-	private Key getSigningKey() {
-		return key; // @PostConstruct로 초기화된 key를 반환
 	}
 }

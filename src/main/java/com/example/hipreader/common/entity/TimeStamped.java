@@ -19,13 +19,11 @@ import lombok.Getter;
 public class TimeStamped {
 
 	@CreatedDate
-	@Column(updatable = false)
-	@Temporal(TemporalType.TIMESTAMP)
+	@Column(updatable = false, nullable = false)
 	private LocalDateTime createdAt;
 
+	@Column(nullable = false)
 	@LastModifiedDate
-	@Column
-	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime updatedAt;
 
 	private LocalDateTime deletedAt;

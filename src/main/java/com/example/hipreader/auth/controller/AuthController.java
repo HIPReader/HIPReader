@@ -25,14 +25,15 @@ public class AuthController {
 	private final AuthService authService;
 	private final RefreshTokenService refreshTokenService;
 
+	@RequestMapping("/signup")
 	public ResponseEntity<SignupResponseDto> signup(
-		@Valid SignupRequestDto signupRequestDto
+		@Valid @RequestBody SignupRequestDto signupRequestDto
 	) {
 		SignupResponseDto signupResponseDto = authService.signUp(signupRequestDto);
 
-		String token = signupResponseDto.getToken();
+		String accessToken = signupResponseDto.getAccessToken();
 
-		return ResponseEntity.ok().header("Authorization",token)
+		return ResponseEntity.ok().header("Authorization",accessToken)
 			.body(signupResponseDto);
 
 	}
@@ -43,10 +44,10 @@ public class AuthController {
 	) {
 		SigninResponseDto signinResponseDto = authService.signIn(signinRequestDto);
 
-		String bearerToken = signinResponseDto.getToken();
+		String accessToken = signinResponseDto.getAccessToken();
 
 		return ResponseEntity.ok()
-			.header("Authorization",bearerToken)
+			.header("Authorization",accessToken)
 			.build();
 	}
 
@@ -56,7 +57,9 @@ public class AuthController {
 
 		String newAccessToken = refreshTokenService.refreshAccessToken(request.getRefreshToken());
 
-		return ResponseEntity.ok(newAccessToken);
+		return ResponseEntity.ok()
+			.header("Authorization",newAccessToken)
+			.build();
 	}
 
 }

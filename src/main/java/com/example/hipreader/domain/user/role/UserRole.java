@@ -20,9 +20,9 @@ public enum UserRole implements GrantedAuthority {
 
 	private final String userRole;
 
-	public static UserRole of(String userRole) {
+	public static UserRole of(String role) {
 		return Arrays.stream(UserRole.values())
-			.filter(r -> r.name().equalsIgnoreCase(userRole))
+			.filter(r -> r.name().equalsIgnoreCase(role))
 			.findFirst()
 			.orElseThrow(() -> new ResponseStatusException(ErrorCode.INVALID_USER_ROLE.getStatus()));
 	}
