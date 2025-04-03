@@ -1,6 +1,6 @@
 package com.example.hipreader.domain.book.dto.response;
 
-import com.example.hipreader.domain.book.entity.Books;
+import com.example.hipreader.domain.book.entity.Book;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +22,7 @@ public class BooksResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public BooksResponseDto(Books book) {
+    public BooksResponseDto(Book book) {
         this.id = book.getId();
         this.genre = book.getGenre().name();
         this.title = book.getTitle();
