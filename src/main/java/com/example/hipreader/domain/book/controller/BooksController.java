@@ -1,9 +1,14 @@
-package com.example.heapreader.domain.book.controller;
+package com.example.hipreader.domain.book.controller;
 
-import com.example.heapreader.domain.book.dto.request.BooksRequestDto;
-import com.example.heapreader.domain.book.dto.response.BooksResponseDto;
-import com.example.heapreader.domain.book.service.BookService;
+import com.example.hipreader.common.dto.response.PageResponseDto;
+import com.example.hipreader.domain.book.dto.request.BooksRequestDto;
+import com.example.hipreader.domain.book.dto.response.BooksResponseDto;
+import com.example.hipreader.domain.book.service.BooksService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +19,7 @@ import java.util.List;
 @RequestMapping("/api/v1/books")
 public class BooksController {
 
-    private final BookService booksService;
+    private final BooksService booksService;
 
     @PostMapping()
     public ResponseEntity<BooksResponseDto> registerBooks(@RequestBody BooksRequestDto booksRequestDto) {
@@ -32,8 +37,13 @@ public class BooksController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<BooksResponseDto>> getBooks() {
-        List<BooksResponseDto> booksResponseDtoList = booksService.findAllBooks();
+    public ResponseEntity<PageResponseDto<BooksResponseDto>> getBooks(
+            @PageableDefault(size = 10,
+                    sort = "updatedAt",
+                    direction = Sort.Direction.DESC) Pageable pageable) {
+
+        PageResponseDto<BooksResponseDto> booksResponseDtoList = booksService.findAllBooks(pageable);
+
         return ResponseEntity.ok(booksResponseDtoList);
     }
 

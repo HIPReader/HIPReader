@@ -1,7 +1,6 @@
-package com.example.heapreader.domain.book.dto.request;
+package com.example.hipreader.domain.book.dto.request;
 
-import com.example.heapreader.domain.book.entity.Book;
-import com.example.heapreader.domain.book.genre.Genre;
+import com.example.hipreader.domain.book.genre.Genre;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

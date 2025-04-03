@@ -1,10 +1,14 @@
-package com.example.heapreader.domain.book.service;
+package com.example.hipreader.domain.book.service;
 
-import com.example.heapreader.domain.book.dto.request.BooksRequestDto;
-import com.example.heapreader.domain.book.dto.response.BooksResponseDto;
-import com.example.heapreader.domain.book.entity.Book;
-import com.example.heapreader.domain.book.repository.BookRepository;
+import com.example.hipreader.common.dto.response.PageResponseDto;
+import com.example.hipreader.domain.book.dto.request.BooksRequestDto;
+import com.example.hipreader.domain.book.dto.response.BooksResponseDto;
+import com.example.hipreader.domain.book.entity.Books;
+import com.example.hipreader.domain.book.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,13 +18,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class BookService {
+public class BooksService {
 
     private final BookRepository bookRepository;
 
     @Transactional
     public BooksResponseDto registerBook(BooksRequestDto dto) {
-        Book book = Book.builder()
+        Books book = Books.builder()
                 .genre(dto.getGenre())
                 .title(dto.getTitle())
                 .subtitle(dto.getSubtitle())
@@ -30,13 +34,13 @@ public class BookService {
                 .totalPages(dto.getTotalPages())
                 .coverImage(dto.getCoverImage())
                 .build();
-        Book register = bookRepository.save(book);
+        Books register = bookRepository.save(book);
         return new BooksResponseDto(register);
     }
 
     @Transactional
     public BooksResponseDto updateBook(Long id, BooksRequestDto dto) {
-        Book book = bookRepository.findById(id).orElseThrow(
+        Books book = bookRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("Not found book with id: " + id)
         );
 
@@ -56,7 +60,7 @@ public class BookService {
 
     @Transactional(readOnly = true)
     public BooksResponseDto findBook(@PathVariable Long id) {
-        Book book = bookRepository.findById(id).orElseThrow(
+        Books book = bookRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("Not found book with id: " + id)
         );
 
@@ -64,15 +68,12 @@ public class BookService {
     }
 
     @Transactional(readOnly = true)
-    public List<BooksResponseDto> findAllBooks() {
-        List<Book> books = bookRepository.findAll();
+    public PageResponseDto<BooksResponseDto> findAllBooks(Pageable pageable) {
 
-        List<BooksResponseDto> booksResponseDtos = new ArrayList<>();
-        for (Book book : books) {
-            booksResponseDtos.add(new BooksResponseDto(book));
-        }
+        Page<Books> books = bookRepository.findAll(pageable);
+        Page<BooksResponseDto> booksResponseDtos = books.map(BooksResponseDto::new);
 
-        return booksResponseDtos;
+        return new PageResponseDto<>(booksResponseDtos);
     }
 
     @Transactional

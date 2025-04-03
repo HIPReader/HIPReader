@@ -1,7 +1,6 @@
-package com.example.heapreader.domain.book.dto.response;
+package com.example.hipreader.domain.book.dto.response;
 
-import com.example.heapreader.domain.book.entity.Book;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.example.hipreader.domain.book.entity.Books;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,7 +22,7 @@ public class BooksResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public BooksResponseDto(Book book) {
+    public BooksResponseDto(Books book) {
         this.id = book.getId();
         this.genre = book.getGenre().name();
         this.title = book.getTitle();

@@ -1,4 +1,4 @@
-package com.example.heapreader.common.entity;
+package com.example.hipreader.common.entity;
 
 import java.time.LocalDateTime;
 
