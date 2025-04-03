@@ -64,5 +64,6 @@ public class Book extends TimeStamped {
         this.totalPages = totalPages != null ? totalPages : this.totalPages;
         this.coverImage = coverImage != null ? coverImage : this.coverImage;
     }
+
 }
 
