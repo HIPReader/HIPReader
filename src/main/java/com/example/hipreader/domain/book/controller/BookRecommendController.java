@@ -24,7 +24,7 @@ public class BookRecommendController {
 	private final BookRecommendService bookRecommendService;
 
 	// 연령별, 성별별 책 추천 ( 랭킹 )
-	@GetMapping("/v1/books/recommend/age-gender")
+	@GetMapping("/v1/books/recommend")
 	public ResponseEntity<PageResponseDto<BookRecommendGetResponseDto>> getBookRanking(
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size,
