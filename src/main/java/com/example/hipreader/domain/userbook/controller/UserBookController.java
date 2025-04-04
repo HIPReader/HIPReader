@@ -35,21 +35,21 @@ public class UserBookController {
     }
 
     @GetMapping("/{userbookId}")
-    public ResponseEntity<UserBookResponseDto> getReadingBook(@AuthenticationPrincipal AuthUser authUser, @RequestParam Long userbookId) {
+    public ResponseEntity<UserBookResponseDto> getReadingBook(@AuthenticationPrincipal AuthUser authUser, @PathVariable Long userbookId) {
         return ResponseEntity.ok(userBookService.findReadingBook(authUser, userbookId));
     }
 
-    @PatchMapping("/userbookId")
+    @PatchMapping("/{userbookId}")
     public ResponseEntity<UserBookResponseDto> updateUserBook(
             @AuthenticationPrincipal AuthUser authUser,
             @RequestBody UpdateUserBookRequestDto updateUserBookRequestDto,
-            @RequestParam Long userbookId
+            @PathVariable Long userbookId
             ) {
         return ResponseEntity.ok(userBookService.updateUserBook(authUser, updateUserBookRequestDto, userbookId));
     }
 
-    @DeleteMapping("/userbookId")
-    public ResponseEntity<Void> deleteUserBook(@AuthenticationPrincipal AuthUser authUser, @RequestParam Long userbookId) {
+    @DeleteMapping("/{userbookId}")
+    public ResponseEntity<Void> deleteUserBook(@AuthenticationPrincipal AuthUser authUser, @PathVariable Long userbookId) {
         userBookService.deleteUserBook(authUser, userbookId);
         return ResponseEntity.ok().build();
     }
