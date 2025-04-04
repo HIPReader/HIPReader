@@ -27,19 +27,22 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getReviews(bookId));
     }
 
-    @GetMapping("/reviews/{reviewId}")
-    public ResponseEntity<ReviewResponseDto> getReview(@PathVariable Long reviewId) {
-        return ResponseEntity.ok(reviewService.getReview(reviewId));
+    @GetMapping("/books/{bookId}/reviews/{reviewId}")
+    public ResponseEntity<ReviewResponseDto> getReview(
+            @PathVariable Long bookId,
+            @PathVariable Long reviewId
+    ) {
+        return ResponseEntity.ok(reviewService.getReview(bookId, reviewId));
     }
 
-    @PatchMapping("/reviews/{reviewId}")
-    public ResponseEntity<ReviewResponseDto> updateReview(@PathVariable Long reviewId, @RequestBody ReviewRequestDto requestDto) {
-        return ResponseEntity.ok(reviewService.updateReview(reviewId, requestDto));
+    @PatchMapping("/books/{bookId}/reviews/{reviewId}")
+    public ResponseEntity<ReviewResponseDto> updateReview(@PathVariable Long bookId, @PathVariable Long reviewId, @RequestBody ReviewRequestDto requestDto) {
+        return ResponseEntity.ok(reviewService.updateReview(bookId, reviewId, requestDto));
     }
 
-    @DeleteMapping("/reviews/{reviewId}")
-    public ResponseEntity<Void> deleteReview(@PathVariable Long reviewId) {
-        reviewService.deleteReview(reviewId);
+    @DeleteMapping("/books/{bookId}/reviews/{reviewId}")
+    public ResponseEntity<Void> deleteReview(@PathVariable Long bookId, @PathVariable Long reviewId) {
+        reviewService.deleteReview(bookId, reviewId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -60,8 +60,8 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public ReviewResponseDto getReview(Long reviewId) {
-        Review review = reviewRepository.findById(reviewId).orElseThrow(
+    public ReviewResponseDto getReview(Long bookId, Long reviewId) {
+        Review review = reviewRepository.findByIdAndBook_id(reviewId, bookId).orElseThrow(
                 () -> new ReviewException(ErrorCode.REVIEW_NOT_FOUND)
         );
 
@@ -69,8 +69,8 @@ public class ReviewService {
     }
 
     @Transactional
-    public ReviewResponseDto updateReview(Long reviewId, ReviewRequestDto requestDto) {
-        Review review = reviewRepository.findById(reviewId).orElseThrow(
+    public ReviewResponseDto updateReview(Long bookId, Long reviewId, ReviewRequestDto requestDto) {
+        Review review = reviewRepository.findByIdAndBook_id(reviewId, bookId).orElseThrow(
                 () -> new ReviewException(ErrorCode.REVIEW_NOT_FOUND)
         );
 
@@ -86,8 +86,8 @@ public class ReviewService {
     }
 
     @Transactional
-    public void deleteReview(Long reviewId) {
-        Review review = reviewRepository.findById(reviewId).orElseThrow(
+    public void deleteReview(Long bookId, Long reviewId) {
+        Review review = reviewRepository.findByIdAndBook_id(reviewId, bookId).orElseThrow(
                 () -> new ReviewException(ErrorCode.REVIEW_NOT_FOUND)
         );
 
