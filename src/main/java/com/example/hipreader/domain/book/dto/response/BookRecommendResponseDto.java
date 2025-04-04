@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class BookRecommendGetResponseDto {
+public class BookRecommendResponseDto {
 	private final String title;
 	private final String subtitle;
 	private final String author;

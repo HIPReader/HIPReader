@@ -1,7 +1,7 @@
 package com.example.hipreader.domain.book.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.hipreader.common.dto.response.PageResponseDto;
-import com.example.hipreader.domain.book.dto.response.BookRecommendGetResponseDto;
+import com.example.hipreader.domain.book.dto.response.BookRecommendResponseDto;
+import com.example.hipreader.domain.book.genre.Genre;
 import com.example.hipreader.domain.book.service.BookRecommendService;
 import com.example.hipreader.domain.user.gender.Gender;
 
@@ -25,14 +26,14 @@ public class BookRecommendController {
 
 	// 연령별, 성별별 책 추천 ( 랭킹 )
 	@GetMapping("/v1/books/recommend")
-	public ResponseEntity<PageResponseDto<BookRecommendGetResponseDto>> getBookRanking(
-		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "10") int size,
-		@RequestParam int age,
-		@RequestParam Gender gender
+	public ResponseEntity<PageResponseDto<BookRecommendResponseDto>> getBookRanking(
+		@RequestParam(required = false) Integer age,
+		@RequestParam(required = false) Gender gender,
+		@RequestParam(required = false) Genre genre,
+		@PageableDefault(size = 10, page = 0) Pageable pageable
 	) {
-		PageResponseDto<BookRecommendGetResponseDto> responseDto = bookRecommendService.getPopularBooksByAgeAndGender(
-			page, size, age, gender);
+		PageResponseDto<BookRecommendResponseDto> responseDto = bookRecommendService.recommendBooks(age, gender,
+			genre, pageable);
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 }

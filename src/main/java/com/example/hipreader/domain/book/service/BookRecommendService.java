@@ -3,14 +3,13 @@ package com.example.hipreader.domain.book.service;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.hipreader.common.dto.response.PageResponseDto;
-import com.example.hipreader.domain.book.dto.response.BookRecommendGetResponseDto;
+import com.example.hipreader.domain.book.dto.response.BookRecommendResponseDto;
 import com.example.hipreader.domain.book.entity.Book;
-import com.example.hipreader.domain.user.age.AgeGroup;
+import com.example.hipreader.domain.book.genre.Genre;
 import com.example.hipreader.domain.user.gender.Gender;
 import com.example.hipreader.domain.userbook.repository.UserBookRepository;
 
@@ -23,21 +22,12 @@ public class BookRecommendService {
 	private final UserBookRepository userBookRepository;
 
 	// 연령별, 성별별 책 추천
-	public PageResponseDto<BookRecommendGetResponseDto> getPopularBooksByAgeAndGender(int page, int size, int age,
-		Gender gender) {
-		PageRequest pageRequest = PageRequest.of(page, size);
+	public PageResponseDto<BookRecommendResponseDto> recommendBooks(Integer age, Gender gender, Genre genre,
+		Pageable pageable) {
+		Page<Book> bookPage = userBookRepository.findRecommendedBooks(age, gender, genre, pageable);
 
-		// 연령대 변환
-		AgeGroup ageGroup = AgeGroup.fromAge(age);
-		Page<Book> bookPage = userBookRepository.findTopBooksByAgeAndGender(
-			ageGroup.getMinAge(),
-			ageGroup.getMaxAge(),
-			gender,
-			pageRequest
-		);
-
-		List<BookRecommendGetResponseDto> content = bookPage.getContent().stream()
-			.map(book -> new BookRecommendGetResponseDto(
+		List<BookRecommendResponseDto> content = bookPage.getContent().stream()
+			.map(book -> new BookRecommendResponseDto(
 				book.getTitle(),
 				book.getSubtitle(),
 				book.getAuthor(),
@@ -46,7 +36,7 @@ public class BookRecommendService {
 				book.getGenre()
 			)).toList();
 
-		return PageResponseDto.<BookRecommendGetResponseDto>builder()
+		return PageResponseDto.<BookRecommendResponseDto>builder()
 			.pageNumber(bookPage.getNumber())
 			.pageSize(bookPage.getSize())
 			.totalPages(bookPage.getTotalPages())

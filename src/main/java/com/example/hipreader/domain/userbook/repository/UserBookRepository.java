@@ -14,7 +14,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface UserBookRepository extends JpaRepository<UserBook, Long> {
+public interface UserBookRepository extends JpaRepository<UserBook, Long>, UserBookRepositoryCustom {
 
 	Page<UserBook> findByUser(User user, Pageable pageable);
 
@@ -23,15 +23,4 @@ public interface UserBookRepository extends JpaRepository<UserBook, Long> {
 	UserBook findByIdAndUser(long id, User user);
 
 	Page<UserBook> findByUserAndStatus(User user, Status status, Pageable pageable);
-
-	@Query("SELECT ub.book FROM UserBook ub "
-		+ "WHERE ub.user.age BETWEEN :minAge AND :maxAge AND ub.user.gender = :gender AND ub.book.deletedAt IS NULL "
-		+ "GROUP BY ub.book "
-		+ "ORDER BY COUNT(ub.book) DESC")
-	Page<Book> findTopBooksByAgeAndGender(
-		@Param("minAge") int minAge,
-		@Param("maxAge") int maxAge,
-		@Param("gender") Gender gender,
-		Pageable pageable
-	);
 }
