@@ -43,16 +43,18 @@ public class UserBook {
                 throw new IllegalArgumentException("TO_READ 상태에서는 progress를 0으로 유지해야 합니다.");
         }
 
-        if (this.status == Status.READING && newStatus == Status.FINISHED) {
-            if (progress != book.getTotalPages())
-                throw new IllegalArgumentException("FINISHED 상태로 변경하려면 전체 페이지를 읽어야 합니다.");
-        }
-
+        // 페이지 수 유효성 체크
         if (progress < 0 || progress > book.getTotalPages()) {
             throw new IllegalArgumentException("progress는 0부터 전체 페이지 수 사이여야 합니다.");
         }
 
-        this.status = newStatus;
+        // percentage가 100%면 자동으로 FINISHED로 전환
+        if (book.getTotalPages() > 0 && progress == book.getTotalPages()) {
+            this.status = Status.FINISHED;
+        } else {
+            this.status = newStatus;
+        }
+
         this.progress = progress;
     }
 
