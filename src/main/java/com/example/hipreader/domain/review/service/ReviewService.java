@@ -11,12 +11,15 @@ import com.example.hipreader.domain.review.repository.ReviewRepository;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
@@ -49,8 +52,8 @@ public class ReviewService {
 
     // review 다건 조회
     @Transactional(readOnly = true)
-    public List<ReviewResponseDto> getReviews() {
-        List<Review> reviews = reviewRepository.findAll();
+    public List<ReviewResponseDto> getReviews(Long bookId) {
+        List<Review> reviews = reviewRepository.findAllByBook_id(bookId);
         return reviews.stream()
                 .map(ReviewResponseDto::toDto)
                 .collect(Collectors.toList());

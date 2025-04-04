@@ -22,9 +22,9 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.createReview(requestDto));
     }
 
-    @GetMapping("/reviews")
-    public ResponseEntity<List<ReviewResponseDto>> getReviews() {
-        return ResponseEntity.ok(reviewService.getReviews());
+    @GetMapping("/books/{bookId}/reviews")
+    public ResponseEntity<List<ReviewResponseDto>> getReviews(@PathVariable Long bookId) {
+        return ResponseEntity.ok(reviewService.getReviews(bookId));
     }
 
     @GetMapping("/reviews/{reviewId}")
