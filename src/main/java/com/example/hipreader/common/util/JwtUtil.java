@@ -87,6 +87,10 @@ public class JwtUtil {
 
 	public boolean validateRefreshToken(String refreshToken) {
 		try {
+			if (refreshToken.startsWith(BEARER_PREFIX)) {
+				refreshToken = refreshToken.substring(BEARER_PREFIX.length());
+			}
+
 			Jwts.parserBuilder()
 				.setSigningKey(key) // Signing Key 반환
 				.build()

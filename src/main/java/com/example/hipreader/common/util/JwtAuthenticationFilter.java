@@ -72,11 +72,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		try {
 			String refreshToken = redisTemplate.opsForValue().get("RT:" + expiredToken);
 			if (refreshToken != null) {
-				String pureToken = refreshToken.replaceAll("Bearer ", "");
-				jwtUtil.validateRefreshToken(pureToken);
+				jwtUtil.validateRefreshToken(refreshToken);
 				redisTemplate.delete("RT:" + expiredToken);
 
-				Long userId = Long.valueOf(jwtUtil.extractClaims(pureToken).getId());
+				Long userId = Long.valueOf(jwtUtil.extractClaims(refreshToken).getId());
 				User user = userRepository.findById(userId)
 					.orElseThrow(
 						() -> new ResponseStatusException(USER_NOT_FOUND.getStatus(), USER_NOT_FOUND.getMessage()));
