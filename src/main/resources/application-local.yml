@@ -4,8 +4,8 @@ spring:
 
   data:
     redis:
-      host: ${spring.data.redis.host:localhost}
-      port: ${spring.data.redis.port:6379}
+      host: localhost
+      port: 6379
       lettuce:
         pool:
           max-idle: 5
@@ -13,9 +13,9 @@ spring:
           max-active: 5
 
   datasource:
-    url: ${DB_URL}?rewriteBatchedStatements=true
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    url: jdbc:mysql://localhost:3306/hipreader
+    username: root
+    password: 12345678
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -30,4 +30,4 @@ spring:
 
 jwt:
   secret:
-    key: ${jwt.secret.key}
+    key: DBWrjBFv78AzkggUVxKiPngUEfvR0uECpz4qJut+jLM=
