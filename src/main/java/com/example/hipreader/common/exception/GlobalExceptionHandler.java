@@ -4,6 +4,7 @@ import java.rmi.ServerException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.example.hipreader.domain.review.exception.ReviewException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -42,6 +43,19 @@ public class GlobalExceptionHandler {
 	}
 
 	public ResponseEntity<Map<String, Object>> getErrorResponse(HttpStatus status, String message) {
+		Map<String, Object> errorResponse = new HashMap<>();
+		errorResponse.put("status", status.name());
+		errorResponse.put("code", status.value());
+		errorResponse.put("message", message);
+
+		return new ResponseEntity<>(errorResponse, status);
+	}
+
+	@ExceptionHandler(ReviewException.class)
+	public ResponseEntity<Map<String, Object>> handleReviewException(ReviewException ex) {
+		HttpStatus status = ex.getErrorCode().getStatus();
+		String message = ex.getErrorCode().getMessage();
+
 		Map<String, Object> errorResponse = new HashMap<>();
 		errorResponse.put("status", status.name());
 		errorResponse.put("code", status.value());

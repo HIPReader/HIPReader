@@ -25,7 +25,7 @@ public class AuthController {
 	private final AuthService authService;
 	private final RefreshTokenService refreshTokenService;
 
-	@RequestMapping("/signup")
+	@PostMapping("/signup")
 	public ResponseEntity<SignupResponseDto> signup(
 		@Valid @RequestBody SignupRequestDto signupRequestDto
 	) {
