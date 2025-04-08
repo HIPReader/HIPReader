@@ -31,4 +31,3 @@ spring:
 jwt:
   secret:
     key: ${jwt.secret.key}
-

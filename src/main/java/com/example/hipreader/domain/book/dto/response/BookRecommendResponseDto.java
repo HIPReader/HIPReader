@@ -5,15 +5,17 @@ import com.example.hipreader.domain.book.genre.Genre;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class BookRecommendResponseDto {
-	private final String title;
-	private final String subtitle;
-	private final String author;
-	private final String publisher;
-	private final String coverImage;
-	private final Genre genre;
+	private String title;
+	private String subtitle;
+	private String author;
+	private String publisher;
+	private String coverImage;
+	private Genre genre;
 }

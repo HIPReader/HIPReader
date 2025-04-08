@@ -24,16 +24,29 @@ public class BookRecommendController {
 
 	private final BookRecommendService bookRecommendService;
 
-	// 연령별, 성별별 책 추천 ( 랭킹 )
+	// 연령별, 성별별, 장르별 책 추천 ( MySQL )
 	@GetMapping("/v1/books/recommend")
-	public ResponseEntity<PageResponseDto<BookRecommendResponseDto>> getBookRanking(
+	public ResponseEntity<PageResponseDto<BookRecommendResponseDto>> recommendBooksWithoutRedis(
 		@RequestParam(required = false) Integer age,
 		@RequestParam(required = false) Gender gender,
 		@RequestParam(required = false) Genre genre,
 		@PageableDefault(size = 10, page = 0) Pageable pageable
 	) {
-		PageResponseDto<BookRecommendResponseDto> responseDto = bookRecommendService.recommendBooks(age, gender,
-			genre, pageable);
+		PageResponseDto<BookRecommendResponseDto> responseDto = bookRecommendService.recommendBooksWithoutRedis(age,
+			gender, genre, pageable);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	// 연령별, 성별별, 장르별 책 추천 ( Redis )
+	@GetMapping("/v2/books/recommend")
+	public ResponseEntity<PageResponseDto<BookRecommendResponseDto>> recommendBooksWithRedis(
+		@RequestParam(required = false) Integer age,
+		@RequestParam(required = false) Gender gender,
+		@RequestParam(required = false) Genre genre,
+		@PageableDefault(size = 10, page = 0) Pageable pageable
+	) {
+		PageResponseDto<BookRecommendResponseDto> responseDto = bookRecommendService.recommendBooksWithRedis(age,
+			gender, genre, pageable);
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 }
