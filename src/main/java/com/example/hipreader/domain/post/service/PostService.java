@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.hipreader.common.dto.response.PageResponseDto;
+import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.domain.post.dto.request.PostSaveRequestDto;
 import com.example.hipreader.domain.post.dto.request.PostUpdateRequestDto;
 import com.example.hipreader.domain.post.dto.response.PostSaveResponseDto;
@@ -37,7 +38,7 @@ public class PostService {
 		Long userId = 1L;
 
 		User user = userRepository.findUserById(userId)
-			.orElseThrow(() -> new ResponseStatusException(USER_NOT_FOUND.getStatus(), USER_NOT_FOUND.getMessage()));
+			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
 		Post post = Post.builder()
 			.user(user)
@@ -134,7 +135,7 @@ public class PostService {
 
 	public Post findPostByIdOrElseThrow(Long postId) {
 		return postRepository.findById(postId).orElseThrow(
-			() -> new ResponseStatusException(POST_NOT_FOUND.getStatus(), POST_NOT_FOUND.getMessage())
+			() -> new NotFoundException(POST_NOT_FOUND)
 		);
 	}
 }

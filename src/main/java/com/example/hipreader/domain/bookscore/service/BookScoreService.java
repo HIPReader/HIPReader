@@ -1,5 +1,7 @@
 package com.example.hipreader.domain.bookscore.service;
 
+import static com.example.hipreader.common.exception.ErrorCode.*;
+
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -7,7 +9,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.hipreader.common.exception.ErrorCode;
 import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.book.repository.BookRepository;
@@ -42,7 +43,7 @@ public class BookScoreService {
 		List<Book> currentYearBooks = bookRepository.findBooksByPublicationYear(start, end);
 
 		if (currentYearBooks.isEmpty()) {
-			throw new NotFoundException(ErrorCode.BOOK_NOT_PUBLISHED);
+			throw new NotFoundException(BOOK_NOT_PUBLISHED);
 		}
 
 		// 2. 해당 책들의 점수 조회
@@ -55,11 +56,11 @@ public class BookScoreService {
 		// 3. 최고 점수 책 찾기
 		BookScore topScore = scores.stream()
 			.max(Comparator.comparingLong(BookScore::getTotalScore))
-			.orElseThrow(() -> new NotFoundException(ErrorCode.SCORE_NOT_FOUND));
+			.orElseThrow(() -> new NotFoundException(SCORE_NOT_FOUND));
 
 		// 4. 최고 점수 책 정보 가져오기
 		Book topBook = bookRepository.findById(topScore.getBookId())
-			.orElseThrow(() -> new NotFoundException(ErrorCode.BOOK_NOT_FOUND));
+			.orElseThrow(() -> new NotFoundException(BOOK_NOT_FOUND));
 
 		// 5. DTO 변환 (from 메서드 사용)
 		return GetBookOfYearResponseDto.from(topBook, topScore.getTotalScore());

@@ -1,6 +1,10 @@
 package com.example.hipreader.domain.userbook.service;
 
+import static com.example.hipreader.common.exception.ErrorCode.*;
+
 import com.example.hipreader.auth.dto.AuthUser;
+import com.example.hipreader.common.exception.BadRequestException;
+import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.book.repository.BookRepository;
 import com.example.hipreader.domain.bookscore.dto.response.StatusChangeEvent;
@@ -31,11 +35,11 @@ public class UserBookService {
 
     @Transactional
     public UserBookResponseDto registerUserBook(AuthUser authUser, RegisterUserBookRequestDto registerUserBookRequestDto) {
-        User user = userRepository.findUserById(authUser.getId()).orElseThrow(() -> new RuntimeException("User not found"));
-        Book book = bookRepository.findById(registerUserBookRequestDto.getBookId()).orElseThrow(() -> new RuntimeException("Book not found"));
+        User user = userRepository.findUserById(authUser.getId()).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+        Book book = bookRepository.findById(registerUserBookRequestDto.getBookId()).orElseThrow(() -> new NotFoundException(BOOK_NOT_FOUND));
 
         if(userBookRepository.existsByUserAndBook(user, book)) {
-            throw new RuntimeException("이 책은 이미 등록되어 있습니다.");
+            throw new BadRequestException(BOOK_DUPLICATION);
         }
 
         UserBook userBook = UserBook.builder()
@@ -52,7 +56,7 @@ public class UserBookService {
 
     @Transactional
     public Page<UserBookResponseDto> findReadingBooks(AuthUser authUser, int page, int size) {
-        User user = userRepository.findUserById(authUser.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findUserById(authUser.getId()).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
         Pageable pageable = PageRequest.of(page-1, size);
 
@@ -64,7 +68,7 @@ public class UserBookService {
 
     @Transactional
     public UserBookResponseDto findReadingBook(AuthUser authUser, Long userbookId) {
-        User user = userRepository.findUserById(authUser.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findUserById(authUser.getId()).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
         UserBook userBook = userBookRepository.findByIdAndUser(userbookId, user);
 
@@ -73,10 +77,10 @@ public class UserBookService {
 
     @Transactional
     public UserBookResponseDto updateUserBook(AuthUser authUser,UpdateUserBookRequestDto updateUserBookRequestDto, Long userbookId) {
-        User user = userRepository.findUserById(authUser.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findUserById(authUser.getId()).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
         UserBook userBook = userBookRepository.findByIdAndUser(userbookId, user);
-        if (userBook == null) { throw new RuntimeException("등록된 책이 없습니다."); }
+        if (userBook == null) { throw new NotFoundException(BOOK_NOT_FOUND); }
 
         Status oldStatus = userBook.getStatus();
 
@@ -100,7 +104,7 @@ public class UserBookService {
     @Transactional
     public void deleteUserBook(AuthUser authUser, Long userBookId) {
         User user = userRepository.findUserById(authUser.getId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException(BOOK_NOT_FOUND));
 
         UserBook userBook = userBookRepository.findByIdAndUser(userBookId, user);
         if (userBook == null) {
@@ -119,7 +123,7 @@ public class UserBookService {
 
     @Transactional
     public Page<UserBookResponseDto> findWishBooks(AuthUser authUser, int page, int size) {
-        User user = userRepository.findUserById(authUser.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findUserById(authUser.getId()).orElseThrow(() -> new NotFoundException(BOOK_NOT_FOUND));
 
         Pageable pageable = PageRequest.of(page-1, size);
         Page<UserBook> userBooks = userBookRepository.findByUserAndStatus(user, Status.TO_READ, pageable);
