@@ -2,19 +2,31 @@ package com.example.hipreader.domain.user.service;
 
 import static com.example.hipreader.common.exception.ErrorCode.*;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.example.hipreader.auth.dto.AuthUser;
+import com.example.hipreader.common.dto.response.PageResponseDto;
 import com.example.hipreader.common.exception.BadRequestException;
 import com.example.hipreader.common.exception.NotFoundException;
+import com.example.hipreader.domain.book.dto.response.BooksResponseDto;
+import com.example.hipreader.domain.book.entity.Book;
+import com.example.hipreader.domain.post.dto.response.PostGetResponseDto;
+import com.example.hipreader.domain.post.entity.Post;
 import com.example.hipreader.domain.user.dto.request.ChangePasswordRequestDto;
 import com.example.hipreader.domain.user.dto.request.DeleteUserRequestDto;
 import com.example.hipreader.domain.user.dto.response.GetUserResponseDto;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
+import com.example.hipreader.domain.userbook.dto.response.UserBookResponseDto;
+import com.example.hipreader.domain.userbook.entity.UserBook;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,10 +38,15 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 
+	@Transactional(readOnly = true)
 	public GetUserResponseDto getUser(Long userId) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 		return new GetUserResponseDto(user.getId(),user.getEmail());
+	}
+
+	public void updateUser(Long userId) {
+
 	}
 
 	@Transactional
@@ -67,6 +84,16 @@ public class UserService {
 		}
 
 		findUser.deleteUser();
+	}
+
+	@Transactional
+	public Page<GetUserResponseDto> getUsers(int page, int size) {
+
+		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt"));
+
+		return userRepository.findAll(pageRequest)
+			.map(user -> new GetUserResponseDto(user.getId(), user.getEmail()));
+		//성능 최적화 시 쿼리문으로 필요한 정보만 가져오게 select문 수정가능.
 	}
 
 }
