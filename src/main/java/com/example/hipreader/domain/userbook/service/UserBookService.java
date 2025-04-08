@@ -3,6 +3,8 @@ package com.example.hipreader.domain.userbook.service;
 import com.example.hipreader.auth.dto.AuthUser;
 import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.book.repository.BookRepository;
+import com.example.hipreader.domain.bookscore.dto.response.StatusChangeEvent;
+import com.example.hipreader.domain.bookscore.repository.BookScoreRepository;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
 import com.example.hipreader.domain.userbook.dto.request.RegisterUserBookRequestDto;
@@ -13,6 +15,8 @@ import com.example.hipreader.domain.userbook.repository.UserBookRepository;
 import com.example.hipreader.domain.userbook.status.Status;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +28,8 @@ public class UserBookService {
     private final UserBookRepository userBookRepository;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
+    private final RabbitTemplate rabbitTemplate;
+    private final BookScoreRepository bookScoreRepository;
 
     @Transactional
     public UserBookResponseDto registerUserBook(AuthUser authUser, RegisterUserBookRequestDto registerUserBookRequestDto) {
@@ -74,7 +80,21 @@ public class UserBookService {
         UserBook userBook = userBookRepository.findByIdAndUser(userbookId, user);
         if (userBook == null) { throw new RuntimeException("등록된 책이 없습니다."); }
 
+        Status oldStatus = userBook.getStatus();
+
         userBook.update(updateUserBookRequestDto.getStatus(), updateUserBookRequestDto.getProgress());
+
+        if (oldStatus != updateUserBookRequestDto.getStatus()) {
+            rabbitTemplate.convertAndSend(
+                "userbook.exchange",
+                "userbook.status.change",
+                new StatusChangeEvent(
+                    userBook.getBook().getId(),
+                    oldStatus,
+                    updateUserBookRequestDto.getStatus()
+                )
+            );
+        }
 
         return new UserBookResponseDto(userBook.getUser(), userBook.getBook(), userBook.getProgress(), userBook.getStatus());
     }

@@ -1,6 +1,7 @@
 package com.example.hipreader.domain.userbook.repository;
 
 import java.util.List;
+import java.util.Map;
 
 import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.user.entity.User;
@@ -23,4 +24,6 @@ public interface UserBookRepository extends JpaRepository<UserBook, Long>, UserB
 	UserBook findByIdAndUser(long id, User user);
 
 	Page<UserBook> findByUserAndStatus(User user, Status status, Pageable pageable);
+
+	Map<Status, Long> countByBookIdGroupByStatus(Long id);
 }
