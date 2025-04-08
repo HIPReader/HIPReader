@@ -2,24 +2,16 @@ package com.example.hipreader.domain.user.service;
 
 import static com.example.hipreader.common.exception.ErrorCode.*;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.hipreader.auth.dto.AuthUser;
-import com.example.hipreader.common.dto.response.PageResponseDto;
 import com.example.hipreader.common.exception.BadRequestException;
 import com.example.hipreader.common.exception.NotFoundException;
-import com.example.hipreader.domain.book.dto.response.BooksResponseDto;
-import com.example.hipreader.domain.book.entity.Book;
-import com.example.hipreader.domain.post.dto.response.PostGetResponseDto;
-import com.example.hipreader.domain.post.entity.Post;
 import com.example.hipreader.domain.user.dto.request.ChangePasswordRequestDto;
 import com.example.hipreader.domain.user.dto.request.DeleteUserRequestDto;
 import com.example.hipreader.domain.user.dto.request.UpdateUserRequestDto;
@@ -27,8 +19,6 @@ import com.example.hipreader.domain.user.dto.response.GetUserResponseDto;
 import com.example.hipreader.domain.user.dto.response.UpdateUserResponseDto;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
-import com.example.hipreader.domain.userbook.dto.response.UserBookResponseDto;
-import com.example.hipreader.domain.userbook.entity.UserBook;
 
 import lombok.RequiredArgsConstructor;
 

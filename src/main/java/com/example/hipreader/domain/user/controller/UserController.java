@@ -19,7 +19,6 @@ import com.example.hipreader.domain.user.dto.request.UpdateUserRequestDto;
 import com.example.hipreader.domain.user.dto.response.GetUserResponseDto;
 import com.example.hipreader.domain.user.dto.response.UpdateUserResponseDto;
 import com.example.hipreader.domain.user.service.UserService;
-import com.example.hipreader.domain.userbook.dto.response.UserBookResponseDto;
 
 import lombok.RequiredArgsConstructor;
 

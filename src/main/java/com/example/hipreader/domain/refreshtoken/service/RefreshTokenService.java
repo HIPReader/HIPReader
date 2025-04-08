@@ -3,7 +3,6 @@ package com.example.hipreader.domain.refreshtoken.service;
 import static com.example.hipreader.common.exception.ErrorCode.*;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.common.util.JwtUtil;
