@@ -1,15 +1,8 @@
 package com.example.hipreader.domain.bookscore.batch;
 
-import static com.example.hipreader.domain.userbook.status.Status.*;
-
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.hipreader.domain.book.entity.Book;
-import com.example.hipreader.domain.book.repository.BookRepository;
 import com.example.hipreader.domain.bookscore.entity.BookScore;
 import com.example.hipreader.domain.bookscore.repository.BookScoreRepository;
 

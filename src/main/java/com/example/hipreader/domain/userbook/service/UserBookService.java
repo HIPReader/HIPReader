@@ -29,7 +29,6 @@ public class UserBookService {
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     private final RabbitTemplate rabbitTemplate;
-    private final BookScoreRepository bookScoreRepository;
 
     @Transactional
     public UserBookResponseDto registerUserBook(AuthUser authUser, RegisterUserBookRequestDto registerUserBookRequestDto) {

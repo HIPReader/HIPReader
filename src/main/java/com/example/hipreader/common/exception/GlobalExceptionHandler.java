@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<Map<String, Object>> handleGenericException(Exception e) {
+	public ResponseEntity<Map<String, Object>> handleGenericException() {
 		return createErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR);
 	}
 
