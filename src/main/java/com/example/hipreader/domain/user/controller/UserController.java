@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.hipreader.auth.dto.AuthUser;
 import com.example.hipreader.domain.user.dto.request.ChangePasswordRequestDto;
 import com.example.hipreader.domain.user.dto.request.DeleteUserRequestDto;
+import com.example.hipreader.domain.user.dto.request.UpdateUserRequestDto;
 import com.example.hipreader.domain.user.dto.response.GetUserResponseDto;
+import com.example.hipreader.domain.user.dto.response.UpdateUserResponseDto;
 import com.example.hipreader.domain.user.service.UserService;
 import com.example.hipreader.domain.userbook.dto.response.UserBookResponseDto;
 
@@ -40,6 +42,14 @@ public class UserController {
 		@RequestParam(defaultValue = "10") int size
 	) {
 		return ResponseEntity.ok(userService.getUsers(page, size));
+	}
+
+	@PatchMapping
+	public ResponseEntity<UpdateUserResponseDto> updateUser(
+		@AuthenticationPrincipal AuthUser authUser,
+		@RequestBody UpdateUserRequestDto requestDto
+	) {
+		return ResponseEntity.ok(userService.updateUser(authUser, requestDto));
 	}
 
 	@PatchMapping("/password")

@@ -22,7 +22,9 @@ import com.example.hipreader.domain.post.dto.response.PostGetResponseDto;
 import com.example.hipreader.domain.post.entity.Post;
 import com.example.hipreader.domain.user.dto.request.ChangePasswordRequestDto;
 import com.example.hipreader.domain.user.dto.request.DeleteUserRequestDto;
+import com.example.hipreader.domain.user.dto.request.UpdateUserRequestDto;
 import com.example.hipreader.domain.user.dto.response.GetUserResponseDto;
+import com.example.hipreader.domain.user.dto.response.UpdateUserResponseDto;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
 import com.example.hipreader.domain.userbook.dto.response.UserBookResponseDto;
@@ -45,8 +47,23 @@ public class UserService {
 		return new GetUserResponseDto(user.getId(),user.getEmail());
 	}
 
-	public void updateUser(Long userId) {
+	public UpdateUserResponseDto updateUser(AuthUser authUser, UpdateUserRequestDto updateUserRequestDto) {
+		User user = userRepository.findUserById(authUser.getId())
+			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
+		user.updateProfile(
+			updateUserRequestDto.getNickname(),
+			updateUserRequestDto.getAge(),
+			updateUserRequestDto.getGender()
+		);
+
+		return new UpdateUserResponseDto(
+			user.getId(),
+			user.getEmail(),
+			user.getNickname(),
+			user.getAge(),
+			user.getGender()
+		);
 	}
 
 	@Transactional
