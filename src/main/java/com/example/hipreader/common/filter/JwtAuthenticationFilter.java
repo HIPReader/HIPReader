@@ -13,7 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.example.hipreader.auth.dto.AuthUser;
 import com.example.hipreader.common.config.JwtAuthenticationToken;
-import com.example.hipreader.common.exception.ErrorCode;
+import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.common.exception.UnauthorizedException;
 import com.example.hipreader.common.util.JwtUtil;
 import com.example.hipreader.domain.user.entity.User;
@@ -81,7 +81,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				Long userId = Long.valueOf(jwtUtil.extractClaims(refreshToken).getId());
 				User user = userRepository.findById(userId)
 					.orElseThrow(
-						() -> new ResponseStatusException(USER_NOT_FOUND.getStatus(), USER_NOT_FOUND.getMessage()));
+						() -> new NotFoundException(USER_NOT_FOUND));
 
 				String newAccessToken = jwtUtil.createAccessToken(user.getId(), user.getEmail(), user.getRole(),
 					user.getNickname());
@@ -93,7 +93,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				response.setHeader("New-Refresh-Token", newRefreshToken);
 				response.setStatus(HttpServletResponse.SC_OK);
 			} else {
-				throw new ResponseStatusException(NEED_LOGIN.getStatus(), NEED_LOGIN.getMessage());
+				throw new UnauthorizedException(NEED_LOGIN);
 			}
 		} catch (Exception e) {
 			log.error("토큰 재발급 실패", e);

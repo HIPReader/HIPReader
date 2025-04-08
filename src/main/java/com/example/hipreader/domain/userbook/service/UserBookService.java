@@ -4,7 +4,6 @@ import com.example.hipreader.auth.dto.AuthUser;
 import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.book.repository.BookRepository;
 import com.example.hipreader.domain.bookscore.dto.response.StatusChangeEvent;
-import com.example.hipreader.domain.bookscore.repository.BookScoreRepository;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
 import com.example.hipreader.domain.userbook.dto.request.RegisterUserBookRequestDto;

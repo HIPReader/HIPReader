@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.hipreader.auth.dto.AuthUser;
+import com.example.hipreader.common.exception.BadRequestException;
+import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.domain.user.dto.request.ChangePasswordRequestDto;
 import com.example.hipreader.domain.user.dto.request.DeleteUserRequestDto;
 import com.example.hipreader.domain.user.dto.response.GetUserResponseDto;
@@ -26,7 +28,7 @@ public class UserService {
 
 	public GetUserResponseDto getUser(Long userId) {
 		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new ResponseStatusException(USER_NOT_FOUND.getStatus(), USER_NOT_FOUND.getMessage()));
+			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 		return new GetUserResponseDto(user.getId(),user.getEmail());
 	}
 
@@ -35,13 +37,13 @@ public class UserService {
 		validateNewPassword(changePasswordRequestDto);
 
 		User user = userRepository.findUserById(userId)
-			.orElseThrow(() -> new ResponseStatusException(USER_NOT_FOUND.getStatus(), USER_NOT_FOUND.getMessage()));
+			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
 		if (!passwordEncoder.matches(changePasswordRequestDto.getOldPassword(), user.getPassword())) {
-			throw new ResponseStatusException(INVALID_PASSWORD.getStatus(), INVALID_PASSWORD.getMessage());
+			throw new NotFoundException(INVALID_PASSWORD);
 		}
 		if (passwordEncoder.matches(changePasswordRequestDto.getNewPassword(), user.getPassword())) {
-			throw new ResponseStatusException(PASSWORD_SAME_AS_OLD.getStatus(), PASSWORD_SAME_AS_OLD.getMessage());
+			throw new BadRequestException(PASSWORD_SAME_AS_OLD);
 		}
 
 		user.changePassword(passwordEncoder.encode(changePasswordRequestDto.getNewPassword()));
@@ -51,17 +53,17 @@ public class UserService {
 		if (changePasswordRequestDto.getNewPassword().length() < 8 ||
 			!changePasswordRequestDto.getNewPassword().matches(".*\\d.*") ||
 			!changePasswordRequestDto.getNewPassword().matches(".*[A-Z].*")) {
-			throw new ResponseStatusException(INVALID_NEW_PASSWORD_FORMAT.getStatus(), INVALID_NEW_PASSWORD_FORMAT.getMessage());
+			throw new BadRequestException(INVALID_NEW_PASSWORD_FORMAT);
 		}
 	}
 
 	@Transactional
 	public void deleteUser(AuthUser authUser, DeleteUserRequestDto request) {
 		User findUser = userRepository.findUserById(authUser.getId())
-			.orElseThrow(() -> new ResponseStatusException(USER_NOT_FOUND.getStatus(), USER_NOT_FOUND.getMessage()));
+			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
 		if (!passwordEncoder.matches(request.getPassword(), findUser.getPassword())) {
-			throw new ResponseStatusException(INVALID_PASSWORD.getStatus(),INVALID_PASSWORD.getMessage());
+			throw new BadRequestException(INVALID_PASSWORD);
 		}
 
 		findUser.deleteUser();
