@@ -5,6 +5,7 @@ import static com.example.hipreader.common.exception.ErrorCode.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.common.util.JwtUtil;
 import com.example.hipreader.domain.refreshtoken.entity.RefreshToken;
 import com.example.hipreader.domain.refreshtoken.repository.RefreshTokenRepository;
@@ -33,9 +34,9 @@ public class RefreshTokenService {
 	// 검증 로직 분리
 	private RefreshToken findValidRefreshToken(String token) {
 		RefreshToken refreshToken = refreshTokenRepository.findByRefreshToken(token)
-			.orElseThrow(() -> new ResponseStatusException(TOKEN_NOT_FOUND.getStatus(),TOKEN_NOT_FOUND.getMessage()));
+			.orElseThrow(() -> new NotFoundException(TOKEN_NOT_FOUND));
 		if (!jwtUtil.validateRefreshToken(refreshToken.getRefreshToken())) {
-			throw new ResponseStatusException(INVALID_TOKEN.getStatus(),INVALID_TOKEN.getMessage());
+			throw new NotFoundException(INVALID_TOKEN);
 		}
 		return refreshToken;
 	}
@@ -43,7 +44,7 @@ public class RefreshTokenService {
 	// 사용자 조회 로직 분리
 	private User findUserByToken(RefreshToken token) {
 		return userRepository.findById(token.getUserId())
-			.orElseThrow(() -> new ResponseStatusException(USER_NOT_FOUND.getStatus(),USER_NOT_FOUND.getMessage()));
+			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 	}
 
 	// 토큰 생성 로직 분리
