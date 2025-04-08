@@ -1,4 +1,4 @@
-package com.example.hipreader.common.util;
+package com.example.hipreader.common.filter;
 
 import static com.example.hipreader.common.exception.ErrorCode.*;
 
@@ -12,6 +12,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.hipreader.auth.dto.AuthUser;
+import com.example.hipreader.common.config.JwtAuthenticationToken;
+import com.example.hipreader.common.util.JwtUtil;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
 import com.example.hipreader.domain.user.role.UserRole;
