@@ -13,6 +13,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.example.hipreader.auth.dto.AuthUser;
 import com.example.hipreader.common.config.JwtAuthenticationToken;
+import com.example.hipreader.common.exception.ErrorCode;
+import com.example.hipreader.common.exception.UnauthorizedException;
 import com.example.hipreader.common.util.JwtUtil;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
@@ -46,22 +48,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	) throws ServletException, IOException {
 
 		String authorizationHeader = request.getHeader("Authorization");
-		log.info("Authorization Header: {}", authorizationHeader);
 
 		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 			String token = jwtUtil.substringToken(authorizationHeader);
 			try {
 				Claims claims = jwtUtil.extractClaims(token);
 				setAuthentication(claims); // 인증 설정 로직 분리
-				log.info("추출한 JWT: {}", token);
+				log.info("추출한 JWT: {}", token.substring(0,10));
 
 			} catch (ExpiredJwtException e) {
 				log.error("만료된 JWT token 입니다.", e);
 				handleExpiredToken(response,token);
-				throw new ResponseStatusException(EXPIRED_TOKEN.getStatus(), EXPIRED_TOKEN.getMessage());
+				throw new UnauthorizedException(EXPIRED_TOKEN);
 			} catch (JwtException e) {
 				log.error("유효하지 않는 Access Token 입니다.", e);
-				throw new ResponseStatusException(INVALID_ACCESS_TOKEN.getStatus(),INVALID_ACCESS_TOKEN.getMessage());
+				throw new UnauthorizedException(INVALID_ACCESS_TOKEN);
 			} catch (Exception e) {
 				log.error("Internal server error", e);
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

@@ -70,15 +70,15 @@ public class AuthService {
 		if (!passwordEncoder.matches(signinRequestDto.getPassword(), user.getPassword())) {
 			throw new ResponseStatusException(INVALID_PASSWORD.getStatus(), INVALID_PASSWORD.getMessage());
 		}
+		// 기존 리프레시 토큰 삭제
+		refreshTokenRepository.deleteByUserId(user.getId());
 
 		String accessToken = jwtUtil.createAccessToken(user.getId(),user.getEmail(),user.getRole(),user.getNickname());
 
 		String refreshToken = jwtUtil.createRefreshToken(user.getId());
-
 		refreshTokenRepository.save(new RefreshToken(user.getId(),refreshToken));
 
 		return new SigninResponseDto(accessToken,refreshToken);
 	}
-
 
 }

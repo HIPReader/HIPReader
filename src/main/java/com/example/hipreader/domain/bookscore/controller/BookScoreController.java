@@ -15,7 +15,7 @@ public class BookScoreController {
 
 	private final BookScoreService bookScoreService;
 
-	@GetMapping("/of-the-year")
+	@GetMapping("/api/v1/books/of-the-year")
 	public ResponseEntity<GetBookOfYearResponseDto> getBookOfTheYear() {
 		GetBookOfYearResponseDto getBookOfYearResponseDto = bookScoreService.getBookOfTheYear();
 		return ResponseEntity.ok(getBookOfYearResponseDto);
