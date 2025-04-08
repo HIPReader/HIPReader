@@ -53,8 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			String token = jwtUtil.substringToken(authorizationHeader);
 			try {
 				Claims claims = jwtUtil.extractClaims(token);
-				setAuthentication(claims); // 인증 설정 로직 분리
-				log.info("추출한 JWT: {}", token.substring(0,10));
+				setAuthentication(claims);
 
 			} catch (ExpiredJwtException e) {
 				log.error("만료된 JWT token 입니다.", e);

@@ -93,10 +93,9 @@ public class UserService {
 		findUser.deleteUser();
 	}
 
-	@Transactional
 	public Page<GetUserResponseDto> getUsers(int page, int size) {
 
-		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt"));
+		PageRequest pageRequest = PageRequest.of(Math.max(0, page-1), size, Sort.by(Sort.Direction.DESC, "updatedAt"));
 
 		return userRepository.findAll(pageRequest)
 			.map(user -> new GetUserResponseDto(user.getId(), user.getEmail()));
