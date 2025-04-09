@@ -9,12 +9,12 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class PostGetResponseDto {
+public class SavePostResponseDto {
+	private final Long id;
 	private final String title;
 	private final String content;
 	private final String writer;
 	private final Integer viewCount;
 	private final Integer likeCount;
 	private final LocalDateTime createdAt;
-	private final LocalDateTime updatedAt;
 }

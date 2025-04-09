@@ -32,7 +32,8 @@ public class UserController {
 	@GetMapping("/{userId}")
 	public ResponseEntity<GetUserResponseDto> getUser(
 		@PathVariable Long userId) {
-		return ResponseEntity.ok(userService.getUser(userId));
+		GetUserResponseDto getUserResponseDto = userService.getUser(userId);
+		return ResponseEntity.ok(getUserResponseDto);
 	}
 
 	@GetMapping
@@ -40,7 +41,9 @@ public class UserController {
 		@RequestParam(defaultValue = "1") int page,
 		@RequestParam(defaultValue = "10") int size
 	) {
-		return ResponseEntity.ok(userService.getUsers(page, size));
+		Page<GetUserResponseDto> getUserResponseDto = userService.getUsers(page, size);
+
+		return ResponseEntity.ok(getUserResponseDto);
 	}
 
 	@PatchMapping
@@ -48,21 +51,27 @@ public class UserController {
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestBody UpdateUserRequestDto requestDto
 	) {
-		return ResponseEntity.ok(userService.updateUser(authUser, requestDto));
+		UpdateUserResponseDto updateUserResponseDto = userService.updateUser(authUser, requestDto);
+
+		return ResponseEntity.ok(updateUserResponseDto);
 	}
 
 	@PatchMapping("/password")
-	public void changePassword(
+	public ResponseEntity<Void> changePassword(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestBody ChangePasswordRequestDto changePasswordRequestDto) {
 		userService.changePassword(authUser.getId(), changePasswordRequestDto);
+
+		return ResponseEntity.noContent().build();
 	}
 
 	@DeleteMapping("/{userId}")
-	public void deleteUser(
+	public ResponseEntity<Void> deleteUser(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestBody DeleteUserRequestDto userDeleteRequestDto) {
 		userService.deleteUser(authUser, userDeleteRequestDto);
+
+		return ResponseEntity.noContent().build();
 	}
 
 }

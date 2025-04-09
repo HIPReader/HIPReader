@@ -31,9 +31,9 @@ public class BooksController {
     @PatchMapping("/{id}")
     public ResponseEntity<BooksResponseDto> updateBooks(@PathVariable Long id,
                                                         @RequestBody BooksRequestDto booksRequestDto) {
-        BooksResponseDto dto = booksService.updateBook(id, booksRequestDto);
+        BooksResponseDto booksResponseDto = booksService.updateBook(id, booksRequestDto);
 
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(booksResponseDto);
     }
 
     @GetMapping()
@@ -49,9 +49,9 @@ public class BooksController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BooksResponseDto> getBookById(@PathVariable Long id) {
-        BooksResponseDto dto = booksService.findBook(id);
+        BooksResponseDto booksResponseDto = booksService.findBook(id);
 
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(booksResponseDto);
     }
 
     @DeleteMapping("/{id}")

@@ -12,11 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.hipreader.common.dto.response.PageResponseDto;
 import com.example.hipreader.common.exception.NotFoundException;
-import com.example.hipreader.domain.post.dto.request.PostSaveRequestDto;
-import com.example.hipreader.domain.post.dto.request.PostUpdateRequestDto;
-import com.example.hipreader.domain.post.dto.response.PostSaveResponseDto;
-import com.example.hipreader.domain.post.dto.response.PostUpdateResponseDto;
-import com.example.hipreader.domain.post.dto.response.PostGetResponseDto;
+import com.example.hipreader.domain.post.dto.request.SavePostRequestDto;
+import com.example.hipreader.domain.post.dto.request.UpdatePostRequestDto;
+import com.example.hipreader.domain.post.dto.response.SavePostResponseDto;
+import com.example.hipreader.domain.post.dto.response.UpdatePostResponseDto;
+import com.example.hipreader.domain.post.dto.response.GetPostResponseDto;
 import com.example.hipreader.domain.post.entity.Post;
 import com.example.hipreader.domain.post.repository.PostRepository;
 import com.example.hipreader.domain.user.entity.User;
@@ -33,7 +33,7 @@ public class PostService {
 
 	// 게시물 생성
 	@Transactional
-	public PostSaveResponseDto savePost(PostSaveRequestDto requestDto) {
+	public SavePostResponseDto savePost(SavePostRequestDto requestDto) {
 		Long userId = 1L;
 
 		User user = userRepository.findUserById(userId)
@@ -49,7 +49,7 @@ public class PostService {
 
 		Post savedPost = postRepository.save(post);
 
-		return PostSaveResponseDto.builder()
+		return SavePostResponseDto.builder()
 			.id(savedPost.getId())
 			.title(savedPost.getTitle())
 			.content(savedPost.getContent())
@@ -62,12 +62,12 @@ public class PostService {
 
 	// 게시물 다건 조회
 	@Transactional(readOnly = true)
-	public PageResponseDto<PostGetResponseDto> getPosts(int page, int size) {
+	public PageResponseDto<GetPostResponseDto> getPosts(int page, int size) {
 		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt"));
 		Page<Post> postPage = postRepository.findAllPosts(pageRequest);
 
-		List<PostGetResponseDto> content = postPage.getContent().stream()
-			.map(post -> new PostGetResponseDto(
+		List<GetPostResponseDto> content = postPage.getContent().stream()
+			.map(post -> new GetPostResponseDto(
 				post.getTitle(),
 				post.getContent(),
 				post.getUser().getNickname(),
@@ -77,7 +77,7 @@ public class PostService {
 				post.getUpdatedAt()
 			)).toList();
 
-		return PageResponseDto.<PostGetResponseDto>builder()
+		return PageResponseDto.<GetPostResponseDto>builder()
 			.pageNumber(postPage.getNumber())
 			.pageSize(postPage.getSize())
 			.totalPages(postPage.getTotalPages())
@@ -87,10 +87,10 @@ public class PostService {
 	}
 
 	// 게시물 단건 조회
-	public PostGetResponseDto getPost(Long postId) {
+	public GetPostResponseDto getPost(Long postId) {
 		Post findPost = findPostByIdOrElseThrow(postId);
 
-		return PostGetResponseDto.builder()
+		return GetPostResponseDto.builder()
 			.title(findPost.getTitle())
 			.content(findPost.getContent())
 			.writer(findPost.getUser().getNickname())
@@ -103,7 +103,7 @@ public class PostService {
 
 	// 게시물 수정
 	@Transactional
-	public PostUpdateResponseDto updatePosts(Long postId, PostUpdateRequestDto requestDto) {
+	public UpdatePostResponseDto updatePosts(Long postId, UpdatePostRequestDto requestDto) {
 		// 작성자가 맞는지 확인
 
 		// 게시물 수정
@@ -112,7 +112,7 @@ public class PostService {
 		findPost.updateTitleIfNotNull(requestDto.getTitle());
 		findPost.updateContentIfNotNull(requestDto.getContent());
 
-		return PostUpdateResponseDto.builder()
+		return UpdatePostResponseDto.builder()
 			.title(findPost.getTitle())
 			.content(findPost.getContent())
 			.writer(findPost.getUser().getNickname())
