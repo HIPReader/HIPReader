@@ -18,8 +18,8 @@ public class SavePostResponseDto {
 	private final String writer;
 	private final LocalDateTime createdAt;
 
-	public static PostSaveResponseDto toDto(Post post) {
-		return PostSaveResponseDto.builder()
+	public static SavePostResponseDto toDto(Post post) {
+		return SavePostResponseDto.builder()
 			.id(post.getId())
 			.title(post.getTitle())
 			.content(post.getContent())

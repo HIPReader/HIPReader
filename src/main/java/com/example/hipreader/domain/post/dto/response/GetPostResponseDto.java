@@ -18,8 +18,8 @@ public class GetPostResponseDto {
 	private final LocalDateTime createdAt;
 	private final LocalDateTime updatedAt;
 
-	public static PostGetResponseDto toDto(Post post) {
-		return PostGetResponseDto.builder()
+	public static GetPostResponseDto toDto(Post post) {
+		return GetPostResponseDto.builder()
 			.title(post.getTitle())
 			.content(post.getContent())
 			.writer(post.getUser().getNickname())

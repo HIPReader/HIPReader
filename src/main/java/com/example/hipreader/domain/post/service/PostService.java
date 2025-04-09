@@ -57,10 +57,10 @@ public class PostService {
 		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt"));
 		Page<Post> postPage = postRepository.findAllPosts(pageRequest);
 
-		List<PostGetResponseDto> content = postPage.getContent().stream()
-			.map(PostGetResponseDto::toDto).toList();
+		List<GetPostResponseDto> content = postPage.getContent().stream()
+			.map(GetPostResponseDto::toDto).toList();
 
-		return PageResponseDto.<PostGetResponseDto>builder()
+		return PageResponseDto.<GetPostResponseDto>builder()
 			.pageNumber(postPage.getNumber())
 			.pageSize(postPage.getSize())
 			.totalPages(postPage.getTotalPages())

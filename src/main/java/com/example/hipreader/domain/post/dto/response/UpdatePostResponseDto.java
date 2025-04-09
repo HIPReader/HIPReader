@@ -19,8 +19,8 @@ public class UpdatePostResponseDto {
 	private final LocalDateTime createdAt;
 	private final LocalDateTime updatedAt;
 
-	public static PostUpdateResponseDto toDto(Post post) {
-		return PostUpdateResponseDto.builder()
+	public static UpdatePostResponseDto toDto(Post post) {
+		return UpdatePostResponseDto.builder()
 			.id(post.getId())
 			.title(post.getTitle())
 			.content(post.getContent())
