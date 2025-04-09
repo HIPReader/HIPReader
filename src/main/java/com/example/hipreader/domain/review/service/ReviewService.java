@@ -5,8 +5,11 @@ import static com.example.hipreader.common.exception.ErrorCode.*;
 import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.book.repository.BookRepository;
-import com.example.hipreader.domain.review.dto.request.ReviewRequestDto;
-import com.example.hipreader.domain.review.dto.response.ReviewResponseDto;
+import com.example.hipreader.domain.review.dto.request.ReviewCreateRequestDto;
+import com.example.hipreader.domain.review.dto.response.ReviewReadResponseDto;
+import com.example.hipreader.domain.review.dto.request.ReviewUpdateRequestDto;
+import com.example.hipreader.domain.review.dto.response.ReviewCreateResponseDto;
+import com.example.hipreader.domain.review.dto.response.ReviewUpdateResponseDto;
 import com.example.hipreader.domain.review.entity.Review;
 import com.example.hipreader.domain.review.repository.ReviewRepository;
 import com.example.hipreader.domain.user.entity.User;
@@ -30,7 +33,7 @@ public class ReviewService {
 
     // review 생성
     @Transactional
-    public ReviewResponseDto createReview(ReviewRequestDto requestDto) {
+    public ReviewCreateResponseDto createReview(ReviewCreateRequestDto requestDto) {
         User user = userRepository.findById(requestDto.getUserId()).orElseThrow(
                 () -> new NotFoundException(USER_NOT_FOUND)
         );
@@ -47,29 +50,29 @@ public class ReviewService {
 
         Review savedReview = reviewRepository.save(review);
 
-        return ReviewResponseDto.toDto(savedReview);
+        return ReviewCreateResponseDto.toDto(savedReview);
     }
 
     // review 다건 조회
     @Transactional(readOnly = true)
-    public List<ReviewResponseDto> getReviews(Long bookId) {
+    public List<ReviewReadResponseDto> getReviews(Long bookId) {
         List<Review> reviews = reviewRepository.findAllByBook_id(bookId);
         return reviews.stream()
-                .map(ReviewResponseDto::toDto)
+                .map(ReviewReadResponseDto::toDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public ReviewResponseDto getReview(Long bookId, Long reviewId) {
+    public ReviewReadResponseDto getReview(Long bookId, Long reviewId) {
         Review review = reviewRepository.findByIdAndBook_id(reviewId, bookId).orElseThrow(
                 () -> new NotFoundException(REVIEW_NOT_FOUND)
         );
 
-        return ReviewResponseDto.toDto(review);
+        return ReviewReadResponseDto.toDto(review);
     }
 
     @Transactional
-    public ReviewResponseDto updateReview(Long bookId, Long reviewId, ReviewRequestDto requestDto) {
+    public ReviewUpdateResponseDto updateReview(Long bookId, Long reviewId, ReviewUpdateRequestDto requestDto) {
         Review review = reviewRepository.findByIdAndBook_id(reviewId, bookId).orElseThrow(
                 () -> new NotFoundException(REVIEW_NOT_FOUND)
         );
@@ -82,7 +85,7 @@ public class ReviewService {
             review.updateRating(requestDto.getRating());
         }
 
-        return ReviewResponseDto.toDto(review);
+        return ReviewUpdateResponseDto.toDto(review);
     }
 
     @Transactional

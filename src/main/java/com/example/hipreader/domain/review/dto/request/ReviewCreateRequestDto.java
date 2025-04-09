@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReviewRequestDto {
+public class ReviewCreateRequestDto {
 
     @NotBlank(message = "리뷰 내용은 필수입니다.")
     private String content;
@@ -29,4 +29,3 @@ public class ReviewRequestDto {
     @NotNull(message = "책 ID는 필수입니다.")
     private Long bookId;
 }
-

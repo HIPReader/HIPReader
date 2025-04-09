@@ -1,7 +1,10 @@
 package com.example.hipreader.domain.review.controller;
 
-import com.example.hipreader.domain.review.dto.request.ReviewRequestDto;
-import com.example.hipreader.domain.review.dto.response.ReviewResponseDto;
+import com.example.hipreader.domain.review.dto.request.ReviewCreateRequestDto;
+import com.example.hipreader.domain.review.dto.response.ReviewReadResponseDto;
+import com.example.hipreader.domain.review.dto.request.ReviewUpdateRequestDto;
+import com.example.hipreader.domain.review.dto.response.ReviewCreateResponseDto;
+import com.example.hipreader.domain.review.dto.response.ReviewUpdateResponseDto;
 import com.example.hipreader.domain.review.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,17 +21,17 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping("/reviews")
-    public ResponseEntity<ReviewResponseDto> createReview(@RequestBody @Valid ReviewRequestDto requestDto) {
+    public ResponseEntity<ReviewCreateResponseDto> createReview(@RequestBody @Valid ReviewCreateRequestDto requestDto) {
         return ResponseEntity.ok(reviewService.createReview(requestDto));
     }
 
     @GetMapping("/books/{bookId}/reviews")
-    public ResponseEntity<List<ReviewResponseDto>> getReviews(@PathVariable Long bookId) {
+    public ResponseEntity<List<ReviewReadResponseDto>> getReviews(@PathVariable Long bookId) {
         return ResponseEntity.ok(reviewService.getReviews(bookId));
     }
 
     @GetMapping("/books/{bookId}/reviews/{reviewId}")
-    public ResponseEntity<ReviewResponseDto> getReview(
+    public ResponseEntity<ReviewReadResponseDto> getReview(
             @PathVariable Long bookId,
             @PathVariable Long reviewId
     ) {
@@ -36,7 +39,7 @@ public class ReviewController {
     }
 
     @PatchMapping("/books/{bookId}/reviews/{reviewId}")
-    public ResponseEntity<ReviewResponseDto> updateReview(@PathVariable Long bookId, @PathVariable Long reviewId, @RequestBody ReviewRequestDto requestDto) {
+    public ResponseEntity<ReviewUpdateResponseDto> updateReview(@PathVariable Long bookId, @PathVariable Long reviewId, @RequestBody ReviewUpdateRequestDto requestDto) {
         return ResponseEntity.ok(reviewService.updateReview(bookId, reviewId, requestDto));
     }
 
