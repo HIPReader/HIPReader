@@ -23,11 +23,10 @@ public class Review extends TimeStamped {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column
+	@Column(nullable = false)
 	private String content;
 
-	@Min(1)
-	@Max(5)
+	@Column(nullable = false)
 	private Integer rating;
 
 	@ManyToOne(fetch = FetchType.LAZY)
