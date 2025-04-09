@@ -43,21 +43,11 @@ public class PostService {
 			.user(user)
 			.title(requestDto.getTitle())
 			.content(requestDto.getContent())
-			.likeCount(0)
-			.viewCount(0)
 			.build();
 
 		Post savedPost = postRepository.save(post);
 
-		return PostSaveResponseDto.builder()
-			.id(savedPost.getId())
-			.title(savedPost.getTitle())
-			.content(savedPost.getContent())
-			.writer(savedPost.getUser().getNickname())
-			.viewCount(savedPost.getViewCount())
-			.likeCount(savedPost.getLikeCount())
-			.createdAt(savedPost.getCreatedAt())
-			.build();
+		return PostSaveResponseDto.toDto(savedPost);
 	}
 
 	// 게시물 다건 조회
@@ -67,15 +57,7 @@ public class PostService {
 		Page<Post> postPage = postRepository.findAllPosts(pageRequest);
 
 		List<PostGetResponseDto> content = postPage.getContent().stream()
-			.map(post -> new PostGetResponseDto(
-				post.getTitle(),
-				post.getContent(),
-				post.getUser().getNickname(),
-				post.getViewCount(),
-				post.getLikeCount(),
-				post.getCreatedAt(),
-				post.getUpdatedAt()
-			)).toList();
+			.map(PostGetResponseDto::toDto).toList();
 
 		return PageResponseDto.<PostGetResponseDto>builder()
 			.pageNumber(postPage.getNumber())
@@ -90,15 +72,7 @@ public class PostService {
 	public PostGetResponseDto getPost(Long postId) {
 		Post findPost = findPostByIdOrElseThrow(postId);
 
-		return PostGetResponseDto.builder()
-			.title(findPost.getTitle())
-			.content(findPost.getContent())
-			.writer(findPost.getUser().getNickname())
-			.viewCount(findPost.getViewCount())
-			.likeCount(findPost.getLikeCount())
-			.createdAt(findPost.getCreatedAt())
-			.updatedAt(findPost.getUpdatedAt())
-			.build();
+		return PostGetResponseDto.toDto(findPost);
 	}
 
 	// 게시물 수정
@@ -112,15 +86,7 @@ public class PostService {
 		findPost.updateTitleIfNotNull(requestDto.getTitle());
 		findPost.updateContentIfNotNull(requestDto.getContent());
 
-		return PostUpdateResponseDto.builder()
-			.title(findPost.getTitle())
-			.content(findPost.getContent())
-			.writer(findPost.getUser().getNickname())
-			.viewCount(findPost.getViewCount())
-			.likeCount(findPost.getLikeCount())
-			.createdAt(findPost.getCreatedAt())
-			.updatedAt(findPost.getUpdatedAt())
-			.build();
+		return PostUpdateResponseDto.toDto(findPost);
 	}
 
 	// 게시물 삭제
