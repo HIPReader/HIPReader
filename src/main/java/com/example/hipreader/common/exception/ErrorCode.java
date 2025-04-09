@@ -45,6 +45,8 @@ public enum ErrorCode {
 	BOOK_NOT_FOUND("책 정보를 찾을 수 없습니다.", NOT_FOUND),
 	SCORE_NOT_FOUND("올해의 책 점수를 찾을 수 없습니다.", NOT_FOUND),
 
+	// 유저 북 관련 예외 코드
+	NOT_USER_BOOK("해당 책은 사용자의 책이 아닙니다.", NOT_FOUND),
 
 	// 시스템 관련 예외 코드
 	INTERNAL_SERVER_ERROR("내부 서버 오류입니다.", HttpStatus.INTERNAL_SERVER_ERROR);

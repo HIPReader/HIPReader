@@ -1,6 +1,9 @@
 package com.example.hipreader.domain.book.service;
 
+import static com.example.hipreader.common.exception.ErrorCode.*;
+
 import com.example.hipreader.common.dto.response.PageResponseDto;
+import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.domain.book.dto.request.BooksRequestDto;
 import com.example.hipreader.domain.book.dto.response.BooksResponseDto;
 import com.example.hipreader.domain.book.entity.Book;
@@ -37,7 +40,7 @@ public class BooksService {
     @Transactional
     public BooksResponseDto updateBook(Long id, BooksRequestDto dto) {
         Book book = bookRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("Not found book with id: " + id)
+                () -> new NotFoundException(BOOK_NOT_FOUND)
         );
 
         book.updateBook(
@@ -57,7 +60,7 @@ public class BooksService {
     @Transactional(readOnly = true)
     public BooksResponseDto findBook(@PathVariable Long id) {
         Book book = bookRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("Not found book with id: " + id)
+                () -> new NotFoundException(BOOK_NOT_FOUND)
         );
 
         return new BooksResponseDto(book);

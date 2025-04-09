@@ -108,7 +108,7 @@ public class UserBookService {
 
         UserBook userBook = userBookRepository.findByIdAndUser(userBookId, user);
         if (userBook == null) {
-            throw new RuntimeException("해당 책은 사용자의 책이 아닙니다.");
+            throw new NotFoundException(NOT_USER_BOOK);
         }
 
         UserBookResponseDto responseDto = new UserBookResponseDto(

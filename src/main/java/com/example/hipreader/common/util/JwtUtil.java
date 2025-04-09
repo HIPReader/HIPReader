@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.domain.user.role.UserRole;
 
 import io.jsonwebtoken.Claims;
@@ -73,7 +74,7 @@ public class JwtUtil {
 		if (StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) {
 			return token.substring(7);
 		}
-		throw new ResponseStatusException(INVALID_TOKEN.getStatus(),INVALID_TOKEN.getMessage());
+		throw new NotFoundException(INVALID_TOKEN);
 	}
 
 	public Claims extractClaims(String token) {
@@ -98,10 +99,10 @@ public class JwtUtil {
 			return true;
 		} catch (ExpiredJwtException e) {
 			log.error("만료된 RefreshToken 입니다");
-			throw new ResponseStatusException(EXPIRED_TOKEN.getStatus(),EXPIRED_TOKEN.getMessage());
+			throw new NotFoundException(EXPIRED_TOKEN);
 		} catch (JwtException e) {
 			log.error("검증되지 않은 RefreshToken 입니다");
-			throw new ResponseStatusException(INVALID_TOKEN.getStatus(),INVALID_TOKEN.getMessage());
+			throw new NotFoundException(INVALID_TOKEN);
 		}
 	}
 }
