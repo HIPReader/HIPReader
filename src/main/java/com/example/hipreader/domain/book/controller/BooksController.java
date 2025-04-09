@@ -1,11 +1,12 @@
 package com.example.hipreader.domain.book.controller;
 
 import com.example.hipreader.common.dto.response.PageResponseDto;
+import com.example.hipreader.domain.book.dto.request.AladinBookDto;
 import com.example.hipreader.domain.book.dto.request.BooksRequestDto;
 import com.example.hipreader.domain.book.dto.response.BooksResponseDto;
+import com.example.hipreader.domain.book.service.AladinService;
 import com.example.hipreader.domain.book.service.BooksService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequestMapping("/api/v1/books")
 public class BooksController {
 
+    private final AladinService aladinService;
     private final BooksService booksService;
 
     @PostMapping()
@@ -26,6 +28,13 @@ public class BooksController {
         BooksResponseDto booksResponseDto = booksService.registerBook(booksRequestDto);
 
         return ResponseEntity.ok(booksResponseDto);
+    }
+
+    @PostMapping("/import")
+    public ResponseEntity<List<BooksResponseDto>> importBooksFromAladin(@RequestParam String keyword) {
+        List<AladinBookDto> aladinBooks = aladinService.searchBooks(keyword);
+        List<BooksResponseDto> savedBooks = booksService.saveBooksFromAladin(aladinBooks);
+        return ResponseEntity.ok(savedBooks);
     }
 
     @PatchMapping("/{id}")
