@@ -1,5 +1,6 @@
 package com.example.hipreader.domain.bookscore.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,6 @@ public class BookScoreController {
 	@GetMapping("/api/v1/books/of-the-year")
 	public ResponseEntity<GetBookOfYearResponseDto> getBookOfTheYear() {
 		GetBookOfYearResponseDto getBookOfYearResponseDto = bookScoreService.getBookOfTheYear();
-		return ResponseEntity.ok(getBookOfYearResponseDto);
+		return new ResponseEntity<>(getBookOfYearResponseDto, HttpStatus.ACCEPTED);
 	}
 }

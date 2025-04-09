@@ -4,6 +4,7 @@ import com.example.hipreader.common.entity.TimeStamped;
 
 import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.user.entity.User;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -20,7 +21,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "reviews")
 public class Review extends TimeStamped {
 
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column

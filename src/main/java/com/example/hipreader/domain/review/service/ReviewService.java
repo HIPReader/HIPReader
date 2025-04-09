@@ -5,17 +5,19 @@ import static com.example.hipreader.common.exception.ErrorCode.*;
 import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.book.repository.BookRepository;
-import com.example.hipreader.domain.review.dto.request.ReviewCreateRequestDto;
-import com.example.hipreader.domain.review.dto.response.ReviewReadResponseDto;
-import com.example.hipreader.domain.review.dto.request.ReviewUpdateRequestDto;
-import com.example.hipreader.domain.review.dto.response.ReviewCreateResponseDto;
-import com.example.hipreader.domain.review.dto.response.ReviewUpdateResponseDto;
+import com.example.hipreader.domain.review.dto.request.CreateReviewRequestDto;
+import com.example.hipreader.domain.review.dto.response.ReadReviewResponseDto;
+import com.example.hipreader.domain.review.dto.request.UpdateReviewRequestDto;
+import com.example.hipreader.domain.review.dto.response.CreateReviewResponseDto;
+import com.example.hipreader.domain.review.dto.response.UpdateReviewResponseDto;
 import com.example.hipreader.domain.review.entity.Review;
 import com.example.hipreader.domain.review.repository.ReviewRepository;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,73 +29,73 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReviewService {
 
-    private final ReviewRepository reviewRepository;
-    private final UserRepository userRepository;
-    private final BookRepository bookRepository;
+	private final ReviewRepository reviewRepository;
+	private final UserRepository userRepository;
+	private final BookRepository bookRepository;
 
-    // review 생성
-    @Transactional
-    public ReviewCreateResponseDto createReview(ReviewCreateRequestDto requestDto) {
-        User user = userRepository.findById(requestDto.getUserId()).orElseThrow(
-                () -> new NotFoundException(USER_NOT_FOUND)
-        );
-        Book book = bookRepository.findById(requestDto.getBookId()).orElseThrow(
-                () -> new NotFoundException(BOOK_NOT_FOUND)
-        );
+	// review 생성
+	@Transactional
+	public CreateReviewResponseDto createReview(CreateReviewRequestDto requestDto) {
+		User user = userRepository.findById(requestDto.getUserId()).orElseThrow(
+			() -> new NotFoundException(USER_NOT_FOUND)
+		);
+		Book book = bookRepository.findById(requestDto.getBookId()).orElseThrow(
+			() -> new NotFoundException(BOOK_NOT_FOUND)
+		);
 
-        Review review = Review.builder()
-                .content(requestDto.getContent())
-                .rating(requestDto.getRating())
-                .user(user)
-                .book(book)
-                .build();
+		Review review = Review.builder()
+			.content(requestDto.getContent())
+			.rating(requestDto.getRating())
+			.user(user)
+			.book(book)
+			.build();
 
-        Review savedReview = reviewRepository.save(review);
+		Review savedReview = reviewRepository.save(review);
 
-        return ReviewCreateResponseDto.toDto(savedReview);
-    }
+		return CreateReviewResponseDto.toDto(savedReview);
+	}
 
-    // review 다건 조회
-    @Transactional(readOnly = true)
-    public List<ReviewReadResponseDto> getReviews(Long bookId) {
-        List<Review> reviews = reviewRepository.findAllByBook_id(bookId);
-        return reviews.stream()
-                .map(ReviewReadResponseDto::toDto)
-                .collect(Collectors.toList());
-    }
+	// review 다건 조회
+	@Transactional(readOnly = true)
+	public List<ReadReviewResponseDto> getReviews(Long bookId) {
+		List<Review> reviews = reviewRepository.findAllByBook_id(bookId);
+		return reviews.stream()
+			.map(ReadReviewResponseDto::toDto)
+			.collect(Collectors.toList());
+	}
 
-    @Transactional(readOnly = true)
-    public ReviewReadResponseDto getReview(Long bookId, Long reviewId) {
-        Review review = reviewRepository.findByIdAndBook_id(reviewId, bookId).orElseThrow(
-                () -> new NotFoundException(REVIEW_NOT_FOUND)
-        );
+	@Transactional(readOnly = true)
+	public ReadReviewResponseDto getReview(Long bookId, Long reviewId) {
+		Review review = reviewRepository.findByIdAndBook_id(reviewId, bookId).orElseThrow(
+			() -> new NotFoundException(REVIEW_NOT_FOUND)
+		);
 
-        return ReviewReadResponseDto.toDto(review);
-    }
+		return ReadReviewResponseDto.toDto(review);
+	}
 
-    @Transactional
-    public ReviewUpdateResponseDto updateReview(Long bookId, Long reviewId, ReviewUpdateRequestDto requestDto) {
-        Review review = reviewRepository.findByIdAndBook_id(reviewId, bookId).orElseThrow(
-                () -> new NotFoundException(REVIEW_NOT_FOUND)
-        );
+	@Transactional
+	public UpdateReviewResponseDto updateReview(Long bookId, Long reviewId, UpdateReviewRequestDto requestDto) {
+		Review review = reviewRepository.findByIdAndBook_id(reviewId, bookId).orElseThrow(
+			() -> new NotFoundException(REVIEW_NOT_FOUND)
+		);
 
-        if (requestDto.getContent() != null) {
-            review.updateContent(requestDto.getContent());
-        }
+		if (requestDto.getContent() != null) {
+			review.updateContent(requestDto.getContent());
+		}
 
-        if (requestDto.getRating() != null) {
-            review.updateRating(requestDto.getRating());
-        }
+		if (requestDto.getRating() != null) {
+			review.updateRating(requestDto.getRating());
+		}
 
-        return ReviewUpdateResponseDto.toDto(review);
-    }
+		return UpdateReviewResponseDto.toDto(review);
+	}
 
-    @Transactional
-    public void deleteReview(Long bookId, Long reviewId) {
-        Review review = reviewRepository.findByIdAndBook_id(reviewId, bookId).orElseThrow(
-                () -> new NotFoundException(REVIEW_NOT_FOUND)
-        );
+	@Transactional
+	public void deleteReview(Long bookId, Long reviewId) {
+		Review review = reviewRepository.findByIdAndBook_id(reviewId, bookId).orElseThrow(
+			() -> new NotFoundException(REVIEW_NOT_FOUND)
+		);
 
-        reviewRepository.delete(review);
-    }
+		reviewRepository.delete(review);
+	}
 }

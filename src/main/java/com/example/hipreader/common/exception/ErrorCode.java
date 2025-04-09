@@ -48,6 +48,11 @@ public enum ErrorCode {
 	// 유저 북 관련 예외 코드
 	NOT_USER_BOOK("해당 책은 사용자의 책이 아닙니다.", NOT_FOUND),
 
+	// 책 상태 관련 예외 코드
+	INVALID_STATUS_TRANSITION("TO_READ 상태에서는 READING으로만 변경할 수 있습니다.", BAD_REQUEST),
+	INVALID_PROGRESS_FOR_TO_READ("TO_READ 상태에서는 progress를 0으로 유지해야 합니다.", BAD_REQUEST),
+	INVALID_PROGRESS_RANGE("progress는 0부터 전체 페이지 수 사이여야 합니다.", BAD_REQUEST),
+
 	// 시스템 관련 예외 코드
 	INTERNAL_SERVER_ERROR("내부 서버 오류입니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 

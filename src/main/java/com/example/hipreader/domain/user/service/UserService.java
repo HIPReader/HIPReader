@@ -34,26 +34,17 @@ public class UserService {
 	public GetUserResponseDto getUser(Long userId) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
-		return new GetUserResponseDto(user.getId(),user.getEmail());
+
+		return GetUserResponseDto.toDto(user);
 	}
 
 	public UpdateUserResponseDto updateUser(AuthUser authUser, UpdateUserRequestDto updateUserRequestDto) {
 		User user = userRepository.findUserById(authUser.getId())
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
-		user.updateProfile(
-			updateUserRequestDto.getNickname(),
-			updateUserRequestDto.getAge(),
-			updateUserRequestDto.getGender()
-		);
+		user.updateProfile(updateUserRequestDto.getNickname(),updateUserRequestDto.getAge(),updateUserRequestDto.getGender());
 
-		return new UpdateUserResponseDto(
-			user.getId(),
-			user.getEmail(),
-			user.getNickname(),
-			user.getAge(),
-			user.getGender()
-		);
+		return UpdateUserResponseDto.toDto(user);
 	}
 
 	@Transactional
