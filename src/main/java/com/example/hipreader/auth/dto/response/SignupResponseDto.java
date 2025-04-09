@@ -7,5 +7,4 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SignupResponseDto {
 	private final String accessToken;
-	private final String refreshToken;
 }

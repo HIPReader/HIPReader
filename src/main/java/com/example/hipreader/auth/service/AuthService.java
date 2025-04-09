@@ -11,6 +11,8 @@ import com.example.hipreader.auth.dto.request.SigninRequestDto;
 import com.example.hipreader.auth.dto.request.SignupRequestDto;
 import com.example.hipreader.auth.dto.response.SigninResponseDto;
 import com.example.hipreader.auth.dto.response.SignupResponseDto;
+import com.example.hipreader.common.exception.BadRequestException;
+import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.common.util.JwtUtil;
 import com.example.hipreader.domain.refreshtoken.entity.RefreshToken;
 import com.example.hipreader.domain.refreshtoken.repository.RefreshTokenRepository;
@@ -36,7 +38,7 @@ public class AuthService {
 		@Valid SignupRequestDto signupRequestDto) {
 
 		if (userRepository.existsUserByEmail(signupRequestDto.getEmail())) {
-			throw new ResponseStatusException(USER_EMAIL_DUPLICATION.getStatus(), USER_EMAIL_DUPLICATION.getMessage());
+			throw new BadRequestException(USER_EMAIL_DUPLICATION);
 		}
 
 		String encodedPassword = passwordEncoder.encode(signupRequestDto.getPassword());
@@ -57,28 +59,26 @@ public class AuthService {
 
 		String accessToken = jwtUtil.createAccessToken(savedUser.getId(),savedUser.getEmail(),userRole,savedUser.getNickname());
 
-		String refreshToken = jwtUtil.createRefreshToken(savedUser.getId());
-
-		return new SignupResponseDto(accessToken,refreshToken);
+		return new SignupResponseDto(accessToken);
 	}
 
 	@Transactional(readOnly = true)
 	public SigninResponseDto signIn(@Valid SigninRequestDto signinRequestDto) {
 		User user = userRepository.findByEmail(signinRequestDto.getEmail()).orElseThrow(
-			() -> new ResponseStatusException(USER_NOT_FOUND.getStatus(),USER_NOT_FOUND.getMessage()));
+			() -> new NotFoundException(USER_NOT_FOUND));
 
 		if (!passwordEncoder.matches(signinRequestDto.getPassword(), user.getPassword())) {
-			throw new ResponseStatusException(INVALID_PASSWORD.getStatus(), INVALID_PASSWORD.getMessage());
+			throw new BadRequestException(INVALID_PASSWORD);
 		}
+		// 기존 리프레시 토큰 삭제
+		refreshTokenRepository.deleteByUserId(user.getId());
 
 		String accessToken = jwtUtil.createAccessToken(user.getId(),user.getEmail(),user.getRole(),user.getNickname());
 
 		String refreshToken = jwtUtil.createRefreshToken(user.getId());
-
 		refreshTokenRepository.save(new RefreshToken(user.getId(),refreshToken));
 
 		return new SigninResponseDto(accessToken,refreshToken);
 	}
-
 
 }

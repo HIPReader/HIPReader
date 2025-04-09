@@ -1,12 +1,13 @@
 package com.example.hipreader.domain.review.service;
 
-import com.example.hipreader.common.exception.ErrorCode;
+import static com.example.hipreader.common.exception.ErrorCode.*;
+
+import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.book.repository.BookRepository;
 import com.example.hipreader.domain.review.dto.request.ReviewRequestDto;
 import com.example.hipreader.domain.review.dto.response.ReviewResponseDto;
 import com.example.hipreader.domain.review.entity.Review;
-import com.example.hipreader.domain.review.exception.ReviewException;
 import com.example.hipreader.domain.review.repository.ReviewRepository;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
@@ -15,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,10 +32,10 @@ public class ReviewService {
     @Transactional
     public ReviewResponseDto createReview(ReviewRequestDto requestDto) {
         User user = userRepository.findById(requestDto.getUserId()).orElseThrow(
-                () -> new IllegalArgumentException("User not found with id " + requestDto.getUserId())
+                () -> new NotFoundException(USER_NOT_FOUND)
         );
         Book book = bookRepository.findById(requestDto.getBookId()).orElseThrow(
-                () -> new IllegalArgumentException("Book not found with id " + requestDto.getBookId())
+                () -> new NotFoundException(BOOK_NOT_FOUND)
         );
 
         Review review = Review.builder()
@@ -62,7 +62,7 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public ReviewResponseDto getReview(Long bookId, Long reviewId) {
         Review review = reviewRepository.findByIdAndBook_id(reviewId, bookId).orElseThrow(
-                () -> new ReviewException(ErrorCode.REVIEW_NOT_FOUND)
+                () -> new NotFoundException(REVIEW_NOT_FOUND)
         );
 
         return ReviewResponseDto.toDto(review);
@@ -71,7 +71,7 @@ public class ReviewService {
     @Transactional
     public ReviewResponseDto updateReview(Long bookId, Long reviewId, ReviewRequestDto requestDto) {
         Review review = reviewRepository.findByIdAndBook_id(reviewId, bookId).orElseThrow(
-                () -> new ReviewException(ErrorCode.REVIEW_NOT_FOUND)
+                () -> new NotFoundException(REVIEW_NOT_FOUND)
         );
 
         if (requestDto.getContent() != null) {
@@ -88,7 +88,7 @@ public class ReviewService {
     @Transactional
     public void deleteReview(Long bookId, Long reviewId) {
         Review review = reviewRepository.findByIdAndBook_id(reviewId, bookId).orElseThrow(
-                () -> new ReviewException(ErrorCode.REVIEW_NOT_FOUND)
+                () -> new NotFoundException(REVIEW_NOT_FOUND)
         );
 
         reviewRepository.delete(review);

@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class PostUpdateResponseDto {
+public class UpdatePostResponseDto {
 	private final Long id;
 	private final String title;
 	private final String content;
