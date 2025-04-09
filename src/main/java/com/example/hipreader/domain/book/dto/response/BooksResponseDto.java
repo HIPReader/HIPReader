@@ -13,7 +13,6 @@ public class BooksResponseDto {
     private Long id;
     private String genre;
     private String title;
-    private String subtitle;
     private String author;
     private String publisher;
     private LocalDate datePublished;
@@ -24,9 +23,8 @@ public class BooksResponseDto {
 
     public BooksResponseDto(Book book) {
         this.id = book.getId();
-        this.genre = book.getGenre().name();
+        this.genre = (book.getGenre() != null) ? book.getGenre().name() : null;
         this.title = book.getTitle();
-        this.subtitle = book.getSubtitle();
         this.author = book.getAuthor();
         this.publisher = book.getPublisher();
         this.totalPages = book.getTotalPages();
@@ -34,5 +32,4 @@ public class BooksResponseDto {
         this.createdAt = book.getCreatedAt();
         this.updatedAt = book.getUpdatedAt();
     }
-
 }
