@@ -30,14 +30,7 @@ public class BookRecommendService {
 		Page<Book> bookPage = userBookRepository.findRecommendedBooks(age, gender, genre, pageable);
 
 		List<BookRecommendResponseDto> content = bookPage.getContent().stream()
-			.map(book -> new BookRecommendResponseDto(
-				book.getTitle(),
-				book.getSubtitle(),
-				book.getAuthor(),
-				book.getPublisher(),
-				book.getCoverImage(),
-				book.getGenre()
-			)).toList();
+			.map(BookRecommendResponseDto::toDto).toList();
 
 		return PageResponseDto.<BookRecommendResponseDto>builder()
 			.pageNumber(bookPage.getNumber())
@@ -64,14 +57,7 @@ public class BookRecommendService {
 		Page<Book> bookPage = userBookRepository.findRecommendedBooks(age, gender, genre, pageable);
 
 		List<BookRecommendResponseDto> content = bookPage.getContent().stream()
-			.map(book -> new BookRecommendResponseDto(
-				book.getTitle(),
-				book.getSubtitle(),
-				book.getAuthor(),
-				book.getPublisher(),
-				book.getCoverImage(),
-				book.getGenre()
-			)).toList();
+			.map(BookRecommendResponseDto::toDto).toList();
 
 		PageResponseDto<BookRecommendResponseDto> response = PageResponseDto.<BookRecommendResponseDto>builder()
 			.pageNumber(bookPage.getNumber())
