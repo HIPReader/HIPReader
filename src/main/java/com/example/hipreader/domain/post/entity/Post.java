@@ -35,19 +35,14 @@ public class Post extends TimeStamped {
 	@Column(nullable = false)
 	private String content;
 
-	private Integer viewCount;
-	private Integer likeCount;
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 
 	@Builder
-	public Post(String title, String content, Integer viewCount, Integer likeCount, User user) {
+	public Post(String title, String content, User user) {
 		this.title = title;
 		this.content = content;
-		this.viewCount = viewCount;
-		this.likeCount = likeCount;
 		this.user = user;
 	}
 
