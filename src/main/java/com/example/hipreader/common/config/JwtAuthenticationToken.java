@@ -1,4 +1,4 @@
-package com.example.hipreader.common.util;
+package com.example.hipreader.common.config;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 

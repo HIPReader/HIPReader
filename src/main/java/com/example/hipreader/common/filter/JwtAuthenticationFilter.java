@@ -1,4 +1,4 @@
-package com.example.hipreader.common.util;
+package com.example.hipreader.common.filter;
 
 import static com.example.hipreader.common.exception.ErrorCode.*;
 
@@ -12,6 +12,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.hipreader.auth.dto.AuthUser;
+import com.example.hipreader.common.config.JwtAuthenticationToken;
+import com.example.hipreader.common.exception.NotFoundException;
+import com.example.hipreader.common.exception.UnauthorizedException;
+import com.example.hipreader.common.util.JwtUtil;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
 import com.example.hipreader.domain.user.role.UserRole;
@@ -44,22 +48,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	) throws ServletException, IOException {
 
 		String authorizationHeader = request.getHeader("Authorization");
-		log.info("Authorization Header: {}", authorizationHeader);
 
 		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 			String token = jwtUtil.substringToken(authorizationHeader);
 			try {
 				Claims claims = jwtUtil.extractClaims(token);
-				setAuthentication(claims); // 인증 설정 로직 분리
-				log.info("추출한 JWT: {}", token);
+				setAuthentication(claims);
 
 			} catch (ExpiredJwtException e) {
 				log.error("만료된 JWT token 입니다.", e);
 				handleExpiredToken(response,token);
-				throw new ResponseStatusException(EXPIRED_TOKEN.getStatus(), EXPIRED_TOKEN.getMessage());
+				throw new UnauthorizedException(EXPIRED_TOKEN);
 			} catch (JwtException e) {
 				log.error("유효하지 않는 Access Token 입니다.", e);
-				throw new ResponseStatusException(INVALID_ACCESS_TOKEN.getStatus(),INVALID_ACCESS_TOKEN.getMessage());
+				throw new UnauthorizedException(INVALID_ACCESS_TOKEN);
 			} catch (Exception e) {
 				log.error("Internal server error", e);
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -72,14 +74,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		try {
 			String refreshToken = redisTemplate.opsForValue().get("RT:" + expiredToken);
 			if (refreshToken != null) {
-				String pureToken = refreshToken.replaceAll("Bearer ", "");
-				jwtUtil.validateRefreshToken(pureToken);
+				jwtUtil.validateRefreshToken(refreshToken);
 				redisTemplate.delete("RT:" + expiredToken);
 
-				Long userId = Long.valueOf(jwtUtil.extractClaims(pureToken).getId());
+				Long userId = Long.valueOf(jwtUtil.extractClaims(refreshToken).getId());
 				User user = userRepository.findById(userId)
 					.orElseThrow(
-						() -> new ResponseStatusException(USER_NOT_FOUND.getStatus(), USER_NOT_FOUND.getMessage()));
+						() -> new NotFoundException(USER_NOT_FOUND));
 
 				String newAccessToken = jwtUtil.createAccessToken(user.getId(), user.getEmail(), user.getRole(),
 					user.getNickname());
@@ -91,7 +92,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				response.setHeader("New-Refresh-Token", newRefreshToken);
 				response.setStatus(HttpServletResponse.SC_OK);
 			} else {
-				throw new ResponseStatusException(NEED_LOGIN.getStatus(), NEED_LOGIN.getMessage());
+				throw new UnauthorizedException(NEED_LOGIN);
 			}
 		} catch (Exception e) {
 			log.error("토큰 재발급 실패", e);

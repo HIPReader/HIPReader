@@ -48,6 +48,12 @@ public class User extends TimeStamped {
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
 
+	public void updateProfile(String nickname, Integer age, Gender gender) {
+		this.nickname = nickname != null ? nickname : this.nickname;
+		this.age = age != null ? age : this.age;
+		this.gender = gender != null ? gender : this.gender;
+	}
+
 	public void changePassword(String password) {
 		this.password = password;
 	}
