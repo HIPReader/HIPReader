@@ -28,14 +28,28 @@ public enum ErrorCode {
 	INVALID_TOKEN("유효하지 않은 토큰입니다.", UNAUTHORIZED),
 	EXPIRED_TOKEN("만료된 토큰입니다.", UNAUTHORIZED),
 	TOKEN_DUPLICATED("중복된 토큰입니다.", CONFLICT),
-	INVALID_ACCESS_TOKEN("유효하지 않은 Access Token입니다.", UNAUTHORIZED),
+	INVALID_ACCESS_TOKEN("유효하지 않은 AccessToken 입니다.", UNAUTHORIZED),
 	NEED_LOGIN("재로그인이 필요합니다.",UNAUTHORIZED),
 
 	// 리뷰 관련 예외 코드
 	REVIEW_NOT_FOUND("해당 리뷰를 찾을 수 없습니다.", NOT_FOUND),
 
 	// 자유게시판 관련 예외 코드
-	POST_NOT_FOUND("해당 게시물을 찾을 수 없습니다.", NOT_FOUND);
+	POST_NOT_FOUND("해당 게시물을 찾을 수 없습니다.", NOT_FOUND),
+
+	// 책 관련 예외코드
+	BOOK_DUPLICATION("이 책은 이미 등록되어 있습니다.", CONFLICT),
+
+	// 올해의 책 관련 예외 코드
+	BOOK_NOT_PUBLISHED("올해 출판된 책이 없습니다.", NOT_FOUND),
+	BOOK_NOT_FOUND("책 정보를 찾을 수 없습니다.", NOT_FOUND),
+	SCORE_NOT_FOUND("올해의 책 점수를 찾을 수 없습니다.", NOT_FOUND),
+
+	// 유저 북 관련 예외 코드
+	NOT_USER_BOOK("해당 책은 사용자의 책이 아닙니다.", NOT_FOUND),
+
+	// 시스템 관련 예외 코드
+	INTERNAL_SERVER_ERROR("내부 서버 오류입니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 
 	private final String message;
 	private final HttpStatus status;

@@ -11,20 +11,20 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class PostSaveResponseDto {
-	private final Long id;
+public class GetPostResponseDto {
 	private final String title;
 	private final String content;
 	private final String writer;
 	private final LocalDateTime createdAt;
+	private final LocalDateTime updatedAt;
 
-	public static PostSaveResponseDto toDto(Post post) {
-		return PostSaveResponseDto.builder()
-			.id(post.getId())
+	public static PostGetResponseDto toDto(Post post) {
+		return PostGetResponseDto.builder()
 			.title(post.getTitle())
 			.content(post.getContent())
 			.writer(post.getUser().getNickname())
 			.createdAt(post.getCreatedAt())
+			.updatedAt(post.getUpdatedAt())
 			.build();
 	}
 }

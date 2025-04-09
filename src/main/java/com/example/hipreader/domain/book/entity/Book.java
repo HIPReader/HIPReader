@@ -31,10 +31,11 @@ public class Book extends TimeStamped {
     @Column(nullable = false)
     private String title;
 
-    private String subtitle; // null 값 허용
-
     @Column(nullable = false)
     private String author;
+
+    @Column(nullable = false, unique = true)
+    private String isbn13;
 
     @Column(nullable = false)
     private String publisher;
@@ -42,7 +43,6 @@ public class Book extends TimeStamped {
     @Column(nullable = false)
     private LocalDate datePublished;
 
-    @Column(nullable = false)
     private Integer totalPages;
 
     @Column
@@ -52,18 +52,16 @@ public class Book extends TimeStamped {
     @Enumerated(EnumType.STRING)
     private Genre genre;
 
-    public void updateBook(Genre genre, String title, String subtitle, String author,
+    public void updateBook(Genre genre, String title,String author,
                            String publisher, LocalDate datePublished, Integer totalPages, String coverImage) {
 
         this.genre = genre != null ? genre : this.genre;
         this.title = title != null ? title : this.title;
-        this.subtitle = subtitle != null ? subtitle : this.subtitle;
         this.author = author != null ? author : this.author;
         this.publisher = publisher != null ? publisher : this.publisher;
         this.datePublished = datePublished != null ? datePublished : this.datePublished;
         this.totalPages = totalPages != null ? totalPages : this.totalPages;
         this.coverImage = coverImage != null ? coverImage : this.coverImage;
     }
-
 }
 

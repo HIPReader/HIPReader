@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReviewResponseDto {
+public class ReviewUpdateResponseDto {
 
     private Long id;
     private String content;
@@ -18,8 +18,8 @@ public class ReviewResponseDto {
     private Long userId;
     private Long bookId;
 
-    public static ReviewResponseDto toDto(Review review) {
-        return ReviewResponseDto.builder()
+    public static ReviewUpdateResponseDto toDto(Review review) {
+        return ReviewUpdateResponseDto.builder()
                 .id(review.getId())
                 .content(review.getContent())
                 .rating(review.getRating())
