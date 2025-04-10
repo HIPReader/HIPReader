@@ -17,7 +17,7 @@ public class GetBookOfYearResponseDto {
 	@Min(0)
 	private final long totalScore;
 
-	public static GetBookOfYearResponseDto from(Book book, long totalScore) {
+	public static GetBookOfYearResponseDto toDto(Book book, long totalScore) {
 		return builder()
 			.title(book.getTitle())
 			.author(book.getAuthor())
