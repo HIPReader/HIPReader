@@ -39,6 +39,7 @@ public class BooksService {
 			.datePublished(dto.getDatePublished())
 			.totalPages(dto.getTotalPages())
 			.coverImage(dto.getCoverImage())
+			.isbn13(dto.getIsbn13())
 			.build();
 		Book register = bookRepository.save(book);
 		return new BooksResponseDto(register);
@@ -50,15 +51,7 @@ public class BooksService {
 			() -> new NotFoundException(BOOK_NOT_FOUND)
 		);
 
-		book.updateBook(
-			dto.getGenre(),
-			dto.getTitle(),
-			dto.getAuthor(),
-			dto.getPublisher(),
-			dto.getDatePublished(),
-			dto.getTotalPages(),
-			dto.getCoverImage()
-		);
+		dto.applyIfChanged(dto, book);
 
 		return new BooksResponseDto(book);
 	}
