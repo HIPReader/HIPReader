@@ -1,12 +1,17 @@
 package com.example.hipreader.domain.userbook.controller;
 
 import com.example.hipreader.auth.dto.AuthUser;
+import com.example.hipreader.domain.userbook.dto.response.RegisterUSerBookResponseDto;
 import com.example.hipreader.domain.userbook.dto.request.RegisterUserBookRequestDto;
 import com.example.hipreader.domain.userbook.dto.request.UpdateUserBookRequestDto;
-import com.example.hipreader.domain.userbook.dto.response.UserBookResponseDto;
+import com.example.hipreader.domain.userbook.dto.response.GetUserBookResponseDto;
+import com.example.hipreader.domain.userbook.dto.response.UpdateUserBookResponseDto;
 import com.example.hipreader.domain.userbook.service.UserBookService;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -16,50 +21,64 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserBookController {
 
-    private final UserBookService userBookService;
+	private final UserBookService userBookService;
 
-    @PostMapping
-    public ResponseEntity<UserBookResponseDto> registerUserBook(
-            @AuthenticationPrincipal AuthUser authUser, @RequestBody RegisterUserBookRequestDto registerUserBookRequestDto
-    ) {
-        return ResponseEntity.ok(userBookService.registerUserBook(authUser, registerUserBookRequestDto));
-    }
+	@PostMapping
+	public ResponseEntity<RegisterUSerBookResponseDto> registerUserBook(
+		@AuthenticationPrincipal AuthUser authUser,
+		@RequestBody RegisterUserBookRequestDto registerUserBookRequestDto
+	) {
+		RegisterUSerBookResponseDto registerUSerBookResponseDto = userBookService.registerUserBook(authUser, registerUserBookRequestDto);
+		return new ResponseEntity<>(registerUSerBookResponseDto,HttpStatus.CREATED);
+	}
 
-    @GetMapping("/my")
-    public ResponseEntity<Page<UserBookResponseDto>> getReadingBooks(
-            @AuthenticationPrincipal AuthUser authUser,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        return ResponseEntity.ok(userBookService.findReadingBooks(authUser, page, size));
-    }
+	@GetMapping("/my")
+	public ResponseEntity<Page<GetUserBookResponseDto>> getReadingBooks(
+		@AuthenticationPrincipal AuthUser authUser,
+		@RequestParam(defaultValue = "1") int page,
+		@RequestParam(defaultValue = "10") int size
+	) {
+		return ResponseEntity.ok(userBookService.findReadingBooks(authUser, page, size));
+	}
 
-    @GetMapping("/{userbookId}")
-    public ResponseEntity<UserBookResponseDto> getReadingBook(@AuthenticationPrincipal AuthUser authUser, @PathVariable Long userbookId) {
-        return ResponseEntity.ok(userBookService.findReadingBook(authUser, userbookId));
-    }
+	@GetMapping("/{userbookId}")
+	public ResponseEntity<GetUserBookResponseDto> getReadingBook(
+		@AuthenticationPrincipal AuthUser authUser,
+		@PathVariable Long userbookId
+	) {
+		GetUserBookResponseDto getUserBookResponseDto = userBookService.findReadingBook(authUser, userbookId);
 
-    @PatchMapping("/{userbookId}")
-    public ResponseEntity<UserBookResponseDto> updateUserBook(
-            @AuthenticationPrincipal AuthUser authUser,
-            @RequestBody UpdateUserBookRequestDto updateUserBookRequestDto,
-            @PathVariable Long userbookId
-            ) {
-        return ResponseEntity.ok(userBookService.updateUserBook(authUser, updateUserBookRequestDto, userbookId));
-    }
+		return new ResponseEntity<>(getUserBookResponseDto,HttpStatus.OK);
+	}
 
-    @DeleteMapping("/{userbookId}")
-    public ResponseEntity<Void> deleteUserBook(@AuthenticationPrincipal AuthUser authUser, @PathVariable Long userbookId) {
-        userBookService.deleteUserBook(authUser, userbookId);
-        return ResponseEntity.ok().build();
-    }
+	@PatchMapping("/{userbookId}")
+	public ResponseEntity<UpdateUserBookResponseDto> updateUserBook(
+		@AuthenticationPrincipal AuthUser authUser,
+		@RequestBody UpdateUserBookRequestDto updateUserBookRequestDto,
+		@PathVariable Long userbookId
+	) {
+		UpdateUserBookResponseDto updateUserBookResponseDto = userBookService.updateUserBook(authUser, updateUserBookRequestDto, userbookId);
 
-    @GetMapping("/my/wish")
-    public ResponseEntity<Page<UserBookResponseDto>> getWishBooks(
-            @AuthenticationPrincipal AuthUser authUser,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
-    ){
-        return ResponseEntity.ok(userBookService.findWishBooks(authUser, page, size));
-    }
+		return new ResponseEntity<>(updateUserBookResponseDto,HttpStatus.OK);
+	}
+
+	@DeleteMapping("/{userbookId}")
+	public ResponseEntity<Void> deleteUserBook(@AuthenticationPrincipal AuthUser authUser,
+		@PathVariable Long userbookId
+	) {
+		userBookService.deleteUserBook(authUser, userbookId);
+
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+
+	@GetMapping("/my/wish")
+	public ResponseEntity<Page<GetUserBookResponseDto>> getWishBooks(
+		@AuthenticationPrincipal AuthUser authUser,
+		@RequestParam(defaultValue = "1") int page,
+		@RequestParam(defaultValue = "10") int size
+	) {
+		userBookService.findWishBooks(authUser, page, size);
+
+        return new ResponseEntity<>(userBookService.findWishBooks(authUser, page, size), HttpStatus.OK);
+	}
 }

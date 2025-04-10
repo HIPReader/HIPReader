@@ -9,4 +9,5 @@ public class UpdateUserRequestDto {
 	private String nickname;
 	private Integer age;
 	private Gender gender;
+
 }
