@@ -38,6 +38,7 @@ public class UserService {
 		return GetUserResponseDto.toDto(user);
 	}
 
+	@Transactional
 	public UpdateUserResponseDto updateUser(AuthUser authUser, UpdateUserRequestDto updateUserRequestDto) {
 		User user = userRepository.findUserById(authUser.getId())
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
@@ -64,14 +65,6 @@ public class UserService {
 		user.changePassword(passwordEncoder.encode(changePasswordRequestDto.getNewPassword()));
 	}
 
-	private static void validateNewPassword(ChangePasswordRequestDto changePasswordRequestDto) {
-		if (changePasswordRequestDto.getNewPassword().length() < 8 ||
-			!changePasswordRequestDto.getNewPassword().matches(".*\\d.*") ||
-			!changePasswordRequestDto.getNewPassword().matches(".*[A-Z].*")) {
-			throw new BadRequestException(INVALID_NEW_PASSWORD_FORMAT);
-		}
-	}
-
 	@Transactional
 	public void deleteUser(AuthUser authUser, DeleteUserRequestDto request) {
 		User findUser = userRepository.findUserById(authUser.getId())
@@ -84,6 +77,7 @@ public class UserService {
 		findUser.deleteUser();
 	}
 
+	@Transactional(readOnly = true)
 	public Page<GetUserResponseDto> getUsers(int page, int size) {
 
 		PageRequest pageRequest = PageRequest.of(Math.max(0, page-1), size, Sort.by(Sort.Direction.DESC, "updatedAt"));
@@ -91,6 +85,14 @@ public class UserService {
 		return userRepository.findAll(pageRequest)
 			.map(user -> new GetUserResponseDto(user.getId(), user.getEmail()));
 		//성능 최적화 시 쿼리문으로 필요한 정보만 가져오게 select문 수정가능.
+		//또는 프로젝션
 	}
 
+	private static void validateNewPassword(ChangePasswordRequestDto changePasswordRequestDto) {
+		if (changePasswordRequestDto.getNewPassword().length() < 8 ||
+			!changePasswordRequestDto.getNewPassword().matches(".*\\d.*") ||
+			!changePasswordRequestDto.getNewPassword().matches(".*[A-Z].*")) {
+			throw new BadRequestException(INVALID_NEW_PASSWORD_FORMAT);
+		}
+	}
 }

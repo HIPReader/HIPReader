@@ -62,7 +62,7 @@ public class AuthService {
 		return new SignupResponseDto(accessToken);
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional
 	public SigninResponseDto signIn(@Valid SigninRequestDto signinRequestDto) {
 		User user = userRepository.findByEmail(signinRequestDto.getEmail()).orElseThrow(
 			() -> new NotFoundException(USER_NOT_FOUND));
