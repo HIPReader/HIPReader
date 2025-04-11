@@ -14,6 +14,7 @@ public class BooksResponseDto {
 	private Long id;
 	private String genre;
 	private String title;
+	private String isbn13;
 	private String author;
 	private String publisher;
 	private LocalDate datePublished;
@@ -26,6 +27,7 @@ public class BooksResponseDto {
 		this.id = book.getId();
 		this.genre = (book.getGenre() != null) ? book.getGenre().name() : null;
 		this.title = book.getTitle();
+		this.isbn13 = book.getIsbn13();
 		this.author = book.getAuthor();
 		this.publisher = book.getPublisher();
 		this.totalPages = book.getTotalPages();
