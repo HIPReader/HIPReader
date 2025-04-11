@@ -39,3 +39,4 @@ application.properties
 application.yml
 application-local.yml
 .env
+/src/main/resources/book.csv

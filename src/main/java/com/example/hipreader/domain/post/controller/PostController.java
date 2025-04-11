@@ -35,7 +35,7 @@ public class PostController {
 	public ResponseEntity<SavePostResponseDto> savePost(@Valid @RequestBody SavePostRequestDto requestDto) {
 		SavePostResponseDto savePostResponseDto = postService.savePost(requestDto);
 
-		return ResponseEntity.ok(savePostResponseDto);
+		return new ResponseEntity<>(savePostResponseDto, HttpStatus.CREATED);
 	}
 
 	// 게시물 다건 조회
@@ -46,7 +46,7 @@ public class PostController {
 	) {
 		PageResponseDto<GetPostResponseDto> posts = postService.getPosts(page, size);
 
-		return ResponseEntity.ok(posts);
+		return new ResponseEntity<>(posts, HttpStatus.OK);
 	}
 
 	// 게시물 단건 조회
@@ -54,7 +54,7 @@ public class PostController {
 	public ResponseEntity<GetPostResponseDto> findPost(@PathVariable Long postId) {
 		GetPostResponseDto getPostResponseDto = postService.getPost(postId);
 
-		return ResponseEntity.ok(getPostResponseDto);
+		return new ResponseEntity<>(getPostResponseDto, HttpStatus.OK);
 	}
 
 	// 게시물 수정
@@ -65,7 +65,7 @@ public class PostController {
 	) {
 		UpdatePostResponseDto updatePostResponseDto = postService.updatePosts(postId, requestDto);
 
-		return ResponseEntity.ok(updatePostResponseDto);
+		return new ResponseEntity<>(updatePostResponseDto, HttpStatus.OK);
 	}
 
 	// 게시물 삭제
@@ -73,6 +73,6 @@ public class PostController {
 	public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
 		postService.deletePost(postId);
 
-		return ResponseEntity.noContent().build();
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 }

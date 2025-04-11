@@ -1,6 +1,7 @@
 package com.example.hipreader.domain.user.controller;
 
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,9 +32,11 @@ public class UserController {
 
 	@GetMapping("/{userId}")
 	public ResponseEntity<GetUserResponseDto> getUser(
-		@PathVariable Long userId) {
+		@PathVariable Long userId
+	) {
 		GetUserResponseDto getUserResponseDto = userService.getUser(userId);
-		return ResponseEntity.ok(getUserResponseDto);
+
+		return new ResponseEntity<>(getUserResponseDto, HttpStatus.OK);
 	}
 
 	@GetMapping
@@ -43,7 +46,7 @@ public class UserController {
 	) {
 		Page<GetUserResponseDto> getUserResponseDto = userService.getUsers(page, size);
 
-		return ResponseEntity.ok(getUserResponseDto);
+		return new ResponseEntity<>(getUserResponseDto, HttpStatus.OK);
 	}
 
 	@PatchMapping
@@ -53,7 +56,7 @@ public class UserController {
 	) {
 		UpdateUserResponseDto updateUserResponseDto = userService.updateUser(authUser, requestDto);
 
-		return ResponseEntity.ok(updateUserResponseDto);
+		return new ResponseEntity<>(updateUserResponseDto, HttpStatus.OK);
 	}
 
 	@PatchMapping("/password")
@@ -62,16 +65,17 @@ public class UserController {
 		@RequestBody ChangePasswordRequestDto changePasswordRequestDto) {
 		userService.changePassword(authUser.getId(), changePasswordRequestDto);
 
-		return ResponseEntity.noContent().build();
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@DeleteMapping("/{userId}")
 	public ResponseEntity<Void> deleteUser(
 		@AuthenticationPrincipal AuthUser authUser,
-		@RequestBody DeleteUserRequestDto userDeleteRequestDto) {
+		@RequestBody DeleteUserRequestDto userDeleteRequestDto
+	) {
 		userService.deleteUser(authUser, userDeleteRequestDto);
 
-		return ResponseEntity.noContent().build();
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 }

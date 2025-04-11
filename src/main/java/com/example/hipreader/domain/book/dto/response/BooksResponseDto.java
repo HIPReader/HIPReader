@@ -1,6 +1,7 @@
 package com.example.hipreader.domain.book.dto.response;
 
 import com.example.hipreader.domain.book.entity.Book;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,29 +11,28 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class BooksResponseDto {
-    private Long id;
-    private String genre;
-    private String title;
-    private String subtitle;
-    private String author;
-    private String publisher;
-    private LocalDate datePublished;
-    private Integer totalPages;
-    private String coverImage;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+	private Long id;
+	private String genre;
+	private String title;
+	private String isbn13;
+	private String author;
+	private String publisher;
+	private LocalDate datePublished;
+	private Integer totalPages;
+	private String coverImage;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 
-    public BooksResponseDto(Book book) {
-        this.id = book.getId();
-        this.genre = book.getGenre().name();
-        this.title = book.getTitle();
-        this.subtitle = book.getSubtitle();
-        this.author = book.getAuthor();
-        this.publisher = book.getPublisher();
-        this.totalPages = book.getTotalPages();
-        this.coverImage = book.getCoverImage();
-        this.createdAt = book.getCreatedAt();
-        this.updatedAt = book.getUpdatedAt();
-    }
-
+	public BooksResponseDto(Book book) {
+		this.id = book.getId();
+		this.genre = (book.getGenre() != null) ? book.getGenre().name() : null;
+		this.title = book.getTitle();
+		this.isbn13 = book.getIsbn13();
+		this.author = book.getAuthor();
+		this.publisher = book.getPublisher();
+		this.totalPages = book.getTotalPages();
+		this.coverImage = book.getCoverImage();
+		this.createdAt = book.getCreatedAt();
+		this.updatedAt = book.getUpdatedAt();
+	}
 }

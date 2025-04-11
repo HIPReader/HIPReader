@@ -1,5 +1,7 @@
 package com.example.hipreader.auth.controller;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,8 +35,10 @@ public class AuthController {
 
 		String accessToken = signupResponseDto.getAccessToken();
 
-		return ResponseEntity.ok().header("Authorization",accessToken)
-			.body(signupResponseDto);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", accessToken);
+
+		return new ResponseEntity<>(signupResponseDto, headers, HttpStatus.CREATED);
 
 	}
 
@@ -46,9 +50,10 @@ public class AuthController {
 
 		String accessToken = signinResponseDto.getAccessToken();
 
-		return ResponseEntity.ok()
-			.header("Authorization",accessToken)
-			.build();
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", accessToken);
+
+		return new ResponseEntity<>(signinResponseDto, headers, HttpStatus.OK);
 	}
 
 	@PostMapping("/refresh")
@@ -57,9 +62,10 @@ public class AuthController {
 
 		String newAccessToken = refreshTokenService.refreshAccessToken(request.getRefreshToken());
 
-		return ResponseEntity.ok()
-			.header("Authorization",newAccessToken)
-			.build();
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", newAccessToken);
+
+		return new ResponseEntity<>(headers, HttpStatus.CREATED);
 	}
 
 }
