@@ -11,14 +11,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Getter
+@Setter
 @Entity
 @Builder
 @NoArgsConstructor
@@ -53,16 +51,5 @@ public class Book extends TimeStamped {
 	@Enumerated(EnumType.STRING)
 	private Genre genre;
 
-	public void updateBook(Genre genre, String title, String author,
-		String publisher, LocalDate datePublished, Integer totalPages, String coverImage) {
-
-		this.genre = genre != null ? genre : this.genre;
-		this.title = title != null ? title : this.title;
-		this.author = author != null ? author : this.author;
-		this.publisher = publisher != null ? publisher : this.publisher;
-		this.datePublished = datePublished != null ? datePublished : this.datePublished;
-		this.totalPages = totalPages != null ? totalPages : this.totalPages;
-		this.coverImage = coverImage != null ? coverImage : this.coverImage;
-	}
 }
 
