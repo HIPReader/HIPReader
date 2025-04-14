@@ -26,11 +26,10 @@ public class SearchService {
       return Collections.emptyList();
     }
 
-    List<Book> books = bookRepository.findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(keyword, keyword);
+    String cleanedKeyword = keyword.replaceAll("\\s+", "").toLowerCase();
+    List<Book> books = bookRepository.findByTitleIgnoringSpaces(cleanedKeyword);
 
     if (!books.isEmpty()) {
-      log.info("DB 검색 결과 있음 - keyword: {}", keyword);
-      saveSearchLog(keyword, true);
       return books.stream().map(BooksResponseDto::new).toList();
     }
 
@@ -38,12 +37,12 @@ public class SearchService {
     List<AladinBookDto> aladinResults = aladinService.searchBooks(keyword);
     List<BooksResponseDto> savedBooks = booksService.saveBooksFromAladin(aladinResults);
 
-    saveSearchLog(keyword, !savedBooks.isEmpty());
+    saveSearchLog(keyword);
     return savedBooks;
   }
 
-  private void saveSearchLog(String keyword, boolean resultFound) {
-    log.info("검색 로그 저장 - keyword: {}, result: {}", keyword, resultFound);
+  private void saveSearchLog(String keyword) {
+    log.info("검색 로그 저장 - keyword: {}", keyword);
     // 나중에 Elasticsearch 저장용으로 확장 가능
   }
 }

@@ -89,6 +89,9 @@ public class BooksService {
 				Integer itemPage = aladinService.fetchItemPageFromItemLookUp(dto.getIsbn13());
 				dto.setItemPage(itemPage);
 			}
+			if (dto.getCategoryName() == null) {
+				dto.setCategoryName("기타");
+			}
 
 			if (!bookRepository.existsByIsbn13(dto.getIsbn13())) {
 				Book book = Book.builder()
