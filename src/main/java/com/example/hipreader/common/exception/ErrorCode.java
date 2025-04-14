@@ -29,7 +29,7 @@ public enum ErrorCode {
 	EXPIRED_TOKEN("만료된 토큰입니다.", UNAUTHORIZED),
 	TOKEN_DUPLICATED("중복된 토큰입니다.", CONFLICT),
 	INVALID_ACCESS_TOKEN("유효하지 않은 AccessToken 입니다.", UNAUTHORIZED),
-	NEED_LOGIN("재로그인이 필요합니다.",UNAUTHORIZED),
+	NEED_LOGIN("재로그인이 필요합니다.", UNAUTHORIZED),
 
 	// 리뷰 관련 예외 코드
 	REVIEW_NOT_FOUND("해당 리뷰를 찾을 수 없습니다.", NOT_FOUND),
@@ -56,7 +56,10 @@ public enum ErrorCode {
 	ALREADY_FINISHED_BOOK("이미 다 읽은 책입니다.", BAD_REQUEST),
 
 	// 시스템 관련 예외 코드
-	INTERNAL_SERVER_ERROR("내부 서버 오류입니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+	INTERNAL_SERVER_ERROR("내부 서버 오류입니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+
+	// 토론 관련 예외 코드
+	DISCUSSION_NOT_FOUND("해당 토론을 찾을 수 없습니다.", NOT_FOUND);
 
 	private final String message;
 	private final HttpStatus status;
