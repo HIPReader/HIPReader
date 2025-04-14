@@ -44,6 +44,10 @@ public class UserBookService {
 		Book book = bookRepository.findById(registerUserBookRequestDto.getBookId())
 			.orElseThrow(() -> new NotFoundException(BOOK_NOT_FOUND));
 
+		if (book.getTotalPages() == null || book.getTotalPages() <= 0) {
+			throw new BadRequestException(INVALID_BOOK_PAGE);
+		}
+
 		if (userBookRepository.existsByUserAndBook(user, book)) {
 			throw new BadRequestException(BOOK_DUPLICATION);
 		}
@@ -97,6 +101,10 @@ public class UserBookService {
 		}
 
 		Status oldStatus = userBook.getStatus();
+
+		if (oldStatus == Status.FINISHED) {
+			throw new BadRequestException(ALREADY_FINISHED_BOOK);
+		}
 
 		userBook.update(
 			updateUserBookRequestDto.getStatus(),

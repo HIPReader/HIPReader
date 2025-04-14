@@ -43,12 +43,13 @@ public class UserBook {
 		if (this.status == Status.TO_READ) {
 			if (newStatus != Status.READING)
 				throw new BadRequestException(INVALID_STATUS_TRANSITION);
-			if (progress != 0)
+			if (progress == 0)
 				throw new BadRequestException(INVALID_PROGRESS_FOR_TO_READ);
 		}
 
-		// 페이지 수 유효성 체크
-		if (progress < 0 || progress > book.getTotalPages()) {
+		// 페이지 수 유효성 체크 : 이미 register에서 page가 있는 책만 등록할 수 있게 했으므로,
+		// progress는 0보다 크고 전체 페이지보다 작으며 현재 읽은 페이지보다 커야 한다.
+		if (progress < 0 || progress > book.getTotalPages() || this.progress >= progress) {
 			throw new BadRequestException(INVALID_PROGRESS_RANGE);
 		}
 

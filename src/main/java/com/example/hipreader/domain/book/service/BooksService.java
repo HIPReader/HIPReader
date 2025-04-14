@@ -32,14 +32,14 @@ public class BooksService {
 	@Transactional
 	public BooksResponseDto registerBook(BooksRequestDto dto) {
 		Book book = Book.builder()
-			.genre(dto.getGenre())
 			.title(dto.getTitle())
 			.author(dto.getAuthor())
+			.isbn13(dto.getIsbn13())
 			.publisher(dto.getPublisher())
 			.datePublished(dto.getDatePublished())
 			.totalPages(dto.getTotalPages())
 			.coverImage(dto.getCoverImage())
-			.isbn13(dto.getIsbn13())
+			.categoryName(dto.getCategoryName())
 			.build();
 		Book register = bookRepository.save(book);
 		return new BooksResponseDto(register);
@@ -86,8 +86,11 @@ public class BooksService {
 
 		for (AladinBookDto dto : dtoList) {
 			if (dto.getItemPage() == null) {
-				Integer lookedUpPage = aladinService.fetchItemPageFromItemLookUp(dto.getIsbn13());
-				dto.setItemPage(lookedUpPage);
+				Integer itemPage = aladinService.fetchItemPageFromItemLookUp(dto.getIsbn13());
+				dto.setItemPage(itemPage);
+			}
+			if (dto.getCategoryName() == null) {
+				dto.setCategoryName("기타");
 			}
 
 			if (!bookRepository.existsByIsbn13(dto.getIsbn13())) {
@@ -99,7 +102,7 @@ public class BooksService {
 					.datePublished(parsePubDate(dto.getPubDate()))
 					.totalPages(dto.getItemPage())
 					.coverImage(dto.getCover())
-					.genre(null)
+					.categoryName(dto.getCategoryName())
 					.build();
 				Book saved = bookRepository.save(book);
 				result.add(new BooksResponseDto(saved));
@@ -117,7 +120,6 @@ public class BooksService {
 				return LocalDate.parse(pubDateStr + "-01"); // yyyy-MM → yyyy-MM-01
 			}
 		} catch (Exception e) {
-			// 파싱 실패하면 현재 날짜로 fallback
 		}
 		return LocalDate.now();
 	}

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BooksResponseDto {
 	private Long id;
-	private String genre;
+	private String categoryName;
 	private String title;
 	private String isbn13;
 	private String author;
@@ -25,7 +25,7 @@ public class BooksResponseDto {
 
 	public BooksResponseDto(Book book) {
 		this.id = book.getId();
-		this.genre = (book.getGenre() != null) ? book.getGenre().name() : null;
+		this.categoryName = (book.getCategoryName() != null) ? book.getCategoryName() : null;
 		this.title = book.getTitle();
 		this.isbn13 = book.getIsbn13();
 		this.author = book.getAuthor();
@@ -34,5 +34,6 @@ public class BooksResponseDto {
 		this.coverImage = book.getCoverImage();
 		this.createdAt = book.getCreatedAt();
 		this.updatedAt = book.getUpdatedAt();
+		this.datePublished = book.getDatePublished();
 	}
 }

@@ -8,6 +8,7 @@ import com.example.hipreader.domain.userbook.dto.response.GetUserBookResponseDto
 import com.example.hipreader.domain.userbook.dto.response.UpdateUserBookResponseDto;
 import com.example.hipreader.domain.userbook.service.UserBookService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -26,7 +27,7 @@ public class UserBookController {
 	@PostMapping
 	public ResponseEntity<RegisterUSerBookResponseDto> registerUserBook(
 		@AuthenticationPrincipal AuthUser authUser,
-		@RequestBody RegisterUserBookRequestDto registerUserBookRequestDto
+		@Valid @RequestBody RegisterUserBookRequestDto registerUserBookRequestDto
 	) {
 		RegisterUSerBookResponseDto registerUSerBookResponseDto = userBookService.registerUserBook(authUser, registerUserBookRequestDto);
 		return new ResponseEntity<>(registerUSerBookResponseDto,HttpStatus.CREATED);
@@ -54,7 +55,7 @@ public class UserBookController {
 	@PatchMapping("/{userbookId}")
 	public ResponseEntity<UpdateUserBookResponseDto> updateUserBook(
 		@AuthenticationPrincipal AuthUser authUser,
-		@RequestBody UpdateUserBookRequestDto updateUserBookRequestDto,
+		@Valid @RequestBody UpdateUserBookRequestDto updateUserBookRequestDto,
 		@PathVariable Long userbookId
 	) {
 		UpdateUserBookResponseDto updateUserBookResponseDto = userBookService.updateUserBook(authUser, updateUserBookRequestDto, userbookId);

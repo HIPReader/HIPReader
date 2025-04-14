@@ -17,7 +17,7 @@ public class BookRecommendResponseDto {
 	private String author;
 	private String publisher;
 	private String coverImage;
-	private Genre genre;
+	private String categoryName;
 
 	public static BookRecommendResponseDto toDto(Book book) {
 		return BookRecommendResponseDto.builder()
@@ -25,7 +25,7 @@ public class BookRecommendResponseDto {
 			.author(book.getAuthor())
 			.publisher(book.getPublisher())
 			.coverImage(book.getCoverImage())
-			.genre(book.getGenre())
+			.categoryName(book.getCategoryName())
 			.build();
 	}
 }

@@ -16,4 +16,9 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 		@Param("start") LocalDate start,
 		@Param("end") LocalDate end
 	);
+
+  List<Book> findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(String title, String author);
+
+	@Query("SELECT b FROM Book b WHERE LOWER(REPLACE(b.title, ' ', '')) LIKE LOWER(CONCAT('%', :cleanedKeyword, '%'))")
+	List<Book> findByTitleIgnoringSpaces(@Param("cleanedKeyword") String cleanedKeyword);
 }
