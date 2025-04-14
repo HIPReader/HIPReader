@@ -21,7 +21,6 @@ import com.example.hipreader.domain.discussion.dto.response.CreateDiscussionResp
 import com.example.hipreader.domain.discussion.dto.response.GetDiscussionResponseDto;
 import com.example.hipreader.domain.discussion.dto.response.UpdateDiscussionResponseDto;
 import com.example.hipreader.domain.discussion.service.DiscussionService;
-import com.example.hipreader.domain.user.entity.User;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,10 +35,10 @@ public class DiscussionController {
 	@PostMapping
 	public ResponseEntity<CreateDiscussionResponseDto> createDiscussion(
 		@RequestBody @Valid CreateDiscussionRequestDto requestDto,
-		@AuthenticationPrincipal User user
+		@AuthenticationPrincipal AuthUser authUser
 	) {
 		CreateDiscussionResponseDto createDiscussionResponseDto = discussionService.createDiscussion(requestDto,
-			user.getId());
+			authUser);
 
 		return new ResponseEntity<>(createDiscussionResponseDto, HttpStatus.CREATED);
 	}

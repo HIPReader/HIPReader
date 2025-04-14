@@ -71,8 +71,4 @@ public class Discussion extends TimeStamped {
 	public void updateStatus(Status status) {
 		this.status = status;
 	}
-
-	public void updateBookId(Long bookId) {
-		this.book = book;
-	}
 }

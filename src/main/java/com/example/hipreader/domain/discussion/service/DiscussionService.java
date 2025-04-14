@@ -35,9 +35,10 @@ public class DiscussionService {
 	private final BookRepository bookRepository;
 
 	@Transactional
-	public CreateDiscussionResponseDto createDiscussion(@Valid CreateDiscussionRequestDto requestDto, Long userId) {
+	public CreateDiscussionResponseDto createDiscussion(@Valid CreateDiscussionRequestDto requestDto,
+		AuthUser authUser) {
 
-		User user = userRepository.findById(userId).orElseThrow(
+		User user = userRepository.findById(authUser.getId()).orElseThrow(
 			() -> new IllegalArgumentException("사용자를 찾을 수 없습니다.")
 		);
 
@@ -56,16 +57,7 @@ public class DiscussionService {
 
 		Discussion saved = discussionRepository.save(discussion);
 
-		return CreateDiscussionResponseDto.builder()
-			.id(saved.getId())
-			.topic(saved.getTopic())
-			.scheduledAt(saved.getScheduledAt())
-			.participants(saved.getParticipants())
-			.status(saved.getStatus())
-			.hostId(user.getId())
-			.hostName(user.getNickname())
-			.message("토론방이 성공적으로 생성되었습니다.")
-			.build();
+		return CreateDiscussionResponseDto.toDto(saved);
 	}
 
 	@Transactional(readOnly = true)
