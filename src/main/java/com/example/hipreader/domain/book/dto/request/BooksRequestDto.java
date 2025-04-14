@@ -1,7 +1,6 @@
 package com.example.hipreader.domain.book.dto.request;
 
 import com.example.hipreader.domain.book.entity.Book;
-import com.example.hipreader.domain.book.genre.Genre;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,12 +20,12 @@ public class BooksRequestDto {
 	private LocalDate datePublished;
 	private Integer totalPages;
 	private String coverImage;
-	private Genre genre;
+	private String categoryName;
 
 	// 변경 사항이 없으면 그대로 저장.
 	public void applyIfChanged(BooksRequestDto dto, Book book) {
-		if (dto.getGenre() != null && !dto.getGenre().equals(book.getGenre())) {
-			book.setGenre(dto.getGenre());
+		if (dto.getCategoryName() != null && !dto.getCategoryName().equals(book.getCategoryName())) {
+			book.setCategoryName(dto.getCategoryName());
 		}
 
 		if (dto.isbn13 != null && !dto.getIsbn13().equals(book.getIsbn13())) {

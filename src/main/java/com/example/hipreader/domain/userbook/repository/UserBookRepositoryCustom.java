@@ -10,5 +10,5 @@ import com.example.hipreader.domain.book.genre.Genre;
 import com.example.hipreader.domain.user.gender.Gender;
 
 public interface UserBookRepositoryCustom {
-	Page<Book> findRecommendedBooks(Integer age, Gender gender, Genre genre, Pageable pageable);
+	Page<Book> findRecommendedBooks(Integer age, Gender gender, Genre Genre, Pageable pageable);
 }

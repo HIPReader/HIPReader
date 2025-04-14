@@ -17,4 +17,5 @@ public class AladinBookDto {
 	private String pubDate;
 	private String cover;
 	private Integer itemPage;
+	private String categoryName;
 }

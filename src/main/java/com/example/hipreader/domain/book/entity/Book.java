@@ -48,8 +48,7 @@ public class Book extends TimeStamped {
 	private String coverImage;
 
 	@Column
-	@Enumerated(EnumType.STRING)
-	private Genre genre;
+	private String categoryName;
 
 }
 
