@@ -89,13 +89,14 @@ public class DiscussionService {
 	@Transactional
 	public UpdateDiscussionResponseDto updateDiscussion(AuthUser authUser,
 		UpdateDiscussionRequestDto updateDiscussionRequestDto, Long discussionId) {
-		User user = userRepository.findUserById(authUser.getId()).orElseThrow(
-			() -> new NotFoundException(USER_NOT_FOUND)
-		);
 
 		Discussion discussion = discussionRepository.findById(discussionId).orElseThrow(
 			() -> new NotFoundException(DISCUSSION_NOT_FOUND)
 		);
+
+		if (!discussion.getUser().getId().equals(authUser.getId())) {
+			throw new NotFoundException(USER_NOT_FOUND);
+		}
 
 		if (updateDiscussionRequestDto.getTopic() != null) {
 			discussion.updateTopic(updateDiscussionRequestDto.getTopic());
@@ -118,13 +119,14 @@ public class DiscussionService {
 
 	@Transactional
 	public void deleteDiscussion(AuthUser authUser, Long discussionId) {
-		User user = userRepository.findUserById(authUser.getId()).orElseThrow(
-			() -> new NotFoundException(USER_NOT_FOUND)
-		);
 
 		Discussion discussion = discussionRepository.findById(discussionId).orElseThrow(
 			() -> new NotFoundException(DISCUSSION_NOT_FOUND)
 		);
+
+		if (!discussion.getUser().getId().equals(authUser.getId())) {
+			throw new NotFoundException(USER_NOT_FOUND);
+		}
 
 		discussionRepository.deleteById(discussion.getId());
 	}
