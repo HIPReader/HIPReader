@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -29,6 +28,11 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Map<String, Object>> handleGenericException() {
 		return createErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler(ConflictException.class)
+	public ResponseEntity<Map<String, Object>> handleConflict(ConflictException e) {
+		return createErrorResponse(e.getErrorCode());
 	}
 
 	private ResponseEntity<Map<String, Object>> createErrorResponse(ErrorCode errorCode) {

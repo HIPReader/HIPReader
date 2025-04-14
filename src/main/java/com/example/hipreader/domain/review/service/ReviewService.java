@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.hipreader.auth.dto.AuthUser;
+import com.example.hipreader.common.exception.ConflictException;
 import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.common.exception.UnauthorizedException;
 import com.example.hipreader.domain.book.entity.Book;
@@ -44,6 +45,10 @@ public class ReviewService {
 		Book book = bookRepository.findById(requestDto.getBookId()).orElseThrow(
 			() -> new NotFoundException(BOOK_NOT_FOUND)
 		);
+
+		if (reviewRepository.existsByUserIdAndBookId(user.getId(), book.getId())) {
+			throw new ConflictException(REVIEW_ALREADY_EXISTS);
+		}
 
 		Review review = Review.builder()
 			.content(requestDto.getContent())
