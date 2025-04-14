@@ -2,6 +2,7 @@ package com.example.hipreader.domain.search.controller;
 
 import com.example.hipreader.domain.book.dto.response.BooksResponseDto;
 import com.example.hipreader.domain.search.service.SearchService;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,9 @@ public class SearchController {
 
   @GetMapping
   public ResponseEntity<List<BooksResponseDto>> searchBooks(@RequestParam String keyword) {
+    if(keyword == null || keyword.trim().isEmpty()) {
+      return ResponseEntity.badRequest().body(Collections.emptyList());
+    }
     List<BooksResponseDto> results = searchService.searchBooks(keyword);
     return ResponseEntity.ok(results);
   }

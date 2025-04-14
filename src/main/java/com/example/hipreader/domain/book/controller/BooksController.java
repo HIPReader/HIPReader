@@ -31,14 +31,6 @@ public class BooksController {
         return ResponseEntity.ok(booksResponseDto);
     }
 
-	@PostMapping("/admin/import")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ResponseEntity<List<BooksResponseDto>> importBooksFromAladin(@RequestParam String keyword) {
-		List<AladinBookDto> aladinBooks = aladinService.searchBooks(keyword);
-		List<BooksResponseDto> savedBooks = booksService.saveBooksFromAladin(aladinBooks);
-		return ResponseEntity.ok(savedBooks);
-	}
-
     @PatchMapping("/{id}")
     public ResponseEntity<BooksResponseDto> updateBooks(@PathVariable Long id,
                                                         @RequestBody BooksRequestDto booksRequestDto) {
@@ -70,5 +62,13 @@ public class BooksController {
         booksService.deleteBook(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/admin/import")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<BooksResponseDto>> importBooksFromAladin(@RequestParam String keyword) {
+      List<AladinBookDto> aladinBooks = aladinService.searchBooks(keyword);
+      List<BooksResponseDto> savedBooks = booksService.saveBooksFromAladin(aladinBooks);
+      return ResponseEntity.ok(savedBooks);
     }
 }

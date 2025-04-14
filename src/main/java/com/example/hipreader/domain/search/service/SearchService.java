@@ -6,6 +6,7 @@ import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.book.repository.BookRepository;
 import com.example.hipreader.domain.book.service.AladinService;
 import com.example.hipreader.domain.book.service.BooksService;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +19,13 @@ public class SearchService {
 
   private final BookRepository bookRepository;
   private final AladinService aladinService;
-  private final BooksService booksService; // 저장 로직 재사용
+  private final BooksService booksService;
 
   public List<BooksResponseDto> searchBooks(String keyword) {
+    if (keyword == null || keyword.trim().isEmpty()) {
+      return Collections.emptyList();
+    }
+
     List<Book> books = bookRepository.findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(keyword, keyword);
 
     if (!books.isEmpty()) {
