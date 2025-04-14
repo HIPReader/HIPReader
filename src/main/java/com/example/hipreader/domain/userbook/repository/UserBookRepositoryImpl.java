@@ -25,7 +25,7 @@ public class UserBookRepositoryImpl implements UserBookRepositoryCustom {
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Page<Book> findRecommendedBooks(Integer age, Gender gender, Genre genre, Pageable pageable) {
+	public Page<Book> findRecommendedBooks(Integer age, Gender gender, String categoryName, Pageable pageable) {
 
 		BooleanBuilder builder = new BooleanBuilder();
 
@@ -41,10 +41,10 @@ public class UserBookRepositoryImpl implements UserBookRepositoryCustom {
 			builder.and(user.gender.eq(gender));
 		}
 
-//		// 장르 필터링
-//		if (genre != null) {
-//			builder.and(book.genre.eq(genre));
-//		}
+		// 카테고리 필터링
+		if (categoryName != null) {
+			builder.and(book.categoryName.eq(categoryName));
+		}
 
 		// 컨텐츠 조회
 		List<Book> content = queryFactory

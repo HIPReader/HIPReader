@@ -25,9 +25,10 @@ public class BookRecommendService {
 	private final RedisTemplate<String, Object> redisTemplate;
 
 	// 연령별, 성별별 책 추천 ( MySQL )
-	public PageResponseDto<BookRecommendResponseDto> recommendBooksWithoutRedis(Integer age, Gender gender, Genre genre,
+	public PageResponseDto<BookRecommendResponseDto> recommendBooksWithoutRedis(Integer age, Gender gender,
+		String categoryName,
 		Pageable pageable) {
-		Page<Book> bookPage = userBookRepository.findRecommendedBooks(age, gender, genre, pageable);
+		Page<Book> bookPage = userBookRepository.findRecommendedBooks(age, gender, categoryName, pageable);
 
 		List<BookRecommendResponseDto> content = bookPage.getContent().stream()
 			.map(BookRecommendResponseDto::toDto).toList();
@@ -42,10 +43,12 @@ public class BookRecommendService {
 	}
 
 	// 연령별, 성별별, 장르별 책 추천 ( Redis )
-	public PageResponseDto<BookRecommendResponseDto> recommendBooksWithRedis(Integer age, Gender gender, Genre genre,
+	public PageResponseDto<BookRecommendResponseDto> recommendBooksWithRedis(Integer age, Gender gender,
+		String categoryName,
 		Pageable pageable) {
 
-		String key = String.format("recommend:age=%d:gender=%s:genre=%s:page=%d:size=%d", age, gender, genre.name(),
+		String key = String.format("recommend:age=%d:gender=%s:categoryName=%s:page=%d:size=%d", age, gender,
+			categoryName,
 			pageable.getPageNumber(), pageable.getPageSize());
 
 		// Redis 에서 먼저 캐시 조회
@@ -54,7 +57,7 @@ public class BookRecommendService {
 			return (PageResponseDto<BookRecommendResponseDto>)cached;
 		}
 
-		Page<Book> bookPage = userBookRepository.findRecommendedBooks(age, gender, genre, pageable);
+		Page<Book> bookPage = userBookRepository.findRecommendedBooks(age, gender, categoryName, pageable);
 
 		List<BookRecommendResponseDto> content = bookPage.getContent().stream()
 			.map(BookRecommendResponseDto::toDto).toList();
