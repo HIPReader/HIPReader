@@ -41,10 +41,10 @@ public class UserBookRepositoryImpl implements UserBookRepositoryCustom {
 			builder.and(user.gender.eq(gender));
 		}
 
-		// 장르 필터링
-		if (genre != null) {
-			builder.and(book.genre.eq(genre));
-		}
+//		// 장르 필터링
+//		if (genre != null) {
+//			builder.and(book.genre.eq(genre));
+//		}
 
 		// 컨텐츠 조회
 		List<Book> content = queryFactory
