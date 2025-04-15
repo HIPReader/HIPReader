@@ -1,7 +1,6 @@
 package com.example.hipreader.domain.user.entity;
 
 import com.example.hipreader.common.entity.TimeStamped;
-import com.example.hipreader.domain.user.dto.request.UpdateUserRequestDto;
 import com.example.hipreader.domain.user.gender.Gender;
 import com.example.hipreader.domain.user.role.UserRole;
 
