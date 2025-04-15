@@ -59,7 +59,9 @@ public enum ErrorCode {
 	INTERNAL_SERVER_ERROR("내부 서버 오류입니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 
 	// 토론 관련 예외 코드
-	DISCUSSION_NOT_FOUND("해당 토론을 찾을 수 없습니다.", NOT_FOUND);
+	DISCUSSION_NOT_FOUND("해당 토론을 찾을 수 없습니다.", NOT_FOUND),
+	APPLICATION_NOT_FOUND("신청 내역을 찾을 수 없습니다.", NOT_FOUND),
+	ALREADY_APPLIED("이미 신청한 토론방입니다.", BAD_REQUEST);
 
 	private final String message;
 	private final HttpStatus status;
