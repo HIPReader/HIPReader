@@ -66,7 +66,6 @@ public class ReviewController {
 		@RequestBody UpdateReviewRequestDto requestDto,
 		@AuthenticationPrincipal AuthUser authUser
 	) {
-		return new ResponseEntity<>(reviewService.updateReview(bookId, reviewId, requestDto, authUser), HttpStatus.OK);
 
 		UpdateReviewResponseDto updateReviewResponseDto = reviewService.updateReview(bookId, reviewId, requestDto,
 			authUser);
