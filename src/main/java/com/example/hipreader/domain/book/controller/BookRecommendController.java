@@ -29,11 +29,11 @@ public class BookRecommendController {
 	public ResponseEntity<PageResponseDto<BookRecommendResponseDto>> recommendBooksWithoutRedis(
 		@RequestParam(required = false) Integer age,
 		@RequestParam(required = false) Gender gender,
-		@RequestParam(required = false) Genre genre,
+		@RequestParam(required = false) String categoryName,
 		@PageableDefault(size = 10, page = 0) Pageable pageable
 	) {
 		PageResponseDto<BookRecommendResponseDto> responseDto = bookRecommendService.recommendBooksWithoutRedis(age,
-			gender, genre, pageable);
+			gender, categoryName, pageable);
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
@@ -42,11 +42,24 @@ public class BookRecommendController {
 	public ResponseEntity<PageResponseDto<BookRecommendResponseDto>> recommendBooksWithRedis(
 		@RequestParam(required = false) Integer age,
 		@RequestParam(required = false) Gender gender,
-		@RequestParam(required = false) Genre genre,
+		@RequestParam(required = false) String categoryName,
 		@PageableDefault(size = 10, page = 0) Pageable pageable
 	) {
 		PageResponseDto<BookRecommendResponseDto> responseDto = bookRecommendService.recommendBooksWithRedis(age,
-			gender, genre, pageable);
+			gender, categoryName, pageable);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	// 연령별, 성별별, 장르별 책 추천 ( Redis + ES )
+	@GetMapping("/v3/books/recommend")
+	public ResponseEntity<PageResponseDto<BookRecommendResponseDto>> recommendBooksWithRedisAndEs(
+		@RequestParam(required = false) Integer age,
+		@RequestParam(required = false) Gender gender,
+		@RequestParam(required = false) String categoryName,
+		@PageableDefault(size = 10, page = 0) Pageable pageable
+	) {
+		PageResponseDto<BookRecommendResponseDto> responseDto = bookRecommendService.recommendBooksWithRedisAndEs(age,
+			gender, categoryName, pageable);
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 }
