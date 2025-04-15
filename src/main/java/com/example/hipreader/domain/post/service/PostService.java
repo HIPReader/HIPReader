@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.hipreader.common.dto.response.PageResponseDto;
 import com.example.hipreader.common.exception.NotFoundException;
@@ -43,21 +44,11 @@ public class PostService {
 			.user(user)
 			.title(requestDto.getTitle())
 			.content(requestDto.getContent())
-			.likeCount(0)
-			.viewCount(0)
 			.build();
 
 		Post savedPost = postRepository.save(post);
 
-		return SavePostResponseDto.builder()
-			.id(savedPost.getId())
-			.title(savedPost.getTitle())
-			.content(savedPost.getContent())
-			.writer(savedPost.getUser().getNickname())
-			.viewCount(savedPost.getViewCount())
-			.likeCount(savedPost.getLikeCount())
-			.createdAt(savedPost.getCreatedAt())
-			.build();
+		return SavePostResponseDto.toDto(savedPost);
 	}
 
 	// 게시물 다건 조회
@@ -67,15 +58,7 @@ public class PostService {
 		Page<Post> postPage = postRepository.findAllPosts(pageRequest);
 
 		List<GetPostResponseDto> content = postPage.getContent().stream()
-			.map(post -> new GetPostResponseDto(
-				post.getTitle(),
-				post.getContent(),
-				post.getUser().getNickname(),
-				post.getViewCount(),
-				post.getLikeCount(),
-				post.getCreatedAt(),
-				post.getUpdatedAt()
-			)).toList();
+			.map(GetPostResponseDto::toDto).toList();
 
 		return PageResponseDto.<GetPostResponseDto>builder()
 			.pageNumber(postPage.getNumber())
@@ -90,15 +73,7 @@ public class PostService {
 	public GetPostResponseDto getPost(Long postId) {
 		Post findPost = findPostByIdOrElseThrow(postId);
 
-		return GetPostResponseDto.builder()
-			.title(findPost.getTitle())
-			.content(findPost.getContent())
-			.writer(findPost.getUser().getNickname())
-			.viewCount(findPost.getViewCount())
-			.likeCount(findPost.getLikeCount())
-			.createdAt(findPost.getCreatedAt())
-			.updatedAt(findPost.getUpdatedAt())
-			.build();
+		return GetPostResponseDto.toDto(findPost);
 	}
 
 	// 게시물 수정
@@ -112,15 +87,7 @@ public class PostService {
 		findPost.updateTitleIfNotNull(requestDto.getTitle());
 		findPost.updateContentIfNotNull(requestDto.getContent());
 
-		return UpdatePostResponseDto.builder()
-			.title(findPost.getTitle())
-			.content(findPost.getContent())
-			.writer(findPost.getUser().getNickname())
-			.viewCount(findPost.getViewCount())
-			.likeCount(findPost.getLikeCount())
-			.createdAt(findPost.getCreatedAt())
-			.updatedAt(findPost.getUpdatedAt())
-			.build();
+		return UpdatePostResponseDto.toDto(findPost);
 	}
 
 	// 게시물 삭제

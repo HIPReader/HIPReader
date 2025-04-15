@@ -14,11 +14,11 @@ import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.common.exception.UnauthorizedException;
 import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.book.repository.BookRepository;
-import com.example.hipreader.domain.review.dto.request.ReviewCreateRequestDto;
-import com.example.hipreader.domain.review.dto.request.ReviewUpdateRequestDto;
-import com.example.hipreader.domain.review.dto.response.ReviewCreateResponseDto;
-import com.example.hipreader.domain.review.dto.response.ReviewReadResponseDto;
-import com.example.hipreader.domain.review.dto.response.ReviewUpdateResponseDto;
+import com.example.hipreader.domain.review.dto.request.CreateReviewRequestDto;
+import com.example.hipreader.domain.review.dto.request.UpdateReviewRequestDto;
+import com.example.hipreader.domain.review.dto.response.CreateReviewResponseDto;
+import com.example.hipreader.domain.review.dto.response.ReadReviewResponseDto;
+import com.example.hipreader.domain.review.dto.response.UpdateReviewResponseDto;
 import com.example.hipreader.domain.review.entity.Review;
 import com.example.hipreader.domain.review.repository.ReviewRepository;
 import com.example.hipreader.domain.user.entity.User;
@@ -38,7 +38,7 @@ public class ReviewService {
 
 	// review 생성
 	@Transactional
-	public ReviewCreateResponseDto createReview(ReviewCreateRequestDto requestDto, AuthUser authUser) {
+	public CreateReviewResponseDto createReview(CreateReviewRequestDto requestDto, AuthUser authUser) {
 		User user = userRepository.findById(authUser.getId()).orElseThrow(
 			() -> new NotFoundException(USER_NOT_FOUND)
 		);
@@ -59,29 +59,29 @@ public class ReviewService {
 
 		Review savedReview = reviewRepository.save(review);
 
-		return ReviewCreateResponseDto.toDto(savedReview);
+		return CreateReviewResponseDto.toDto(savedReview);
 	}
 
 	// review 다건 조회
 	@Transactional(readOnly = true)
-	public List<ReviewReadResponseDto> getReviews(Long bookId) {
+	public List<ReadReviewResponseDto> getReviews(Long bookId) {
 		List<Review> reviews = reviewRepository.findAllByBook_id(bookId);
 		return reviews.stream()
-			.map(ReviewReadResponseDto::toDto)
+			.map(ReadReviewResponseDto::toDto)
 			.collect(Collectors.toList());
 	}
 
 	@Transactional(readOnly = true)
-	public ReviewReadResponseDto getReview(Long bookId, Long reviewId) {
+	public ReadReviewResponseDto getReview(Long bookId, Long reviewId) {
 		Review review = reviewRepository.findByIdAndBook_id(reviewId, bookId).orElseThrow(
 			() -> new NotFoundException(REVIEW_NOT_FOUND)
 		);
 
-		return ReviewReadResponseDto.toDto(review);
+		return ReadReviewResponseDto.toDto(review);
 	}
 
 	@Transactional
-	public ReviewUpdateResponseDto updateReview(Long bookId, Long reviewId, ReviewUpdateRequestDto requestDto,
+	public UpdateReviewResponseDto updateReview(Long bookId, Long reviewId, UpdateReviewRequestDto requestDto,
 		AuthUser authUser) {
 		Review review = reviewRepository.findByIdAndBook_id(reviewId, bookId).orElseThrow(
 			() -> new NotFoundException(REVIEW_NOT_FOUND)
@@ -94,12 +94,15 @@ public class ReviewService {
 		if (requestDto.getContent() != null) {
 			review.updateContent(requestDto.getContent());
 		}
+		if (requestDto.getContent() != null) {
+			review.updateContent(requestDto.getContent());
+		}
 
 		if (requestDto.getRating() != null) {
 			review.updateRating(requestDto.getRating());
 		}
 
-		return ReviewUpdateResponseDto.toDto(review);
+		return UpdateReviewResponseDto.toDto(review);
 	}
 
 	@Transactional

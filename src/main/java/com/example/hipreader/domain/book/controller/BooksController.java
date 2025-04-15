@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,13 +29,6 @@ public class BooksController {
         BooksResponseDto booksResponseDto = booksService.registerBook(booksRequestDto);
 
         return ResponseEntity.ok(booksResponseDto);
-    }
-
-    @PostMapping("/import")
-    public ResponseEntity<List<BooksResponseDto>> importBooksFromAladin(@RequestParam String keyword) {
-        List<AladinBookDto> aladinBooks = aladinService.searchBooks(keyword);
-        List<BooksResponseDto> savedBooks = booksService.saveBooksFromAladin(aladinBooks);
-        return ResponseEntity.ok(savedBooks);
     }
 
     @PatchMapping("/{id}")
@@ -68,5 +62,13 @@ public class BooksController {
         booksService.deleteBook(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/admin/import")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<BooksResponseDto>> importBooksFromAladin(@RequestParam String keyword) {
+      List<AladinBookDto> aladinBooks = aladinService.searchBooks(keyword);
+      List<BooksResponseDto> savedBooks = booksService.saveBooksFromAladin(aladinBooks);
+      return ResponseEntity.ok(savedBooks);
     }
 }

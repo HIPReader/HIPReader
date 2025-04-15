@@ -28,7 +28,7 @@ public class S3Service {
     private String bucket;
 
     public UploadResponseDto uploadFile(MultipartFile file) throws IOException {
-        String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
+        String fileName = String.format("%s-%s",UUID.randomUUID(), file.getOriginalFilename());
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucket)
@@ -39,7 +39,7 @@ public class S3Service {
         s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
 
         return UploadResponseDto.from(
-                "https://" + bucket + ".s3.amazonaws.com/" + fileName,
+                String.format("https://%s.s3.amazonaws.com/%s", bucket, fileName),
                 file.getSize()
         );
     }

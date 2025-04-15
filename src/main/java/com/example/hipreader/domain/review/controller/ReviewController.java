@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.hipreader.auth.dto.AuthUser;
-import com.example.hipreader.domain.review.dto.request.ReviewCreateRequestDto;
-import com.example.hipreader.domain.review.dto.request.ReviewUpdateRequestDto;
-import com.example.hipreader.domain.review.dto.response.ReviewCreateResponseDto;
-import com.example.hipreader.domain.review.dto.response.ReviewReadResponseDto;
-import com.example.hipreader.domain.review.dto.response.ReviewUpdateResponseDto;
+import com.example.hipreader.domain.review.dto.request.CreateReviewRequestDto;
+import com.example.hipreader.domain.review.dto.request.UpdateReviewRequestDto;
+import com.example.hipreader.domain.review.dto.response.CreateReviewResponseDto;
+import com.example.hipreader.domain.review.dto.response.ReadReviewResponseDto;
+import com.example.hipreader.domain.review.dto.response.UpdateReviewResponseDto;
 import com.example.hipreader.domain.review.service.ReviewService;
 
 import jakarta.validation.Valid;
@@ -33,35 +33,44 @@ public class ReviewController {
 	private final ReviewService reviewService;
 
 	@PostMapping("/reviews")
-	public ResponseEntity<ReviewCreateResponseDto> createReview(
-		@RequestBody @Valid ReviewCreateRequestDto requestDto,
+	public ResponseEntity<CreateReviewResponseDto> createReview(
+		@RequestBody @Valid CreateReviewRequestDto requestDto,
 		@AuthenticationPrincipal AuthUser authUser
 	) {
 
-		return new ResponseEntity<>(reviewService.createReview(requestDto, authUser), HttpStatus.CREATED);
+		CreateReviewResponseDto createReviewResponseDto = reviewService.createReview(requestDto, authUser);
+		return new ResponseEntity<>(createReviewResponseDto, HttpStatus.CREATED);
 	}
 
 	@GetMapping("/books/{bookId}/reviews")
-	public ResponseEntity<List<ReviewReadResponseDto>> getReviews(@PathVariable Long bookId) {
-		return new ResponseEntity<>(reviewService.getReviews(bookId), HttpStatus.OK);
+	public ResponseEntity<List<ReadReviewResponseDto>> getReviews(
+		@PathVariable Long bookId
+	) {
+		List<ReadReviewResponseDto> readReviewResponseDtos = reviewService.getReviews(bookId);
+		return new ResponseEntity<>(readReviewResponseDtos, HttpStatus.OK);
 	}
 
 	@GetMapping("/books/{bookId}/reviews/{reviewId}")
-	public ResponseEntity<ReviewReadResponseDto> getReview(
+	public ResponseEntity<ReadReviewResponseDto> getReview(
 		@PathVariable Long bookId,
 		@PathVariable Long reviewId
 	) {
-		return new ResponseEntity<>(reviewService.getReview(bookId, reviewId), HttpStatus.OK);
+		ReadReviewResponseDto readReviewResponseDto = reviewService.getReview(bookId, reviewId);
+		return new ResponseEntity<>(readReviewResponseDto, HttpStatus.OK);
 	}
 
 	@PatchMapping("/books/{bookId}/reviews/{reviewId}")
-	public ResponseEntity<ReviewUpdateResponseDto> updateReview(
+	public ResponseEntity<UpdateReviewResponseDto> updateReview(
 		@PathVariable Long bookId,
 		@PathVariable Long reviewId,
-		@RequestBody ReviewUpdateRequestDto requestDto,
+		@RequestBody UpdateReviewRequestDto requestDto,
 		@AuthenticationPrincipal AuthUser authUser
 	) {
 		return new ResponseEntity<>(reviewService.updateReview(bookId, reviewId, requestDto, authUser), HttpStatus.OK);
+
+		UpdateReviewResponseDto updateReviewResponseDto = reviewService.updateReview(bookId, reviewId, requestDto,
+			authUser);
+		return new ResponseEntity<>(updateReviewResponseDto, HttpStatus.OK);
 	}
 
 	@DeleteMapping("/books/{bookId}/reviews/{reviewId}")
@@ -71,6 +80,6 @@ public class ReviewController {
 		@AuthenticationPrincipal AuthUser authUser
 	) {
 		reviewService.deleteReview(bookId, reviewId, authUser);
-		return ResponseEntity.noContent().build();
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 }
