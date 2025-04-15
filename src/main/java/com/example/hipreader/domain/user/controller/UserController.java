@@ -21,6 +21,7 @@ import com.example.hipreader.domain.user.dto.response.GetUserResponseDto;
 import com.example.hipreader.domain.user.dto.response.UpdateUserResponseDto;
 import com.example.hipreader.domain.user.service.UserService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -32,7 +33,7 @@ public class UserController {
 
 	@GetMapping("/{userId}")
 	public ResponseEntity<GetUserResponseDto> getUser(
-		@PathVariable Long userId
+		@PathVariable @Valid Long userId
 	) {
 		GetUserResponseDto getUserResponseDto = userService.getUser(userId);
 
@@ -52,7 +53,7 @@ public class UserController {
 	@PatchMapping
 	public ResponseEntity<UpdateUserResponseDto> updateUser(
 		@AuthenticationPrincipal AuthUser authUser,
-		@RequestBody UpdateUserRequestDto requestDto
+		@RequestBody @Valid UpdateUserRequestDto requestDto
 	) {
 		UpdateUserResponseDto updateUserResponseDto = userService.updateUser(authUser, requestDto);
 
@@ -62,7 +63,7 @@ public class UserController {
 	@PatchMapping("/password")
 	public ResponseEntity<Void> changePassword(
 		@AuthenticationPrincipal AuthUser authUser,
-		@RequestBody ChangePasswordRequestDto changePasswordRequestDto) {
+		@RequestBody @Valid ChangePasswordRequestDto changePasswordRequestDto) {
 		userService.changePassword(authUser.getId(), changePasswordRequestDto);
 
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -71,7 +72,7 @@ public class UserController {
 	@DeleteMapping("/{userId}")
 	public ResponseEntity<Void> deleteUser(
 		@AuthenticationPrincipal AuthUser authUser,
-		@RequestBody DeleteUserRequestDto userDeleteRequestDto
+		@RequestBody @Valid DeleteUserRequestDto userDeleteRequestDto
 	) {
 		userService.deleteUser(authUser, userDeleteRequestDto);
 

@@ -32,10 +32,8 @@ public class UserService {
 
 	@Transactional(readOnly = true)
 	public GetUserResponseDto getUser(Long userId) {
-		User user = userRepository.findById(userId)
+		return userRepository.findUserDtoById(userId)
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
-
-		return GetUserResponseDto.toDto(user);
 	}
 
 	public UpdateUserResponseDto updateUser(AuthUser authUser, UpdateUserRequestDto updateUserRequestDto) {
@@ -85,12 +83,8 @@ public class UserService {
 	}
 
 	public Page<GetUserResponseDto> getUsers(int page, int size) {
-
 		PageRequest pageRequest = PageRequest.of(Math.max(0, page-1), size, Sort.by(Sort.Direction.DESC, "updatedAt"));
-
-		return userRepository.findAll(pageRequest)
-			.map(user -> new GetUserResponseDto(user.getId(), user.getEmail()));
-		//성능 최적화 시 쿼리문으로 필요한 정보만 가져오게 select문 수정가능.
+		return userRepository.findAllUserDto(pageRequest);
 	}
 
 }
