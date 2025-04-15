@@ -46,9 +46,10 @@ public class ReviewController {
 	public ResponseEntity<Page<ReadReviewResponseDto>> getReviews(
 		@PathVariable Long bookId,
 		@RequestParam(defaultValue = "1") int page,
-		@RequestParam(defaultValue = "10") int size
+		@RequestParam(defaultValue = "10") int size,
+		@RequestParam(defaultValue = "createdAt,desc") String sort
 	) {
-		Page<ReadReviewResponseDto> readReviewResponseDtos = reviewService.getReviews(bookId, page, size);
+		Page<ReadReviewResponseDto> readReviewResponseDtos = reviewService.getReviews(bookId, page, size, sort);
 		return new ResponseEntity<>(readReviewResponseDtos, HttpStatus.OK);
 	}
 

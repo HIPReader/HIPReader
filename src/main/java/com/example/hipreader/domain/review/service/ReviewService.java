@@ -65,10 +65,15 @@ public class ReviewService {
 
 	// review 다건 조회
 	@Transactional(readOnly = true)
-	public Page<ReadReviewResponseDto> getReviews(Long bookId, int page, int size) {
-		Pageable pageable = PageRequest.of(page - 1, size, Sort.by("createdAt").descending());
-		return reviewRepository.findAllByBookId(bookId, pageable)
-			.map(ReadReviewResponseDto::toDto);
+	public Page<ReadReviewResponseDto> getReviews(Long bookId, int page, int size, String sort) {
+		String[] sortParams = sort.split(",");
+		Sort.Direction direction = Sort.Direction.fromString(sortParams[1]);
+		String sortBy = sortParams[0].trim();
+
+		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(direction, sortBy));
+		Page<Review> reviews = reviewRepository.findByBookIdWithUserAndBook(bookId, pageable);
+
+		return reviews.map(ReadReviewResponseDto::toDto);
 	}
 
 	@Transactional(readOnly = true)
