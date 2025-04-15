@@ -36,9 +36,16 @@ public class UserService {
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 	}
 
+	@Transactional(readOnly = true)
+	public Page<GetUserResponseDto> getUsers(int page, int size) {
+		PageRequest pageRequest = PageRequest.of(Math.max(0, page-1), size, Sort.by(Sort.Direction.DESC, "updatedAt"));
+
+		return userRepository.findAllUserDto(pageRequest);
+	}
+
+	@Transactional
 	public UpdateUserResponseDto updateUser(AuthUser authUser, UpdateUserRequestDto updateUserRequestDto) {
-		User user = userRepository.findUserById(authUser.getId())
-			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+		User user = findUserOrThrow(authUser.getId());
 
 		user.updateProfile(updateUserRequestDto.getNickname(),updateUserRequestDto.getAge(),updateUserRequestDto.getGender());
 
@@ -46,11 +53,10 @@ public class UserService {
 	}
 
 	@Transactional
-	public void changePassword(Long userId, ChangePasswordRequestDto changePasswordRequestDto) {
+	public void changePassword(AuthUser authUser, ChangePasswordRequestDto changePasswordRequestDto) {
 		validateNewPassword(changePasswordRequestDto);
 
-		User user = userRepository.findUserById(userId)
-			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+		User user = findUserOrThrow(authUser.getId());
 
 		if (!passwordEncoder.matches(changePasswordRequestDto.getOldPassword(), user.getPassword())) {
 			throw new NotFoundException(INVALID_PASSWORD);
@@ -62,6 +68,17 @@ public class UserService {
 		user.changePassword(passwordEncoder.encode(changePasswordRequestDto.getNewPassword()));
 	}
 
+	@Transactional
+	public void deleteUser(AuthUser authUser, DeleteUserRequestDto request) {
+		User user = findUserOrThrow(authUser.getId());
+
+		if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+			throw new BadRequestException(INVALID_PASSWORD);
+		}
+
+		user.deleteUser();
+	}
+
 	private static void validateNewPassword(ChangePasswordRequestDto changePasswordRequestDto) {
 		if (changePasswordRequestDto.getNewPassword().length() < 8 ||
 			!changePasswordRequestDto.getNewPassword().matches(".*\\d.*") ||
@@ -70,21 +87,9 @@ public class UserService {
 		}
 	}
 
-	@Transactional
-	public void deleteUser(AuthUser authUser, DeleteUserRequestDto request) {
-		User findUser = userRepository.findUserById(authUser.getId())
+	private User findUserOrThrow(Long userId) {
+		return userRepository.findActiveUserById(userId)
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
-
-		if (!passwordEncoder.matches(request.getPassword(), findUser.getPassword())) {
-			throw new BadRequestException(INVALID_PASSWORD);
-		}
-
-		findUser.deleteUser();
-	}
-
-	public Page<GetUserResponseDto> getUsers(int page, int size) {
-		PageRequest pageRequest = PageRequest.of(Math.max(0, page-1), size, Sort.by(Sort.Direction.DESC, "updatedAt"));
-		return userRepository.findAllUserDto(pageRequest);
 	}
 
 }

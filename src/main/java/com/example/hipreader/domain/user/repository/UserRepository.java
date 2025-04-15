@@ -23,4 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	@Query("select new com.example.hipreader.domain.user.dto.response.GetUserResponseDto(u.id, u.email, u.age, u.gender) from User u")
 	Page<GetUserResponseDto> findAllUserDto(Pageable pageable);
+
+	@Query("SELECT u FROM User u WHERE u.id = :userId AND u.deletedAt IS NULL")
+	Optional<User> findActiveUserById(@Param("userId") Long userId);
 }
