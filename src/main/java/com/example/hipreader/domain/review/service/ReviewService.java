@@ -2,9 +2,10 @@ package com.example.hipreader.domain.review.service;
 
 import static com.example.hipreader.common.exception.ErrorCode.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,11 +65,10 @@ public class ReviewService {
 
 	// review 다건 조회
 	@Transactional(readOnly = true)
-	public List<ReadReviewResponseDto> getReviews(Long bookId) {
-		List<Review> reviews = reviewRepository.findAllByBook_id(bookId);
-		return reviews.stream()
-			.map(ReadReviewResponseDto::toDto)
-			.collect(Collectors.toList());
+	public Page<ReadReviewResponseDto> getReviews(Long bookId, int page, int size) {
+		Pageable pageable = PageRequest.of(page - 1, size, Sort.by("createdAt").descending());
+		return reviewRepository.findAllByBookId(bookId, pageable)
+			.map(ReadReviewResponseDto::toDto);
 	}
 
 	@Transactional(readOnly = true)
