@@ -59,6 +59,16 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 			.build();
 		userDiscussionRepository.save(userDiscussion);
 
+		// 알림 발송
+		notificationProducer.sendNotification(
+			new NotificationMessage(
+				userDiscussion.getUser().getId(),
+				userDiscussion.getDiscussion().getId(),
+				"PENDING",
+				LocalDateTime.now()
+			)
+		);
+
 		return ApplyUserDiscussionResponseDto.toDto(userDiscussion);
 	}
 
@@ -75,7 +85,7 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 			new NotificationMessage(
 				userDiscussion.getUser().getId(),
 				userDiscussion.getDiscussion().getId(),
-				"APPROVE",
+				"APPROVED",
 				LocalDateTime.now()
 			)
 		);
@@ -90,6 +100,16 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 			.orElseThrow(() -> new NotFoundException(APPLICATION_NOT_FOUND));
 		userDiscussion.setStatus(ApplicationStatus.REJECTED);
 		userDiscussion.setStatusUpdatedAt(LocalDateTime.now());
+
+		//알림발송
+		notificationProducer.sendNotification(
+			new NotificationMessage(
+				userDiscussion.getUser().getId(),
+				userDiscussion.getDiscussion().getId(),
+				"REJECTED",
+				LocalDateTime.now()
+			)
+		);
 
 		return RejectUserDiscussionResponseDto.toDto(userDiscussion);
 	}

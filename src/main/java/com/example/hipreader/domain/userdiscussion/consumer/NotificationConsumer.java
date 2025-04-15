@@ -21,11 +21,11 @@ public class NotificationConsumer {
 	public void handleMessage(NotificationMessage message) {
 		try {
 			switch (message.eventType()) {
-				case "APPLY" ->
+				case "PENDING" ->
 					notificationService.sendApplyAlert(message);
-				case "APPROVE" ->
+				case "APPROVED" ->
 					notificationService.sendApprovalAlert(message);
-				case "REJECT" ->
+				case "REJECTED" ->
 					notificationService.sendRejectionAlert(message);
 			}
 		} catch (Exception e) {

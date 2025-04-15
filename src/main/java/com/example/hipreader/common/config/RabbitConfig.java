@@ -1,11 +1,15 @@
 package com.example.hipreader.common.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.DefaultClassMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -14,34 +18,38 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-	// @Bean
-	// public MessageConverter jsonMessageConverter() {
-	// 	Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter();
-	// 	converter.
-	// 		"com.example.hipreader.domain.userdiscussion.dto.response",
-	// 		"java.util",
-	// 		"java.time"
-	// 	);
-	// 	return converter;
-	// }
+	@Bean
+	public MessageConverter jsonMessageConverter() {
+		Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter();
+		converter.setClassMapper(classMapper());
+		return converter;
+	}
 
-	// 2. RabbitTemplate에 컨버터 적용
-	// @Bean
-	// public RabbitTemplate rabbitTemplate(
-	// 	ConnectionFactory connectionFactory,
-	// 	MessageConverter messageConverter
-	// ) {
-	// 	RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-	// 	rabbitTemplate.setMessageConverter(messageConverter);
-	// 	return rabbitTemplate;
-	// }
+	@Bean
+	public DefaultClassMapper classMapper() {
+		DefaultClassMapper classMapper = new DefaultClassMapper();
+		Map<String, Class<?>> idClassMapping = new HashMap<>();
+		idClassMapping.put("notificationMessage",
+			com.example.hipreader.domain.userdiscussion.dto.response.NotificationMessage.class);
+		classMapper.setIdClassMapping(idClassMapping);
+		return classMapper;
+	}
+
+	@Bean
+	public RabbitTemplate rabbitTemplate(
+		ConnectionFactory connectionFactory,
+		MessageConverter messageConverter
+	) {
+		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+		rabbitTemplate.setMessageConverter(messageConverter);
+		return rabbitTemplate;
+	}
 
 	@Bean
 	Queue myMessageQueue() {
 		return new Queue("my-message-queue", true);
 	}
 
-	// 교환기와 바인딩 추가
 	@Bean
 	DirectExchange myMessageExchange() {
 		return new DirectExchange("my-message-exchange");
@@ -77,7 +85,6 @@ public class RabbitConfig {
 		return new Queue("notification.queue", true); // durable 큐
 	}
 
-	// 교환기(exchange)와 바인딩 추가 (필요한 경우)
 	@Bean
 	DirectExchange notificationExchange() {
 		return new DirectExchange("notification.exchange");
