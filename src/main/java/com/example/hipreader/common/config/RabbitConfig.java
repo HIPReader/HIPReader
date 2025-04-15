@@ -4,12 +4,37 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitConfig {
 
+	// @Bean
+	// public MessageConverter jsonMessageConverter() {
+	// 	Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter();
+	// 	converter.
+	// 		"com.example.hipreader.domain.userdiscussion.dto.response",
+	// 		"java.util",
+	// 		"java.time"
+	// 	);
+	// 	return converter;
+	// }
+
+	// 2. RabbitTemplate에 컨버터 적용
+	// @Bean
+	// public RabbitTemplate rabbitTemplate(
+	// 	ConnectionFactory connectionFactory,
+	// 	MessageConverter messageConverter
+	// ) {
+	// 	RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+	// 	rabbitTemplate.setMessageConverter(messageConverter);
+	// 	return rabbitTemplate;
+	// }
 
 	@Bean
 	Queue myMessageQueue() {
@@ -64,4 +89,5 @@ public class RabbitConfig {
 			.to(notificationExchange())
 			.with("notification.routingKey");
 	}
+
 }
