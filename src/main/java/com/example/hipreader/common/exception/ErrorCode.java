@@ -34,6 +34,9 @@ public enum ErrorCode {
 
 	// 리뷰 관련 예외 코드
 	REVIEW_NOT_FOUND("해당 리뷰를 찾을 수 없습니다.", NOT_FOUND),
+	REVIEW_UNAUTHORIZED("해당 작성자가 아닙니다.", UNAUTHORIZED),
+	REVIEW_ALREADY_EXISTS("이미 이 책에 대한 리뷰를 작성하셨습니다.", CONFLICT),
+	INVALID_INPUT_VALUE("잘못된 요청입니다.", BAD_REQUEST),
 
 	// 자유게시판 관련 예외 코드
 	POST_NOT_FOUND("해당 게시물을 찾을 수 없습니다.", NOT_FOUND),
