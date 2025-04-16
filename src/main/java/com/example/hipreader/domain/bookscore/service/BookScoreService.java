@@ -69,7 +69,7 @@ public class BookScoreService {
 		YearlyBookScore yearlyTopBook = yearlyBookScoreRepository.findByYear(currentYear)
 			.orElseThrow(() -> new NotFoundException(BOOK_NOT_PUBLISHED));
 
-		return GetBookOfYearResponseDto.toDto(
+		return GetBookOfYearResponseDto.from(
 			yearlyTopBook.getBook(),
 			yearlyTopBook.getTotalScore()
 		);
