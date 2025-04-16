@@ -19,8 +19,10 @@ import com.example.hipreader.domain.userdiscussion.ApplicationStatus.Application
 import com.example.hipreader.domain.userdiscussion.dto.request.ApplyUserDiscussionRequestDto;
 import com.example.hipreader.domain.userdiscussion.dto.response.ApplyUserDiscussionResponseDto;
 import com.example.hipreader.domain.userdiscussion.dto.response.ApproveUserDiscussionResponseDto;
+import com.example.hipreader.domain.userdiscussion.dto.response.NotificationMessage;
 import com.example.hipreader.domain.userdiscussion.dto.response.RejectUserDiscussionResponseDto;
 import com.example.hipreader.domain.userdiscussion.entity.UserDiscussion;
+import com.example.hipreader.domain.userdiscussion.producer.NotificationProducer;
 import com.example.hipreader.domain.userdiscussion.repository.UserDiscussionRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 	private final UserDiscussionRepository userDiscussionRepository;
 	private final UserRepository userRepository;
 	private final DiscussionRepository discussionRepository;
+	private final NotificationProducer notificationProducer;
 
 	@Override
 	@Transactional
@@ -56,6 +59,16 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 			.build();
 		userDiscussionRepository.save(userDiscussion);
 
+		// 알림 발송
+		notificationProducer.sendNotification(
+			new NotificationMessage(
+				userDiscussion.getUser().getId(),
+				userDiscussion.getDiscussion().getId(),
+				"PENDING",
+				LocalDateTime.now()
+			)
+		);
+
 		return ApplyUserDiscussionResponseDto.toDto(userDiscussion);
 	}
 
@@ -67,6 +80,16 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 		userDiscussion.setStatus(ApplicationStatus.APPROVED);
 		userDiscussion.setStatusUpdatedAt(LocalDateTime.now());
 
+		// 알림 발송
+		notificationProducer.sendNotification(
+			new NotificationMessage(
+				userDiscussion.getUser().getId(),
+				userDiscussion.getDiscussion().getId(),
+				"APPROVED",
+				LocalDateTime.now()
+			)
+		);
+
 		return ApproveUserDiscussionResponseDto.toDto(userDiscussion);
 	}
 
@@ -77,6 +100,16 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 			.orElseThrow(() -> new NotFoundException(APPLICATION_NOT_FOUND));
 		userDiscussion.setStatus(ApplicationStatus.REJECTED);
 		userDiscussion.setStatusUpdatedAt(LocalDateTime.now());
+
+		//알림발송
+		notificationProducer.sendNotification(
+			new NotificationMessage(
+				userDiscussion.getUser().getId(),
+				userDiscussion.getDiscussion().getId(),
+				"REJECTED",
+				LocalDateTime.now()
+			)
+		);
 
 		return RejectUserDiscussionResponseDto.toDto(userDiscussion);
 	}
