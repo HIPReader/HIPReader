@@ -11,8 +11,14 @@ import com.example.hipreader.domain.userdiscussion.entity.UserDiscussion;
 
 public interface UserDiscussionService {
 	ApplyUserDiscussionResponseDto apply(AuthUser authUser, ApplyUserDiscussionRequestDto requestDto);
+
+	ApplyUserDiscussionResponseDto autoApply(AuthUser authUser, ApplyUserDiscussionRequestDto requestDto);
+
 	ApproveUserDiscussionResponseDto approve(Long userDiscussionId);
+
 	RejectUserDiscussionResponseDto reject(Long userDiscussionId);
+
 	List<UserDiscussion> findByDiscussion(Long discussionId);
+
 	List<UserDiscussion> findByUser(Long userId);
 }

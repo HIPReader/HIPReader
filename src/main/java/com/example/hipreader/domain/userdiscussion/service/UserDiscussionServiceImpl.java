@@ -4,7 +4,10 @@ import static com.example.hipreader.common.exception.ErrorCode.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +27,7 @@ import com.example.hipreader.domain.userdiscussion.dto.response.RejectUserDiscus
 import com.example.hipreader.domain.userdiscussion.entity.UserDiscussion;
 import com.example.hipreader.domain.userdiscussion.producer.NotificationProducer;
 import com.example.hipreader.domain.userdiscussion.repository.UserDiscussionRepository;
+import com.example.hipreader.domain.userdiscussion.status.DiscussionMode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,6 +40,7 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 	private final UserRepository userRepository;
 	private final DiscussionRepository discussionRepository;
 	private final NotificationProducer notificationProducer;
+	private final RedissonClient redissonClient;
 
 	@Override
 	@Transactional
@@ -70,6 +75,73 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 		);
 
 		return ApplyUserDiscussionResponseDto.toDto(userDiscussion);
+	}
+
+	@Override
+	@Transactional
+	public ApplyUserDiscussionResponseDto autoApply(AuthUser authUser, ApplyUserDiscussionRequestDto requestDto) {
+		// 1. 요청한 토론방 조회
+		Discussion discussion = discussionRepository.findById(requestDto.getDiscussionId()).orElseThrow(
+			() -> new NotFoundException(DISCUSSION_NOT_FOUND)
+		);
+
+		// 2. 자동 참여 방인지 확인
+		if (discussion.getMode() != DiscussionMode.AUTO_APPROVAL) {
+			throw new BadRequestException(INVALID_REQUEST);
+		}
+
+		// 3. Redis 분산 락 획득 시도
+		String lockKey = "discussion:lock:" + discussion.getId();
+		RLock lock = redissonClient.getLock(lockKey);
+
+		try {
+			// 4. 락을 획득하지 못하면 에러
+			if (!lock.tryLock(3, 2, TimeUnit.SECONDS)) {
+				throw new RuntimeException("참여 요청이 몰리고 있습니다. 잠시 후 다시 시도해주세요.");
+			}
+
+			// 5. 현재 참여 승인된 인원 수 조회
+			long acceptedCount =
+				userDiscussionRepository.countByDiscussionAndStatus(discussion, ApplicationStatus.APPROVED);
+			if (acceptedCount >= discussion.getParticipants()) {
+				throw new BadRequestException(ALREADY_APPLIED);
+			}
+
+			// 6. 유저가 이미 신청했는지 확인
+			boolean alreadyJoined =
+				userDiscussionRepository.existsByUserIdAndDiscussionId(authUser.getId(), discussion.getId());
+			if (alreadyJoined) {
+				throw new BadRequestException(ALREADY_APPLIED);
+			}
+
+			// 7. 유저 정보 조회
+			User user = userRepository.findById(authUser.getId()).orElseThrow(
+				() -> new NotFoundException(USER_NOT_FOUND)
+			);
+
+			// 8. 참여 정보 생성
+			UserDiscussion userDiscussion = UserDiscussion.builder()
+				.discussion(discussion)
+				.user(user)
+				.status(ApplicationStatus.APPROVED)
+				.appliedAt(LocalDateTime.now())
+				.statusUpdatedAt(LocalDateTime.now())
+				.build();
+
+			// 9. DB 저장
+			userDiscussionRepository.save(userDiscussion);
+
+			// 10. 응답 DTO 반환
+			return ApplyUserDiscussionResponseDto.toDto(userDiscussion);
+
+		} catch (InterruptedException e) {
+			throw new RuntimeException("락 처리 중 오류가 발생했습니다.");
+		} finally {
+			// 11. 락 해제
+			if (lock.isHeldByCurrentThread()) {
+				lock.unlock();
+			}
+		}
 	}
 
 	@Override

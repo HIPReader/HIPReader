@@ -59,6 +59,9 @@ dependencies {
     // elasticsearch
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 //    implementation 'co.elastic.clients:elasticsearch-rest-high-level-client:7.17.15'
+
+    // redisson
+    implementation 'org.redisson:redisson-spring-boot-starter:3.23.5'
 }
 
 tasks.named('test') {

@@ -41,6 +41,17 @@ public class UserDiscussionController {
 		return new ResponseEntity<>(result, HttpStatus.CREATED);
 	}
 
+	// 토론방 선착순
+	@PostMapping("/auto-apply")
+	public ResponseEntity<ApplyUserDiscussionResponseDto> autoApply(
+		@AuthenticationPrincipal AuthUser authUser,
+		@RequestBody ApplyUserDiscussionRequestDto requestDto
+	) {
+		ApplyUserDiscussionResponseDto result = userDiscussionService.autoApply(authUser, requestDto);
+
+		return new ResponseEntity<>(result, HttpStatus.CREATED);
+	}
+
 	// 신청 승인
 	@PatchMapping("/{userDiscussionId}/approve")
 	public ResponseEntity<ApproveUserDiscussionResponseDto> approve(
