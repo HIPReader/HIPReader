@@ -45,7 +45,7 @@ public class UserService {
 
 	@Transactional
 	public UpdateUserResponseDto updateUser(AuthUser authUser, UpdateUserRequestDto updateUserRequestDto) {
-		User user = findUserOrThrow(authUser.getId());
+		User user = findUserOrElseThrow(authUser.getId());
 
 		user.updateProfile(updateUserRequestDto.getNickname(),updateUserRequestDto.getAge(),updateUserRequestDto.getGender());
 
@@ -56,7 +56,7 @@ public class UserService {
 	public void changePassword(AuthUser authUser, ChangePasswordRequestDto changePasswordRequestDto) {
 		validateNewPassword(changePasswordRequestDto);
 
-		User user = findUserOrThrow(authUser.getId());
+		User user = findUserOrElseThrow(authUser.getId());
 
 		if (!passwordEncoder.matches(changePasswordRequestDto.getOldPassword(), user.getPassword())) {
 			throw new NotFoundException(INVALID_PASSWORD);
@@ -70,13 +70,13 @@ public class UserService {
 
 	@Transactional
 	public void deleteUser(AuthUser authUser, DeleteUserRequestDto request) {
-		User user = findUserOrThrow(authUser.getId());
+		User finduser = findUserOrElseThrow(authUser.getId());
 
-		if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+		if (!passwordEncoder.matches(request.getPassword(), finduser.getPassword())) {
 			throw new BadRequestException(INVALID_PASSWORD);
 		}
 
-		user.deleteUser();
+		finduser.deleteUser();
 	}
 
 	private static void validateNewPassword(ChangePasswordRequestDto changePasswordRequestDto) {
@@ -87,7 +87,7 @@ public class UserService {
 		}
 	}
 
-	private User findUserOrThrow(Long userId) {
+	private User findUserOrElseThrow(Long userId) {
 		return userRepository.findActiveUserById(userId)
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 	}
