@@ -1,4 +1,4 @@
-package com.example.hipreader.domain.refreshtoken.service;
+package com.example.hipreader.auth.service;
 
 import static com.example.hipreader.common.exception.ErrorCode.*;
 
@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.common.util.JwtUtil;
-import com.example.hipreader.domain.refreshtoken.entity.RefreshToken;
-import com.example.hipreader.domain.refreshtoken.repository.RefreshTokenRepository;
+import com.example.hipreader.auth.entity.RefreshToken;
+import com.example.hipreader.auth.repository.RefreshTokenRepository;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
 

@@ -1,4 +1,4 @@
-package com.example.hipreader.domain.refreshtoken.entity;
+package com.example.hipreader.auth.entity;
 
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;

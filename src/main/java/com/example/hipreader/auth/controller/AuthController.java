@@ -14,7 +14,7 @@ import com.example.hipreader.auth.dto.request.SignupRequestDto;
 import com.example.hipreader.auth.dto.response.SigninResponseDto;
 import com.example.hipreader.auth.dto.response.SignupResponseDto;
 import com.example.hipreader.auth.service.AuthService;
-import com.example.hipreader.domain.refreshtoken.service.RefreshTokenService;
+import com.example.hipreader.auth.service.RefreshTokenService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
