@@ -63,21 +63,28 @@ public class AuthService {
 
 	@Transactional
 	public SigninResponseDto signIn(@Valid SigninRequestDto signinRequestDto) {
-		User user = userRepository.findByEmail(signinRequestDto.getEmail()).orElseThrow(
-			() -> new NotFoundException(USER_NOT_FOUND));
+		User user = userRepository.findByEmail(signinRequestDto.getEmail())
+			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
 		if (!passwordEncoder.matches(signinRequestDto.getPassword(), user.getPassword())) {
 			throw new BadRequestException(INVALID_PASSWORD);
 		}
-		// 기존 리프레시 토큰 삭제
+
+		// 기존 리프레시 토큰 삭제 (userId 기반)
 		refreshTokenRepository.deleteByUserId(user.getId());
 
-		String accessToken = jwtUtil.createAccessToken(user.getId(),user.getEmail(),user.getRole(),user.getNickname());
-
+		// 새 토큰 생성
+		String accessToken = jwtUtil.createAccessToken(
+			user.getId(),
+			user.getEmail(),
+			user.getRole(),
+			user.getNickname()
+		);
 		String refreshToken = jwtUtil.createRefreshToken(user.getId());
-		refreshTokenRepository.save(new RefreshToken(user.getId(),refreshToken));
 
-		return new SigninResponseDto(accessToken,refreshToken);
+		refreshTokenRepository.save(new RefreshToken(refreshToken, user.getId()));
+
+		return new SigninResponseDto(accessToken, refreshToken);
 	}
 
 }

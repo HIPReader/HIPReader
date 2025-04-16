@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.hipreader.common.exception.NotFoundException;
+import com.example.hipreader.common.exception.UnauthorizedException;
 import com.example.hipreader.domain.user.role.UserRole;
 
 import io.jsonwebtoken.Claims;
@@ -30,8 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtUtil {
 
 	private static final String BEARER_PREFIX = "Bearer ";
-	private static final long ACCESS_TOKEN_TIME = 60 * 60 * 7 *24 *1000L;  //1주일(테스트중이라 1주일로 바꿈)
-	private static final long REFRESH_TOKEN_TIME = 60 * 60 * 7 *24 *1000L; //1주일
+	private static final long ACCESS_TOKEN_TIME = 60 * 60 * 1000L; // 1시간
+	private static final long REFRESH_TOKEN_TIME = 14 * 24 * 60 * 60; // 2주
 
 	@Value("${jwt.secret.key}")
 	private String secretKey;
@@ -47,7 +48,7 @@ public class JwtUtil {
 	public String createAccessToken(Long userId, String email, UserRole role, String nickname) {
 		Date date = new Date();
 
-		return BEARER_PREFIX + Jwts.builder()
+		return Jwts.builder()
 			.setSubject(String.valueOf(userId))
 			.claim("email", email)
 			.claim("role", role)
@@ -61,10 +62,11 @@ public class JwtUtil {
 	public String createRefreshToken(Long userId) {
 		Date now = new Date();
 
-		return BEARER_PREFIX + Jwts.builder()
+		return Jwts.builder()
 			.setSubject(String.valueOf(userId))
+			.claim("type", "refresh")
 			.setIssuedAt(now)
-			.setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_TIME))
+			.setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_TIME * 1000))
 			.signWith(key, signatureAlgorithm)
 			.compact();
 
@@ -74,11 +76,10 @@ public class JwtUtil {
 		if (StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) {
 			return token.substring(7);
 		}
-		throw new NotFoundException(INVALID_TOKEN);
+		throw new UnauthorizedException(INVALID_TOKEN);
 	}
 
 	public Claims extractClaims(String token) {
-		System.out.println(token);
 		return Jwts.parserBuilder()
 			.setSigningKey(key)
 			.build()
@@ -99,10 +100,10 @@ public class JwtUtil {
 			return true;
 		} catch (ExpiredJwtException e) {
 			log.error("만료된 RefreshToken 입니다");
-			throw new NotFoundException(EXPIRED_TOKEN);
+			throw new UnauthorizedException(EXPIRED_TOKEN);
 		} catch (JwtException e) {
 			log.error("검증되지 않은 RefreshToken 입니다");
-			throw new NotFoundException(INVALID_TOKEN);
+			throw new UnauthorizedException(INVALID_TOKEN);
 		}
 	}
 }

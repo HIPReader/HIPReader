@@ -3,8 +3,10 @@ package com.example.hipreader.auth.service;
 import static com.example.hipreader.common.exception.ErrorCode.*;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.hipreader.common.exception.NotFoundException;
+import com.example.hipreader.common.exception.UnauthorizedException;
 import com.example.hipreader.common.util.JwtUtil;
 import com.example.hipreader.auth.entity.RefreshToken;
 import com.example.hipreader.auth.repository.RefreshTokenRepository;
@@ -23,31 +25,26 @@ public class RefreshTokenService {
 	private final JwtUtil jwtUtil;
 	private final UserRepository userRepository;
 
+	@Transactional
 	public String refreshAccessToken(String refreshToken) {
-		log.debug("Refresh token requested for token: {}", refreshToken);
-		RefreshToken findRefreshToken = findValidRefreshToken(refreshToken);
-		User user = findUserByToken(findRefreshToken);
-		return createNewAccessToken(user);
-	}
-
-	// 검증 로직 분리
-	private RefreshToken findValidRefreshToken(String token) {
-		RefreshToken refreshToken = refreshTokenRepository.findByRefreshToken(token)
-			.orElseThrow(() -> new NotFoundException(TOKEN_NOT_FOUND));
-		if (!jwtUtil.validateRefreshToken(refreshToken.getRefreshToken())) {
-			throw new NotFoundException(INVALID_TOKEN);
+		// 1. 리프레시 토큰 유효성 검증 (서명, 만료일자)
+		if (!jwtUtil.validateRefreshToken(refreshToken)) {
+			throw new UnauthorizedException(INVALID_REFRESH_TOKEN);
 		}
-		return refreshToken;
-	}
 
-	// 사용자 조회 로직 분리
-	private User findUserByToken(RefreshToken token) {
-		return userRepository.findById(token.getUserId())
+		// 2. Redis에서 리프레시 토큰 존재 여부 확인
+		RefreshToken storedToken = refreshTokenRepository.findById(refreshToken)
+			.orElseThrow(() -> new UnauthorizedException(INVALID_REFRESH_TOKEN));
+
+		// 3. 토큰에서 userId 추출 및 사용자 조회
+		Long userId = storedToken.getUserId();
+		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
-	}
 
-	// 토큰 생성 로직 분리
-	private String createNewAccessToken(User user) {
+		// 4. 기존 리프레시 토큰 삭제 (옵션: 새로운 토큰 발급 시)
+		refreshTokenRepository.deleteById(refreshToken);
+
+		// 5. 새로운 액세스 토큰 발급
 		return jwtUtil.createAccessToken(
 			user.getId(),
 			user.getEmail(),
