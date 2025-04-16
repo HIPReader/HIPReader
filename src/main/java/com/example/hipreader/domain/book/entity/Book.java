@@ -1,16 +1,17 @@
 package com.example.hipreader.domain.book.entity;
 
 import com.example.hipreader.common.entity.TimeStamped;
-import com.example.hipreader.domain.book.genre.Genre;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -30,8 +31,8 @@ public class Book extends TimeStamped {
 	@Column(nullable = false)
 	private String title;
 
-	@Column(nullable = false)
-	private String author;
+	@OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+	private final List<Author> authors = new ArrayList<>();
 
 	@Column(nullable = false, unique = true)
 	private String isbn13;
@@ -50,5 +51,8 @@ public class Book extends TimeStamped {
 	@Column
 	private String categoryName;
 
+	public void addAuthors(List<Author> authors) {
+		this.authors.addAll(authors);
+	}
 }
 

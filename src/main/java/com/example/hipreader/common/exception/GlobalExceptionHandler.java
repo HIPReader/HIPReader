@@ -8,7 +8,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(NotFoundException.class)
@@ -27,7 +30,8 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<Map<String, Object>> handleGenericException() {
+	public ResponseEntity<Map<String, Object>> handleGenericException(Exception e) {
+		log.info(e.getMessage());
 		return createErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR);
 	}
 

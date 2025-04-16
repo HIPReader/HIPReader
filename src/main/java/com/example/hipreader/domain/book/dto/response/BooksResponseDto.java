@@ -1,7 +1,9 @@
 package com.example.hipreader.domain.book.dto.response;
 
+import com.example.hipreader.domain.book.entity.Author;
 import com.example.hipreader.domain.book.entity.Book;
 
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,7 +30,9 @@ public class BooksResponseDto {
 		this.categoryName = (book.getCategoryName() != null) ? book.getCategoryName() : null;
 		this.title = book.getTitle();
 		this.isbn13 = book.getIsbn13();
-		this.author = book.getAuthor();
+		this.author = book.getAuthors().stream()
+				.map(Author::getName)
+				.collect(Collectors.joining(", "));
 		this.publisher = book.getPublisher();
 		this.totalPages = book.getTotalPages();
 		this.coverImage = book.getCoverImage();

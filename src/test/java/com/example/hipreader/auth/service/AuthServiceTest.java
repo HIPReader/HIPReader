@@ -18,7 +18,7 @@ import com.example.hipreader.auth.dto.request.SigninRequestDto;
 import com.example.hipreader.auth.dto.request.SignupRequestDto;
 import com.example.hipreader.auth.dto.response.SigninResponseDto;
 import com.example.hipreader.common.util.JwtUtil;
-import com.example.hipreader.domain.refreshtoken.repository.RefreshTokenRepository;
+import com.example.hipreader.auth.repository.RefreshTokenRepository;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
 import com.example.hipreader.domain.user.role.UserRole;
