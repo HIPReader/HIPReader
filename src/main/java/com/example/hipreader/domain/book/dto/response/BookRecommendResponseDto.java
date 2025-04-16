@@ -2,7 +2,6 @@ package com.example.hipreader.domain.book.dto.response;
 
 import com.example.hipreader.domain.book.entity.Author;
 import com.example.hipreader.domain.book.entity.Book;
-import com.example.hipreader.domain.book.genre.Genre;
 import com.example.hipreader.domain.userbook.document.UserBookDocument;
 
 import java.util.stream.Collectors;

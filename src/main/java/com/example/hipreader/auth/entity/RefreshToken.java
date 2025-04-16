@@ -1,7 +1,5 @@
 package com.example.hipreader.auth.entity;
 
-import static com.example.hipreader.common.util.JwtUtil.*;
-
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
@@ -27,9 +25,5 @@ public class RefreshToken {
 	public RefreshToken(String refreshToken, Long userId) {
 		this.refreshToken = refreshToken;
 		this.userId = userId;
-	}
-
-	public static RefreshToken create(String refreshToken, User user) {
-		return new RefreshToken(refreshToken, user.getId());
 	}
 }
