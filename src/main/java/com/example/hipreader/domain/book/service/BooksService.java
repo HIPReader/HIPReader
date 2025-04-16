@@ -7,9 +7,11 @@ import com.example.hipreader.domain.book.dto.request.AladinBookDto;
 import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.domain.book.dto.request.BooksRequestDto;
 import com.example.hipreader.domain.book.dto.response.BooksResponseDto;
+import com.example.hipreader.domain.book.entity.Author;
 import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.book.repository.BookRepository;
 
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -33,7 +35,6 @@ public class BooksService {
 	public BooksResponseDto registerBook(BooksRequestDto dto) {
 		Book book = Book.builder()
 			.title(dto.getTitle())
-			.author(dto.getAuthor())
 			.isbn13(dto.getIsbn13())
 			.publisher(dto.getPublisher())
 			.datePublished(dto.getDatePublished())
@@ -41,6 +42,12 @@ public class BooksService {
 			.coverImage(dto.getCoverImage())
 			.categoryName(dto.getCategoryName())
 			.build();
+
+		if(dto.getAuthor() != null && !dto.getAuthor().isBlank()) {
+			List<Author> authors = parseAuthors(dto.getAuthor(), book);
+			book.addAuthors(authors);
+		}
+
 		Book register = bookRepository.save(book);
 		return new BooksResponseDto(register);
 	}
@@ -96,7 +103,6 @@ public class BooksService {
 			if (!bookRepository.existsByIsbn13(dto.getIsbn13())) {
 				Book book = Book.builder()
 					.title(dto.getTitle())
-					.author(dto.getAuthor())
 					.isbn13(dto.getIsbn13())
 					.publisher(dto.getPublisher())
 					.datePublished(parsePubDate(dto.getPubDate()))
@@ -104,13 +110,31 @@ public class BooksService {
 					.coverImage(dto.getCover())
 					.categoryName(dto.getCategoryName())
 					.build();
+
+				List<Author> authors = parseAuthors(dto.getAuthor(), book);
+				book.addAuthors(authors);
 				Book saved = bookRepository.save(book);
 				result.add(new BooksResponseDto(saved));
+
 			}
 		}
 
 		return result;
 	}
+
+	private List<Author> parseAuthors(String rawAuthors, Book book) {
+		if (rawAuthors == null || rawAuthors.isBlank()) return List.of();
+
+		return Arrays.stream(rawAuthors.split(","))
+				.map(String::trim)
+				.map(name -> name.replaceAll("\\s*\\(.*?\\)", "")) // 괄호 속 역할 제거
+				.map(cleanName -> Author.builder()
+						.name(cleanName)
+						.book(book)
+						.build())
+				.toList();
+	}
+
 
 	private LocalDate parsePubDate(String pubDateStr) {
 		try {
