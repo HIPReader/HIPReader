@@ -1,10 +1,12 @@
 package com.example.hipreader.domain.userbook.dto.response;
 
+import com.example.hipreader.domain.book.entity.Author;
 import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.userbook.entity.UserBook;
 import com.example.hipreader.domain.userbook.status.Status;
 import com.example.hipreader.domain.user.entity.User;
 
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,13 +22,18 @@ public class GetUserBookResponseDto {
 	private final Status status;
 
 	public static GetUserBookResponseDto toDto(UserBook userBook) {
+		Book book = userBook.getBook();
+		String authorNames = book.getAuthors().stream()
+				.map(Author::getName)
+				.collect(Collectors.joining(", "));
+
 		return GetUserBookResponseDto.builder()
-			.username(userBook.getUser().getNickname())
-			.title(userBook.getBook().getTitle())
-			.author(userBook.getBook().getAuthor())
-			.percentage(calculatePercentage(userBook))
-			.status(userBook.getStatus())
-			.build();
+				.username(userBook.getUser().getNickname())
+				.title(book.getTitle())
+				.author(authorNames)
+				.percentage(calculatePercentage(userBook))
+				.status(userBook.getStatus())
+				.build();
 	}
 
 	private static double calculatePercentage(UserBook userBook) {
