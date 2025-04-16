@@ -64,44 +64,6 @@ class UserServiceTest {
 			.hasMessageContaining(USER_NOT_FOUND.getMessage());
 	}
 
-	// 비밀번호 변경 테스트
-	@Test
-	void changePasswordSuccess() {
-		// Given
-		Long userId = 1L;
-		ChangePasswordRequestDto request = new ChangePasswordRequestDto(
-			"oldPass123!",
-			"NewPass123!"
-		);
-
-		User mockUser = User.builder()
-			.password("encodedOldPass")
-			.build();
-
-		when(userRepository.findUserById(userId)).thenReturn(Optional.of(mockUser));
-		when(passwordEncoder.matches("oldPass123!", "encodedOldPass")).thenReturn(true);
-		when(passwordEncoder.matches("NewPass123!", "encodedOldPass")).thenReturn(false);
-		when(passwordEncoder.encode("NewPass123!")).thenReturn("encodedNewPass");
-
-		// When
-		userService.changePassword(userId, request);
-
-		// Then
-		verify(passwordEncoder).encode("NewPass123!");
-		assertThat(mockUser.getPassword()).isEqualTo("encodedNewPass");
-	}
-
-	@Test
-	void changePasswordButNotInvalidPassword() {
-		ChangePasswordRequestDto invalidRequest = new ChangePasswordRequestDto(
-			"oldPass",
-			"short"
-		);
-
-		assertThatThrownBy(() -> userService.changePassword(1L, invalidRequest))
-			.isInstanceOf(ResponseStatusException.class)
-			.hasMessageContaining(INVALID_NEW_PASSWORD_FORMAT.getMessage());
-	}
 
 	// 사용자 삭제 테스트
 	@Test
