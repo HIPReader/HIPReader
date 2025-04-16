@@ -4,7 +4,6 @@ import com.example.hipreader.domain.book.entity.Author;
 import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.userbook.entity.UserBook;
 import com.example.hipreader.domain.userbook.status.Status;
-import com.example.hipreader.domain.user.entity.User;
 
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;

@@ -27,9 +27,7 @@ public class Review extends TimeStamped {
 
 	@Column
 	private String content;
-
-	@Min(1)
-	@Max(5)
+	
 	private Integer rating;
 
 	@ManyToOne(fetch = FetchType.LAZY)

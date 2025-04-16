@@ -29,7 +29,8 @@ public enum ErrorCode {
 	EXPIRED_TOKEN("만료된 토큰입니다.", UNAUTHORIZED),
 	TOKEN_DUPLICATED("중복된 토큰입니다.", CONFLICT),
 	INVALID_ACCESS_TOKEN("유효하지 않은 AccessToken 입니다.", UNAUTHORIZED),
-	NEED_LOGIN("재로그인이 필요합니다.", UNAUTHORIZED),
+	NEED_LOGIN("재로그인이 필요합니다.",UNAUTHORIZED),
+	INVALID_REFRESH_TOKEN("유효하지 않은 REFRESHTOKEN입니다.", UNAUTHORIZED),
 
 	// 리뷰 관련 예외 코드
 	REVIEW_NOT_FOUND("해당 리뷰를 찾을 수 없습니다.", NOT_FOUND),
