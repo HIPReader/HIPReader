@@ -2,6 +2,7 @@ package com.example.hipreader.domain.book.dto.response;
 
 import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.book.genre.Genre;
+import com.example.hipreader.domain.userbook.document.UserBookDocument;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,16 @@ public class BookRecommendResponseDto {
 			.publisher(book.getPublisher())
 			.coverImage(book.getCoverImage())
 			.categoryName(book.getCategoryName())
+			.build();
+	}
+
+	public static BookRecommendResponseDto toDto(UserBookDocument userBookDocument) {
+		return BookRecommendResponseDto.builder()
+			.title(userBookDocument.getTitle())
+			.author(userBookDocument.getAuthor())
+			.publisher(userBookDocument.getPublisher())
+			.coverImage(userBookDocument.getCoverImage())
+			.categoryName(userBookDocument.getCategoryName())
 			.build();
 	}
 }

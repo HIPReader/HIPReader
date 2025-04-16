@@ -32,16 +32,20 @@ public class UserService {
 
 	@Transactional(readOnly = true)
 	public GetUserResponseDto getUser(Long userId) {
-		User user = userRepository.findById(userId)
+		return userRepository.findUserDtoById(userId)
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+	}
 
-		return GetUserResponseDto.toDto(user);
+	@Transactional(readOnly = true)
+	public Page<GetUserResponseDto> getUsers(int page, int size) {
+		PageRequest pageRequest = PageRequest.of(Math.max(0, page-1), size, Sort.by(Sort.Direction.DESC, "updatedAt"));
+
+		return userRepository.findAllUserDto(pageRequest);
 	}
 
 	@Transactional
 	public UpdateUserResponseDto updateUser(AuthUser authUser, UpdateUserRequestDto updateUserRequestDto) {
-		User user = userRepository.findUserById(authUser.getId())
-			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+		User user = findUserOrElseThrow(authUser.getId());
 
 		user.updateProfile(updateUserRequestDto.getNickname(),updateUserRequestDto.getAge(),updateUserRequestDto.getGender());
 
@@ -49,11 +53,10 @@ public class UserService {
 	}
 
 	@Transactional
-	public void changePassword(Long userId, ChangePasswordRequestDto changePasswordRequestDto) {
+	public void changePassword(AuthUser authUser, ChangePasswordRequestDto changePasswordRequestDto) {
 		validateNewPassword(changePasswordRequestDto);
 
-		User user = userRepository.findUserById(userId)
-			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+		User user = findUserOrElseThrow(authUser.getId());
 
 		if (!passwordEncoder.matches(changePasswordRequestDto.getOldPassword(), user.getPassword())) {
 			throw new NotFoundException(INVALID_PASSWORD);
@@ -67,25 +70,13 @@ public class UserService {
 
 	@Transactional
 	public void deleteUser(AuthUser authUser, DeleteUserRequestDto request) {
-		User findUser = userRepository.findUserById(authUser.getId())
-			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+		User finduser = findUserOrElseThrow(authUser.getId());
 
-		if (!passwordEncoder.matches(request.getPassword(), findUser.getPassword())) {
+		if (!passwordEncoder.matches(request.getPassword(), finduser.getPassword())) {
 			throw new BadRequestException(INVALID_PASSWORD);
 		}
 
-		findUser.deleteUser();
-	}
-
-	@Transactional(readOnly = true)
-	public Page<GetUserResponseDto> getUsers(int page, int size) {
-
-		PageRequest pageRequest = PageRequest.of(Math.max(0, page-1), size, Sort.by(Sort.Direction.DESC, "updatedAt"));
-
-		return userRepository.findAll(pageRequest)
-			.map(user -> new GetUserResponseDto(user.getId(), user.getEmail()));
-		//성능 최적화 시 쿼리문으로 필요한 정보만 가져오게 select문 수정가능.
-		//또는 프로젝션
+		finduser.deleteUser();
 	}
 
 	private static void validateNewPassword(ChangePasswordRequestDto changePasswordRequestDto) {
@@ -95,4 +86,10 @@ public class UserService {
 			throw new BadRequestException(INVALID_NEW_PASSWORD_FORMAT);
 		}
 	}
+
+	private User findUserOrElseThrow(Long userId) {
+		return userRepository.findActiveUserById(userId)
+			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+	}
+
 }

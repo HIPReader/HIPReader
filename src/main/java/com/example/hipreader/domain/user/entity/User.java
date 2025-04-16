@@ -1,7 +1,6 @@
 package com.example.hipreader.domain.user.entity;
 
 import com.example.hipreader.common.entity.TimeStamped;
-import com.example.hipreader.domain.user.dto.request.UpdateUserRequestDto;
 import com.example.hipreader.domain.user.gender.Gender;
 import com.example.hipreader.domain.user.role.UserRole;
 
@@ -31,16 +30,16 @@ public class User extends TimeStamped {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column
+	@Column(nullable = false)
 	private String nickname;
 
-	@Column
+	@Column(nullable = false)
 	private String email;
 
-	@Column
+	@Column(nullable = false)
 	private String password;
 
-	@Column
+	@Column(nullable = false)
 	private Integer age;
 
 	@Enumerated(EnumType.STRING)
@@ -50,9 +49,9 @@ public class User extends TimeStamped {
 	private Gender gender;
 
 	public void updateProfile(String nickname, Integer age, Gender gender) {
-		this.nickname = nickname != null ? nickname : this.nickname;
-		this.age = age != null ? age : this.age;
-		this.gender = gender != null ? gender : this.gender;
+		this.nickname = nickname;
+		this.age = age;
+		this.gender = gender;
 	}
 
 	public void changePassword(String password) {
