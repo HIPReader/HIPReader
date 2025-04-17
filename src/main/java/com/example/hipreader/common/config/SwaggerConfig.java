@@ -24,7 +24,7 @@ public class SwaggerConfig {
 		SecurityRequirement securityRequirement = new SecurityRequirement().addList("BearerAuth");
 
 		return new OpenAPI()
-			.info(new Info().title("API 문서")
+			.info(new Info().title("Hipreader 독서 커뮤니티 플랫폼을 구현해보는 프로젝트입니다.")
 				.description("API 명세서")
 				.version("v1.0"))
 			.addSecurityItem(securityRequirement) // Security Requirement 추가
