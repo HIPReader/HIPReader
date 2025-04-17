@@ -46,6 +46,7 @@ public class Discussion extends TimeStamped {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
+	@Builder.Default
 	private Status status = Status.WAITING;
 
 	@ManyToOne(fetch = FetchType.LAZY)
