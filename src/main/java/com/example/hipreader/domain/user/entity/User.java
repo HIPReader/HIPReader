@@ -49,9 +49,9 @@ public class User extends TimeStamped {
 	private Gender gender;
 
 	public void updateProfile(String nickname, Integer age, Gender gender) {
-		this.nickname = nickname;
-		this.age = age;
-		this.gender = gender;
+		if (nickname != null) this.nickname = nickname;
+		if (age != null) this.age = age;
+		if (gender != null) this.gender = gender;
 	}
 
 	public void changePassword(String password) {
