@@ -22,6 +22,6 @@ public interface UserBookRepository extends JpaRepository<UserBook, Long>, UserB
 
 	Page<UserBook> findByUserAndStatus(User user, Status status, Pageable pageable);
 
-	@Query("SELECT ub FROM UserBook ub JOIN FETCH ub.user JOIN FETCH ub.book")
+	@Query("SELECT ub FROM UserBook ub JOIN FETCH ub.user JOIN FETCH ub.book b JOIN FETCH b.authors a")
 	List<UserBook> findAllWithUserAndBook();
 }
