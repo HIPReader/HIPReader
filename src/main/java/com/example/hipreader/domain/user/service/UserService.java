@@ -39,7 +39,7 @@ public class UserService {
 
 	@Transactional(readOnly = true)
 	public Page<GetUserResponseDto> getAllUsers(int page, int size) {
-		PageRequest pageRequest = PageRequest.of(Math.max(0, page-1), size, Sort.by(Sort.Direction.DESC, "updatedAt"));
+		PageRequest pageRequest = PageRequest.of(Math.max(0, page), size, Sort.by(Sort.Direction.DESC, "updatedAt"));
 
 		return userRepository.findAllUserDto(pageRequest);
 	}
@@ -67,8 +67,6 @@ public class UserService {
 		User finduser = findUserOrElseThrow(authUser.getId());
 
 		passwordValidator.validateOldPassword(request.getPassword(), finduser.getPassword());
-		finduser.deleteUser();
-
 		finduser.deleteUser();
 	}
 

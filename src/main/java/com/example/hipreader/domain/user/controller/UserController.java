@@ -40,8 +40,8 @@ public class UserController {
 	}
 
 	@GetMapping
-	public ResponseEntity<Page<GetUserResponseDto>> getUsers(
-		@RequestParam(defaultValue = "1") int page,
+	public ResponseEntity<Page<GetUserResponseDto>> getAllUsers(
+		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size) {
 		Page<GetUserResponseDto> getUserResponseDto = userService.getAllUsers(page, size);
 
