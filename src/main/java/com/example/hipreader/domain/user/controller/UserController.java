@@ -43,7 +43,7 @@ public class UserController {
 	public ResponseEntity<Page<GetUserResponseDto>> getUsers(
 		@RequestParam(defaultValue = "1") int page,
 		@RequestParam(defaultValue = "10") int size) {
-		Page<GetUserResponseDto> getUserResponseDto = userService.getUsers(page, size);
+		Page<GetUserResponseDto> getUserResponseDto = userService.getAllUsers(page, size);
 
 		return new ResponseEntity<>(getUserResponseDto, HttpStatus.OK);
 	}
