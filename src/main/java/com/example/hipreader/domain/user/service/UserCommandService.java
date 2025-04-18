@@ -2,21 +2,15 @@ package com.example.hipreader.domain.user.service;
 
 import static com.example.hipreader.common.exception.ErrorCode.*;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.hipreader.auth.dto.AuthUser;
-import com.example.hipreader.common.exception.BadRequestException;
 import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.common.filter.PasswordValidator;
 import com.example.hipreader.domain.user.dto.request.ChangePasswordRequestDto;
 import com.example.hipreader.domain.user.dto.request.DeleteUserRequestDto;
 import com.example.hipreader.domain.user.dto.request.UpdateUserRequestDto;
-import com.example.hipreader.domain.user.dto.response.GetUserResponseDto;
 import com.example.hipreader.domain.user.dto.response.UpdateUserResponseDto;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
@@ -25,24 +19,10 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
-public class UserService {
+public class UserCommandService {
 
 	private final UserRepository userRepository;
 	private final PasswordValidator passwordValidator;
-
-	@Transactional(readOnly = true)
-	public GetUserResponseDto getUser(Long userId) {
-		return userRepository.findUserDtoById(userId)
-			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
-	}
-
-	@Transactional(readOnly = true)
-	public Page<GetUserResponseDto> getAllUsers(int page, int size) {
-		PageRequest pageRequest = PageRequest.of(Math.max(0, page), size, Sort.by(Sort.Direction.DESC, "updatedAt"));
-
-		return userRepository.findAllUserDto(pageRequest);
-	}
 
 	@Transactional
 	public UpdateUserResponseDto updateUser(AuthUser authUser, UpdateUserRequestDto updateUserRequestDto) {
@@ -74,5 +54,4 @@ public class UserService {
 		return userRepository.findActiveUserById(userId)
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 	}
-
 }

@@ -19,7 +19,8 @@ import com.example.hipreader.domain.user.dto.request.DeleteUserRequestDto;
 import com.example.hipreader.domain.user.dto.request.UpdateUserRequestDto;
 import com.example.hipreader.domain.user.dto.response.GetUserResponseDto;
 import com.example.hipreader.domain.user.dto.response.UpdateUserResponseDto;
-import com.example.hipreader.domain.user.service.UserService;
+import com.example.hipreader.domain.user.service.UserCommandService;
+import com.example.hipreader.domain.user.service.UserQueryService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,12 +30,13 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/users")
 public class UserController {
 
-	private final UserService userService;
+	private final UserCommandService userCommandService;
+	private final UserQueryService userQueryService;
 
 	@GetMapping("/{userId}")
 	public ResponseEntity<GetUserResponseDto> getUser(
 		@PathVariable @Valid Long userId) {
-		GetUserResponseDto getUserResponseDto = userService.getUser(userId);
+		GetUserResponseDto getUserResponseDto = userQueryService.getUser(userId);
 
 		return new ResponseEntity<>(getUserResponseDto, HttpStatus.OK);
 	}
@@ -43,7 +45,7 @@ public class UserController {
 	public ResponseEntity<Page<GetUserResponseDto>> getAllUsers(
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size) {
-		Page<GetUserResponseDto> getUserResponseDto = userService.getAllUsers(page, size);
+		Page<GetUserResponseDto> getUserResponseDto = userQueryService.getAllUsers(page, size);
 
 		return new ResponseEntity<>(getUserResponseDto, HttpStatus.OK);
 	}
@@ -52,7 +54,7 @@ public class UserController {
 	public ResponseEntity<UpdateUserResponseDto> updateUser(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestBody @Valid UpdateUserRequestDto requestDto) {
-		UpdateUserResponseDto updateUserResponseDto = userService.updateUser(authUser, requestDto);
+		UpdateUserResponseDto updateUserResponseDto = userCommandService.updateUser(authUser, requestDto);
 
 		return new ResponseEntity<>(updateUserResponseDto, HttpStatus.OK);
 	}
@@ -61,7 +63,7 @@ public class UserController {
 	public ResponseEntity<Void> changePassword(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestBody @Valid ChangePasswordRequestDto changePasswordRequestDto) {
-		userService.changePassword(authUser, changePasswordRequestDto);
+		userCommandService.changePassword(authUser, changePasswordRequestDto);
 
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
@@ -70,7 +72,7 @@ public class UserController {
 	public ResponseEntity<Void> deleteUser(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestBody @Valid DeleteUserRequestDto userDeleteRequestDto) {
-		userService.deleteUser(authUser, userDeleteRequestDto);
+		userCommandService.deleteUser(authUser, userDeleteRequestDto);
 
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
