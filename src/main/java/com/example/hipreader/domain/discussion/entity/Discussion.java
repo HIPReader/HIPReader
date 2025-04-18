@@ -76,4 +76,8 @@ public class Discussion extends TimeStamped {
 	public void updateStatus(Status status) {
 		this.status = status;
 	}
+
+	public void updateMode(DiscussionMode mode) {
+		this.mode = mode;
+	}
 }

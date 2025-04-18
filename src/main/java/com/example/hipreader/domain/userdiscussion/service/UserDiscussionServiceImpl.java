@@ -96,23 +96,18 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 
 		try {
 			// 4. 락을 획득하지 못하면 에러
-			if (!lock.tryLock(3, 2, TimeUnit.SECONDS)) {
+			if (!lock.tryLock(10, TimeUnit.SECONDS)) {
 				throw new RuntimeException("참여 요청이 몰리고 있습니다. 잠시 후 다시 시도해주세요.");
 			}
 
-			// 5. 현재 참여 승인된 인원 수 조회
-			long acceptedCount =
-				userDiscussionRepository.countByDiscussionAndStatus(discussion, ApplicationStatus.APPROVED);
-			if (acceptedCount >= discussion.getParticipants()) {
-				throw new BadRequestException(ALREADY_APPLIED);
-			}
-
-			// 6. 유저가 이미 신청했는지 확인
+			// 5. 유저가 이미 신청했는지 확인
 			boolean alreadyJoined =
 				userDiscussionRepository.existsByUserIdAndDiscussionId(authUser.getId(), discussion.getId());
 			if (alreadyJoined) {
 				throw new BadRequestException(ALREADY_APPLIED);
 			}
+
+			// 6. 현재 참여 승인된 인원 수 조회
 
 			// 7. 유저 정보 조회
 			User user = userRepository.findById(authUser.getId()).orElseThrow(
@@ -128,16 +123,39 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 				.statusUpdatedAt(LocalDateTime.now())
 				.build();
 
-			// 9. DB 저장
-			userDiscussionRepository.save(userDiscussion);
+			// 9. DB 저장 전 정원 확인
+			long acceptedCount =
+				userDiscussionRepository.countByDiscussionAndStatus(discussion, ApplicationStatus.APPROVED);
+			if (acceptedCount >= discussion.getParticipants()) {
+				throw new BadRequestException(DISCUSSION_FULL);
+			}
 
-			// 10. 응답 DTO 반환
+			// 10. DB 저장
+			userDiscussionRepository.saveAndFlush(userDiscussion);
+
+			long confirmedCount =
+				userDiscussionRepository.countByDiscussionAndStatus(discussion, ApplicationStatus.APPROVED);
+			if (confirmedCount > discussion.getParticipants()) {
+				throw new BadRequestException(DISCUSSION_FULL);
+			}
+
+			// // 11. 알림 전송
+			// notificationProducer.sendNotification(
+			// 	new NotificationMessage(
+			// 		userDiscussion.getUser().getId(),
+			// 		userDiscussion.getDiscussion().getId(),
+			// 		"APPROVED",
+			// 		LocalDateTime.now()
+			// 	)
+			// );
+
+			// 12. 응답 DTO 반환
 			return ApplyUserDiscussionResponseDto.toDto(userDiscussion);
 
 		} catch (InterruptedException e) {
 			throw new RuntimeException("락 처리 중 오류가 발생했습니다.");
 		} finally {
-			// 11. 락 해제
+			// 13. 락 해제
 			if (lock.isHeldByCurrentThread()) {
 				lock.unlock();
 			}
