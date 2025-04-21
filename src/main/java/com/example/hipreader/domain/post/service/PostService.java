@@ -3,6 +3,7 @@ package com.example.hipreader.domain.post.service;
 import static com.example.hipreader.common.exception.ErrorCode.*;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,8 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.hipreader.auth.dto.AuthUser;
 import com.example.hipreader.common.dto.response.PageResponseDto;
 import com.example.hipreader.common.exception.NotFoundException;
+import com.example.hipreader.common.exception.UnauthorizedException;
 import com.example.hipreader.domain.post.dto.request.SavePostRequestDto;
 import com.example.hipreader.domain.post.dto.request.UpdatePostRequestDto;
 import com.example.hipreader.domain.post.dto.response.SavePostResponseDto;
@@ -34,10 +37,8 @@ public class PostService {
 
 	// 게시물 생성
 	@Transactional
-	public SavePostResponseDto savePost(SavePostRequestDto requestDto) {
-		Long userId = 1L;
-
-		User user = userRepository.findUserById(userId)
+	public SavePostResponseDto savePost(SavePostRequestDto requestDto, AuthUser authUser) {
+		User user = userRepository.findUserById(authUser.getId())
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
 		Post post = Post.builder()
@@ -78,12 +79,15 @@ public class PostService {
 
 	// 게시물 수정
 	@Transactional
-	public UpdatePostResponseDto updatePosts(Long postId, UpdatePostRequestDto requestDto) {
-		// 작성자가 맞는지 확인
-
-		// 게시물 수정
+	public UpdatePostResponseDto updatePosts(Long postId, UpdatePostRequestDto requestDto, AuthUser authUser) {
 		Post findPost = findPostByIdOrElseThrow(postId);
 
+		// 작성자가 맞는지 확인
+		if (!Objects.equals(findPost.getUser().getId(), authUser.getId())) {
+			throw new UnauthorizedException(POST_UNAUTHORIZED);
+		}
+
+		// 게시물 수정
 		findPost.updateTitleIfNotNull(requestDto.getTitle());
 		findPost.updateContentIfNotNull(requestDto.getContent());
 
@@ -92,10 +96,14 @@ public class PostService {
 
 	// 게시물 삭제
 	@Transactional
-	public void deletePost(Long postId) {
-		// 작성자가 맞는지 확인
-
+	public void deletePost(Long postId, AuthUser authUser) {
 		Post findPost = findPostByIdOrElseThrow(postId);
+
+		// 작성자가 맞는지 확인
+		if (!Objects.equals(findPost.getUser().getId(), authUser.getId())) {
+			throw new UnauthorizedException(POST_UNAUTHORIZED);
+		}
+
 		findPost.setDeletedAt();
 	}
 

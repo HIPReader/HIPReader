@@ -2,6 +2,7 @@ package com.example.hipreader.domain.post.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.hipreader.auth.dto.AuthUser;
 import com.example.hipreader.common.dto.response.PageResponseDto;
 import com.example.hipreader.domain.post.dto.request.SavePostRequestDto;
 import com.example.hipreader.domain.post.dto.request.UpdatePostRequestDto;
@@ -32,8 +34,11 @@ public class PostController {
 
 	// 게시물 생성
 	@PostMapping("/v1/posts")
-	public ResponseEntity<SavePostResponseDto> savePost(@Valid @RequestBody SavePostRequestDto requestDto) {
-		SavePostResponseDto savePostResponseDto = postService.savePost(requestDto);
+	public ResponseEntity<SavePostResponseDto> savePost(
+		@Valid @RequestBody SavePostRequestDto requestDto,
+		@AuthenticationPrincipal AuthUser authUser
+	) {
+		SavePostResponseDto savePostResponseDto = postService.savePost(requestDto, authUser);
 
 		return new ResponseEntity<>(savePostResponseDto, HttpStatus.CREATED);
 	}
@@ -61,17 +66,21 @@ public class PostController {
 	@PatchMapping("/v1/posts/{postId}")
 	public ResponseEntity<UpdatePostResponseDto> updatePost(
 		@PathVariable Long postId,
-		@RequestBody UpdatePostRequestDto requestDto
+		@RequestBody UpdatePostRequestDto requestDto,
+		@AuthenticationPrincipal AuthUser authUser
 	) {
-		UpdatePostResponseDto updatePostResponseDto = postService.updatePosts(postId, requestDto);
+		UpdatePostResponseDto updatePostResponseDto = postService.updatePosts(postId, requestDto, authUser);
 
 		return new ResponseEntity<>(updatePostResponseDto, HttpStatus.OK);
 	}
 
 	// 게시물 삭제
 	@DeleteMapping("/v1/posts/{postId}")
-	public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
-		postService.deletePost(postId);
+	public ResponseEntity<Void> deletePost(
+		@PathVariable Long postId,
+		@AuthenticationPrincipal AuthUser authUser
+	) {
+		postService.deletePost(postId, authUser);
 
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
