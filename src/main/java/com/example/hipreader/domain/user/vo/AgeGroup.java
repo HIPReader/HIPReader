@@ -1,4 +1,4 @@
-package com.example.hipreader.domain.user.age;
+package com.example.hipreader.domain.user.vo;
 
 import lombok.Getter;
 

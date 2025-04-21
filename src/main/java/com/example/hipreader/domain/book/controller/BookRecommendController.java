@@ -13,7 +13,7 @@ import com.example.hipreader.common.dto.response.PageResponseDto;
 import com.example.hipreader.domain.book.dto.response.BookRecommendResponseDto;
 import com.example.hipreader.domain.book.genre.Genre;
 import com.example.hipreader.domain.book.service.BookRecommendService;
-import com.example.hipreader.domain.user.gender.Gender;
+import com.example.hipreader.domain.user.vo.Gender;
 
 import lombok.RequiredArgsConstructor;
 

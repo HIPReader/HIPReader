@@ -16,9 +16,9 @@ import com.example.hipreader.common.util.JwtUtil;
 import com.example.hipreader.auth.entity.RefreshToken;
 import com.example.hipreader.auth.repository.RefreshTokenRepository;
 import com.example.hipreader.domain.user.entity.User;
-import com.example.hipreader.domain.user.gender.Gender;
+import com.example.hipreader.domain.user.vo.Gender;
 import com.example.hipreader.domain.user.repository.UserRepository;
-import com.example.hipreader.domain.user.role.UserRole;
+import com.example.hipreader.domain.user.vo.UserRole;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

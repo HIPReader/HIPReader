@@ -1,5 +1,4 @@
-package com.example.hipreader.domain.user.role;
-
+package com.example.hipreader.domain.user.vo;
 
 import java.util.Arrays;
 

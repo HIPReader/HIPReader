@@ -1,8 +1,8 @@
 package com.example.hipreader.domain.user.entity;
 
 import com.example.hipreader.common.entity.TimeStamped;
-import com.example.hipreader.domain.user.gender.Gender;
-import com.example.hipreader.domain.user.role.UserRole;
+import com.example.hipreader.domain.user.vo.Gender;
+import com.example.hipreader.domain.user.vo.UserRole;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -48,7 +48,7 @@ public class User extends TimeStamped {
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
 
-	public void updateProfile(String nickname, Integer age, Gender gender) {
+	public void patchProfile(String nickname, Integer age, Gender gender) {
 		if (nickname != null) this.nickname = nickname;
 		if (age != null) this.age = age;
 		if (gender != null) this.gender = gender;
