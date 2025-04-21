@@ -79,7 +79,7 @@ public class PostService {
 
 	// 게시물 수정
 	@Transactional
-	public UpdatePostResponseDto updatePosts(Long postId, UpdatePostRequestDto requestDto, AuthUser authUser) {
+	public UpdatePostResponseDto patchPost(Long postId, UpdatePostRequestDto requestDto, AuthUser authUser) {
 		Post findPost = findPostByIdOrElseThrow(postId);
 
 		// 작성자가 맞는지 확인

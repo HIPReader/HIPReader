@@ -64,12 +64,12 @@ public class PostController {
 
 	// 게시물 수정
 	@PatchMapping("/v1/posts/{postId}")
-	public ResponseEntity<UpdatePostResponseDto> updatePost(
+	public ResponseEntity<UpdatePostResponseDto> patchPost(
 		@PathVariable Long postId,
 		@RequestBody UpdatePostRequestDto requestDto,
 		@AuthenticationPrincipal AuthUser authUser
 	) {
-		UpdatePostResponseDto updatePostResponseDto = postService.updatePosts(postId, requestDto, authUser);
+		UpdatePostResponseDto updatePostResponseDto = postService.patchPost(postId, requestDto, authUser);
 
 		return new ResponseEntity<>(updatePostResponseDto, HttpStatus.OK);
 	}
