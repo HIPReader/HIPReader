@@ -12,7 +12,7 @@ import com.example.hipreader.auth.dto.AuthUser;
 import com.example.hipreader.common.config.JwtAuthenticationToken;
 import com.example.hipreader.common.exception.UnauthorizedException;
 import com.example.hipreader.common.util.JwtUtil;
-import com.example.hipreader.domain.user.role.UserRole;
+import com.example.hipreader.domain.user.vo.UserRole;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

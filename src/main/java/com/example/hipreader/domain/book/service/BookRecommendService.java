@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.example.hipreader.common.dto.response.PageResponseDto;
 import com.example.hipreader.domain.book.dto.response.BookRecommendResponseDto;
 import com.example.hipreader.domain.book.entity.Book;
-import com.example.hipreader.domain.user.gender.Gender;
+import com.example.hipreader.domain.user.vo.Gender;
 import com.example.hipreader.domain.userbook.document.UserBookDocument;
 import com.example.hipreader.domain.userbook.repository.UserBookRepository;
 import com.example.hipreader.domain.userbook.service.UserBookSearchService;
