@@ -37,6 +37,7 @@ out/
 .vscode/
 application.properties
 application.yml
+/src/main/resources/local
 application-local.yml
 .env
 /src/main/resources/book.csv
