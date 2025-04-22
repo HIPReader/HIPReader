@@ -38,7 +38,7 @@ public class UserBookDocument {
 	private String categoryName;
 
 	@Field(type = FieldType.Keyword)
-	private Gender gender;
+	private String gender;
 
 	private Integer ageGroup; // 10, 20, 30, 40
 }

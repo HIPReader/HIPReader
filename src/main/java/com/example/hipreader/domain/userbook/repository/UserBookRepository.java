@@ -1,5 +1,6 @@
 package com.example.hipreader.domain.userbook.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.example.hipreader.domain.book.entity.Book;
@@ -20,8 +21,12 @@ public interface UserBookRepository extends JpaRepository<UserBook, Long>, UserB
 
 	UserBook findByIdAndUser(long id, User user);
 
+	@Query("SELECT ub FROM UserBook ub JOIN FETCH ub.user JOIN FETCH ub.book b JOIN FETCH b.authors a")
+	List<UserBook> findAllWithUserAndBook();
+
+	Page<UserBook> findByUserAndStatusAndCreatedAtBetween(User user, Status status, LocalDateTime createdAtAfter, LocalDateTime createdAtBefore, Pageable pageable);
+
 	Page<UserBook> findByUserAndStatus(User user, Status status, Pageable pageable);
 
-	@Query("SELECT ub FROM UserBook ub JOIN FETCH ub.user JOIN FETCH ub.book")
-	List<UserBook> findAllWithUserAndBook();
+	List<UserBook> findByUserAndStatus(User user, Status status);
 }

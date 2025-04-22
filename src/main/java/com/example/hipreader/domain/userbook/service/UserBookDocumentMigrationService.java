@@ -1,6 +1,7 @@
 package com.example.hipreader.domain.userbook.service;
 
 import com.example.hipreader.domain.book.entity.Author;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,8 +49,8 @@ public class UserBookDocumentMigrationService {
 		Book book = userBook.getBook();
 
 		String authors = book.getAuthors().stream()
-				.map(Author::getName)
-				.collect(Collectors.joining(", "));
+			.map(Author::getName)
+			.collect(Collectors.joining(", "));
 
 		return UserBookDocument.builder()
 			.id(user.getId() + "_" + book.getId())
@@ -57,7 +58,7 @@ public class UserBookDocumentMigrationService {
 			.author(authors)
 			.publisher(book.getPublisher())
 			.coverImage(book.getCoverImage())
-			.gender(user.getGender())
+			.gender(user.getGender().name())
 			.categoryName(book.getCategoryName())
 			.ageGroup((user.getAge() / 10) * 10)
 			.build();
