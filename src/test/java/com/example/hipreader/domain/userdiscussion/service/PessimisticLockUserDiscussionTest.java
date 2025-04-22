@@ -2,6 +2,8 @@ package com.example.hipreader.domain.userdiscussion.service;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -166,18 +168,90 @@ public class PessimisticLockUserDiscussionTest {
 	@ValueSource(ints = {100, 500, 1000})
 	@DisplayName("[Pessimistic] 다양한 신청 인원에 대한 성능 테스트 (10회 반복)")
 	void testPessimisticLock_MultiSize(int totalUsers) throws InterruptedException, IOException {
+		// 평균 통계를 위한 변수 초기화
 		long totalElapsedTime = 0;
 		int totalSuccess = 0;
 		int totalFailure = 0;
 		int totalException = 0;
-		
+
+		StringBuilder resultLog = new StringBuilder();
+		resultLog.append("==== 신청자 수: ").append(totalUsers).append("명 테스트 시작 ====\n");
+
 		for (int i = 1; i <= 10; i++) {
 			System.out.println("반복 회차: " + i + " (신청자 수: " + totalUsers + ")");
 			this.totalUsers = totalUsers;
-			setUp(); // 매회 새로운 유저/토론방 생성
-			testPessimisticLockApply();
-			System.out.println("-------------");
+			setUp(); // 매 회차마다 유저 및 디스커션 새로 생성
+
+			StopWatch stopWatch = new StopWatch();
+			stopWatch.start();
+
+			ExecutorService executor = Executors.newFixedThreadPool(20);
+			CountDownLatch latch = new CountDownLatch(totalUsers);
+
+			List<Long> successUsers = Collections.synchronizedList(new ArrayList<>());
+			List<Long> failedUsers = Collections.synchronizedList(new ArrayList<>());
+			List<Exception> exceptions = Collections.synchronizedList(new ArrayList<>());
+
+			List<User> users = userRepository.findAll();
+			final Discussion discussionCopy = this.discussion;
+
+			for (int j = 0; j < totalUsers; j++) {
+				final int index = j;
+				executor.submit(() -> {
+					try {
+						AuthUser authUser = new AuthUser(users.get(index).getId(), users.get(index).getEmail(),
+							users.get(index).getRole());
+						ApplyUserDiscussionRequestDto dto = new ApplyUserDiscussionRequestDto(discussionCopy.getId());
+
+						Thread.sleep(30); // 경합 조건을 유도하기 위한 지연
+						synchronized (UserDiscussionService.class) {
+							userDiscussionService.applyWithPessimisticLock(authUser, dto);
+						}
+
+						successUsers.add(authUser.getId());
+					} catch (Exception e) {
+						failedUsers.add(users.get(index).getId());
+						exceptions.add(e);
+					} finally {
+						latch.countDown();
+					}
+				});
+			}
+
+			latch.await();
+			executor.shutdown();
+			stopWatch.stop();
+
+			long elapsed = stopWatch.getTotalTimeMillis();
+			int success = successUsers.size();
+			int failure = failedUsers.size();
+			int exception = exceptions.size();
+
+			resultLog.append("회차 ").append(i)
+				.append(" - 소요 시간: ").append(elapsed).append("ms")
+				.append(", 성공: ").append(success)
+				.append(", 실패:  ").append(failure)
+				.append(", 에외").append(exception).append("\n");
+
+			totalElapsedTime += elapsed;
+			totalSuccess += success;
+			totalFailure += failure;
+			totalException += exception;
 		}
 
+		resultLog.append("== 평균 결과 ==\n")
+			.append("평균 시간: ").append(totalElapsedTime / 10).append("ms\n")
+			.append("평균 성공 수: ").append(totalSuccess / 10).append("\n")
+			.append("평균 실패 수: ").append(totalFailure / 10).append("\n")
+			.append("평균 예외 수: ").append(totalException).append("\n");
+
+		// 파일로 결과 저장
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter("pessimistic_test_summary.txt", true))) {
+			writer.write(resultLog.toString());
+			writer.newLine();
+		}
+
+		// 콘솔 출력
+		System.out.println(resultLog);
 	}
 }
