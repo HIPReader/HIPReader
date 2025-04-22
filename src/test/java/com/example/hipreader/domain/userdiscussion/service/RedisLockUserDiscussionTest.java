@@ -37,7 +37,7 @@ import com.example.hipreader.domain.userdiscussion.status.DiscussionMode;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Commit
-public class UserDiscussionConcurrencyTest {
+public class RedisLockUserDiscussionTest {
 
 	@Autowired
 	private UserDiscussionService userDiscussionService;

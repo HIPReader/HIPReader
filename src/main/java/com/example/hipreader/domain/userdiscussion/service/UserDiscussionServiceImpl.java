@@ -162,6 +162,41 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 		}
 	}
 
+	@Transactional
+	public ApplyUserDiscussionResponseDto applyWithPessimisticLock(AuthUser authUser,
+		ApplyUserDiscussionRequestDto requestDto) {
+		Discussion discussion = discussionRepository.findByIdWithPessimisticLock(requestDto.getDiscussionId())
+			.orElseThrow(() -> new NotFoundException(DISCUSSION_NOT_FOUND));
+
+		if (discussion.getMode() != DiscussionMode.AUTO_APPROVAL) {
+			throw new BadRequestException(INVALID_REQUEST);
+		}
+
+		if (userDiscussionRepository.existsByUserIdAndDiscussionId(authUser.getId(), discussion.getId())) {
+			throw new BadRequestException(ALREADY_APPLIED);
+		}
+
+		long acceptedCount = userDiscussionRepository.countByDiscussionAndStatus(discussion,
+			ApplicationStatus.APPROVED);
+		if (acceptedCount >= discussion.getParticipants()) {
+			throw new BadRequestException(DISCUSSION_FULL);
+		}
+
+		User user = userRepository.findById(authUser.getId())
+			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+
+		UserDiscussion userDiscussion = UserDiscussion.builder()
+			.discussion(discussion)
+			.user(user)
+			.status(ApplicationStatus.APPROVED)
+			.appliedAt(LocalDateTime.now())
+			.statusUpdatedAt(LocalDateTime.now())
+			.build();
+
+		userDiscussionRepository.save(userDiscussion);
+		return ApplyUserDiscussionResponseDto.toDto(userDiscussion);
+	}
+
 	@Override
 	@Transactional
 	public ApproveUserDiscussionResponseDto approve(Long userDiscussionId) {
