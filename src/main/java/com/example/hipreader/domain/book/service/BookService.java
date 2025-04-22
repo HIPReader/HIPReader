@@ -1,19 +1,26 @@
 package com.example.hipreader.domain.book.service;
 
+import com.example.hipreader.auth.dto.AuthUser;
+import com.example.hipreader.common.exception.BadRequestException;
 import static com.example.hipreader.common.exception.ErrorCode.*;
 
 import com.example.hipreader.common.dto.response.PageResponseDto;
 import com.example.hipreader.domain.book.dto.request.AladinBookDto;
 import com.example.hipreader.common.exception.NotFoundException;
-import com.example.hipreader.domain.book.dto.request.BooksRequestDto;
-import com.example.hipreader.domain.book.dto.response.BooksResponseDto;
+import com.example.hipreader.domain.book.dto.request.BookRequestDto;
+import com.example.hipreader.domain.book.dto.response.BookResponseDto;
+import com.example.hipreader.domain.book.dto.response.FindBookResponseDto;
+import com.example.hipreader.domain.book.dto.response.PatchBookResponseDto;
 import com.example.hipreader.domain.book.entity.Author;
 import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.book.repository.BookRepository;
 
+import com.example.hipreader.domain.user.entity.User;
+import com.example.hipreader.domain.user.repository.UserRepository;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,15 +31,25 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-public class BooksService {
+public class BookService {
 
 	private final AladinService aladinService;
 	private final BookRepository bookRepository;
+	private final UserRepository userRepository;
 
 	@Transactional
-	public BooksResponseDto registerBook(BooksRequestDto dto) {
+	public BookResponseDto registerBook(AuthUser authUser, BookRequestDto dto) {
+
+		User user = userRepository.findUserById(authUser.getId())
+				.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+
+		if (bookRepository.existsByIsbn13(dto.getIsbn13())) {
+			throw new BadRequestException(BOOK_DUPLICATION);
+		}
+
 		Book book = Book.builder()
 			.title(dto.getTitle())
 			.isbn13(dto.getIsbn13())
@@ -49,34 +66,37 @@ public class BooksService {
 		}
 
 		Book register = bookRepository.save(book);
-		return new BooksResponseDto(register);
+		return BookResponseDto.toDto(register);
 	}
 
 	@Transactional
-	public BooksResponseDto updateBook(Long id, BooksRequestDto dto) {
+	public PatchBookResponseDto patchBook(AuthUser authUser, Long bookId, BookRequestDto dto) {
+
+		User user = userRepository.findUserById(authUser.getId())
+				.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+
+		Book book = bookRepository.findById(bookId).orElseThrow(
+			() -> new NotFoundException(BOOK_NOT_FOUND));
+
+		book.patchBook(dto);
+
+		return PatchBookResponseDto.toDto(book);
+	}
+
+	@Transactional(readOnly = true)
+	public FindBookResponseDto findBook(@PathVariable Long id) {
 		Book book = bookRepository.findById(id).orElseThrow(
 			() -> new NotFoundException(BOOK_NOT_FOUND)
 		);
 
-		dto.applyIfChanged(dto, book);
-
-		return new BooksResponseDto(book);
+		return FindBookResponseDto.toDto(book);
 	}
 
 	@Transactional(readOnly = true)
-	public BooksResponseDto findBook(@PathVariable Long id) {
-		Book book = bookRepository.findById(id).orElseThrow(
-			() -> new NotFoundException(BOOK_NOT_FOUND)
-		);
-
-		return new BooksResponseDto(book);
-	}
-
-	@Transactional(readOnly = true)
-	public PageResponseDto<BooksResponseDto> findAllBooks(Pageable pageable) {
+	public PageResponseDto<FindBookResponseDto> findAllBooks(Pageable pageable) {
 
 		Page<Book> books = bookRepository.findAll(pageable);
-		Page<BooksResponseDto> booksResponseDtos = books.map(BooksResponseDto::new);
+		Page<FindBookResponseDto> booksResponseDtos = books.map(FindBookResponseDto::toDto);
 
 		return new PageResponseDto<>(booksResponseDtos);
 	}
@@ -88,8 +108,8 @@ public class BooksService {
 	}
 
 	@Transactional
-	public List<BooksResponseDto> saveBooksFromAladin(List<AladinBookDto> dtoList) {
-		List<BooksResponseDto> result = new ArrayList<>();
+	public List<BookResponseDto> saveBooksFromAladin(List<AladinBookDto> dtoList) {
+		List<BookResponseDto> result = new ArrayList<>();
 
 		for (AladinBookDto dto : dtoList) {
 			if (dto.getItemPage() == null) {
@@ -114,7 +134,7 @@ public class BooksService {
 				List<Author> authors = parseAuthors(dto.getAuthor(), book);
 				book.addAuthors(authors);
 				Book saved = bookRepository.save(book);
-				result.add(new BooksResponseDto(saved));
+				result.add(BookResponseDto.toDto(saved));
 
 			}
 		}
@@ -144,6 +164,7 @@ public class BooksService {
 				return LocalDate.parse(pubDateStr + "-01"); // yyyy-MM → yyyy-MM-01
 			}
 		} catch (Exception e) {
+			log.warn("parsing pub date has problem");
 		}
 		return LocalDate.now();
 	}
