@@ -34,12 +34,15 @@ public class BookScore {
 	private Book book;
 
 	@Column(nullable = false)
+	@Builder.Default
 	private long toRead = 0L;
 
 	@Column(nullable = false)
+	@Builder.Default
 	private long reading = 0L;
 
 	@Column(nullable = false)
+	@Builder.Default
 	private long finished = 0L;
 
 	@Transient

@@ -37,13 +37,7 @@ public class SearchService {
     List<AladinBookDto> aladinResults = aladinService.searchBooks(keyword);
     List<BooksResponseDto> savedBooks = booksService.saveBooksFromAladin(aladinResults);
 
-    saveSearchLog(keyword);
     return savedBooks;
-  }
-
-  private void saveSearchLog(String keyword) {
-    log.info("검색 로그 저장 - keyword: {}", keyword);
-    // 나중에 Elasticsearch 저장용으로 확장 가능
   }
 }
 

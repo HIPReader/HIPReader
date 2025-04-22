@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -39,6 +40,13 @@ public class SecurityConfig {
 				.requestMatchers("/api/v1/**").permitAll()
 				.requestMatchers("/api/v2/**").permitAll()
 				.requestMatchers("/api/v3/**").permitAll()
+				.requestMatchers("/swagger-ui/**").permitAll()
+				.requestMatchers("/swagger-ui.html").permitAll()
+				.requestMatchers("/v3/api-docs/**").permitAll()
+				.requestMatchers("/v3/api-docs").permitAll()
+				.requestMatchers("/swagger-resources/**").permitAll()
+				.requestMatchers("/swagger-resources").permitAll()
+				.requestMatchers("/webjars/**").permitAll()
 				.anyRequest().authenticated())
 			.formLogin(AbstractHttpConfigurer::disable)
 			.anonymous(AbstractHttpConfigurer::disable)
@@ -48,5 +56,18 @@ public class SecurityConfig {
 			.addFilterBefore(jwtAuthenticationFilter, SecurityContextHolderAwareRequestFilter.class);
 
 		return http.build();
+	}
+
+	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		return (web) -> web.ignoring().requestMatchers(
+			"/swagger-ui/**",
+			"/swagger-ui.html",
+			"/v3/api-docs",
+			"/v3/api-docs/**",
+			"/swagger-resources/**",
+			"/swagger-resources",
+			"/webjars/**"
+		);
 	}
 }

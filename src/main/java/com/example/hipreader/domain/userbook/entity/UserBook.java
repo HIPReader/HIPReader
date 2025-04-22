@@ -1,5 +1,6 @@
 package com.example.hipreader.domain.userbook.entity;
 
+import com.example.hipreader.common.entity.TimeStamped;
 import static com.example.hipreader.common.exception.ErrorCode.*;
 
 import com.example.hipreader.common.exception.BadRequestException;
@@ -8,6 +9,7 @@ import com.example.hipreader.domain.userbook.status.Status;
 import com.example.hipreader.domain.user.entity.User;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +22,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "user_books",
 	uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "book_id"}))
-public class UserBook {
+public class UserBook extends TimeStamped {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
