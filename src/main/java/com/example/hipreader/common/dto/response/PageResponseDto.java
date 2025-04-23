@@ -2,8 +2,6 @@ package com.example.hipreader.common.dto.response;
 
 import java.util.List;
 
-import com.example.hipreader.domain.book.dto.response.BooksResponseDto;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
