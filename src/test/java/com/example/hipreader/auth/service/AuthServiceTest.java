@@ -17,11 +17,15 @@ import org.springframework.web.server.ResponseStatusException;
 import com.example.hipreader.auth.dto.request.SigninRequestDto;
 import com.example.hipreader.auth.dto.request.SignupRequestDto;
 import com.example.hipreader.auth.dto.response.SigninResponseDto;
+import com.example.hipreader.common.exception.BadRequestException;
+import com.example.hipreader.common.exception.ConflictException;
+import com.example.hipreader.common.exception.NotFoundException;
+import com.example.hipreader.common.exception.UnauthorizedException;
 import com.example.hipreader.common.util.JwtUtil;
 import com.example.hipreader.auth.repository.RefreshTokenRepository;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
-import com.example.hipreader.domain.user.role.UserRole;
+import com.example.hipreader.domain.user.vo.UserRole;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -58,7 +62,7 @@ class AuthServiceTest {
 
 		// When & Then
 		assertThatThrownBy(() -> authService.signUp(request))
-			.isInstanceOf(ResponseStatusException.class)
+			.isInstanceOf(ConflictException.class)
 			.hasMessageContaining(USER_EMAIL_DUPLICATION.getMessage());
 	}
 
@@ -101,7 +105,7 @@ class AuthServiceTest {
 
 		// When & Then
 		assertThatThrownBy(() -> authService.signIn(request))
-			.isInstanceOf(ResponseStatusException.class)
+			.isInstanceOf(NotFoundException.class)
 			.hasMessageContaining(USER_NOT_FOUND.getMessage());
 	}
 
@@ -119,7 +123,7 @@ class AuthServiceTest {
 
 		// When & Then
 		assertThatThrownBy(() -> authService.signIn(request))
-			.isInstanceOf(ResponseStatusException.class)
+			.isInstanceOf(BadRequestException.class)
 			.hasMessageContaining(INVALID_PASSWORD.getMessage());
 	}
 }
