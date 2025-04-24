@@ -29,7 +29,7 @@ public enum ErrorCode {
 	EXPIRED_TOKEN("만료된 토큰입니다.", UNAUTHORIZED),
 	TOKEN_DUPLICATED("중복된 토큰입니다.", CONFLICT),
 	INVALID_ACCESS_TOKEN("유효하지 않은 AccessToken 입니다.", UNAUTHORIZED),
-	NEED_LOGIN("재로그인이 필요합니다.",UNAUTHORIZED),
+	NEED_LOGIN("재로그인이 필요합니다.", UNAUTHORIZED),
 	INVALID_REFRESH_TOKEN("유효하지 않은 REFRESHTOKEN입니다.", UNAUTHORIZED),
 
 	// 리뷰 관련 예외 코드
@@ -65,7 +65,9 @@ public enum ErrorCode {
 	// 토론 관련 예외 코드
 	DISCUSSION_NOT_FOUND("해당 토론을 찾을 수 없습니다.", NOT_FOUND),
 	APPLICATION_NOT_FOUND("신청 내역을 찾을 수 없습니다.", NOT_FOUND),
-	ALREADY_APPLIED("이미 신청한 토론방입니다.", BAD_REQUEST);
+	ALREADY_APPLIED("이미 신청한 토론방입니다.", BAD_REQUEST),
+	DISCUSSION_NOT_ACTIVE("현재 참여할 수 없는 토론방입니다.", BAD_REQUEST),
+	USER_NOT_APPROVED("토론방 참여 승인이 필요합니다.", UNAUTHORIZED);
 
 	private final String message;
 	private final HttpStatus status;

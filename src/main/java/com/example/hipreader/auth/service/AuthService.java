@@ -56,7 +56,8 @@ public class AuthService {
 
 		User savedUser = userRepository.save(newUser);
 
-		String accessToken = jwtUtil.createAccessToken(savedUser.getId(),savedUser.getEmail(),userRole,savedUser.getNickname());
+		String accessToken = jwtUtil.createAccessToken(savedUser.getId(), savedUser.getEmail(), userRole,
+			savedUser.getNickname());
 
 		return new SignupResponseDto(accessToken);
 	}
@@ -84,7 +85,7 @@ public class AuthService {
 
 		refreshTokenRepository.save(new RefreshToken(refreshToken, user.getId()));
 
-		return new SigninResponseDto(accessToken, refreshToken);
+		return new SigninResponseDto(accessToken, refreshToken, user.getNickname());
 	}
 
 }
