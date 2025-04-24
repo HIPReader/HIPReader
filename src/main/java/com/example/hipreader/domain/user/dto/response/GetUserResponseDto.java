@@ -13,6 +13,7 @@ import lombok.Getter;
 public class GetUserResponseDto {
 
 	private final Long userId;
+	private final String nickname;
 	private final String email;
 	private final Integer age;
 	private final Gender gender;
@@ -23,6 +24,7 @@ public class GetUserResponseDto {
 			.email(user.getEmail())
 			.age(user.getAge())
 			.gender(user.getGender())
+			.nickname(user.getNickname())
 			.build();
 	}
 }
