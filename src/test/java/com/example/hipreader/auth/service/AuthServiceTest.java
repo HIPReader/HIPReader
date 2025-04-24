@@ -12,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.example.hipreader.auth.dto.request.SigninRequestDto;
 import com.example.hipreader.auth.dto.request.SignupRequestDto;
@@ -20,7 +19,6 @@ import com.example.hipreader.auth.dto.response.SigninResponseDto;
 import com.example.hipreader.common.exception.BadRequestException;
 import com.example.hipreader.common.exception.ConflictException;
 import com.example.hipreader.common.exception.NotFoundException;
-import com.example.hipreader.common.exception.UnauthorizedException;
 import com.example.hipreader.common.util.JwtUtil;
 import com.example.hipreader.auth.repository.RefreshTokenRepository;
 import com.example.hipreader.domain.user.entity.User;
