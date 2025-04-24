@@ -9,11 +9,9 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.server.ResponseStatusException;
 
-import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.common.exception.UnauthorizedException;
-import com.example.hipreader.domain.user.role.UserRole;
+import com.example.hipreader.domain.user.vo.UserRole;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

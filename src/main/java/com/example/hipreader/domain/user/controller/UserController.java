@@ -27,13 +27,13 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api")
 public class UserController {
 
 	private final UserCommandService userCommandService;
 	private final UserQueryService userQueryService;
 
-	@GetMapping("/{userId}")
+	@GetMapping("/v1/users/{userId}")
 	public ResponseEntity<GetUserResponseDto> getUser(
 		@PathVariable @Valid Long userId) {
 		GetUserResponseDto getUserResponseDto = userQueryService.getUser(userId);
@@ -41,7 +41,7 @@ public class UserController {
 		return new ResponseEntity<>(getUserResponseDto, HttpStatus.OK);
 	}
 
-	@GetMapping
+	@GetMapping("/v1/users")
 	public ResponseEntity<Page<GetUserResponseDto>> getAllUsers(
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size) {
@@ -50,8 +50,8 @@ public class UserController {
 		return new ResponseEntity<>(getUserResponseDto, HttpStatus.OK);
 	}
 
-	@PatchMapping
-	public ResponseEntity<UpdateUserResponseDto> updateUser(
+	@PatchMapping("/v1/users")
+	public ResponseEntity<UpdateUserResponseDto> patchUser(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestBody @Valid UpdateUserRequestDto requestDto) {
 		UpdateUserResponseDto updateUserResponseDto = userCommandService.updateUser(authUser, requestDto);
@@ -59,7 +59,7 @@ public class UserController {
 		return new ResponseEntity<>(updateUserResponseDto, HttpStatus.OK);
 	}
 
-	@PatchMapping("/password")
+	@PatchMapping("/v1/users/password")
 	public ResponseEntity<Void> changePassword(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestBody @Valid ChangePasswordRequestDto changePasswordRequestDto) {
@@ -68,7 +68,7 @@ public class UserController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	@DeleteMapping("/{userId}")
+	@DeleteMapping("/v1/users/{userId}")
 	public ResponseEntity<Void> deleteUser(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestBody @Valid DeleteUserRequestDto userDeleteRequestDto) {

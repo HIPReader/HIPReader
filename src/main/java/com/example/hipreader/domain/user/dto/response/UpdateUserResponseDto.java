@@ -1,7 +1,7 @@
 package com.example.hipreader.domain.user.dto.response;
 
 import com.example.hipreader.domain.user.entity.User;
-import com.example.hipreader.domain.user.gender.Gender;
+import com.example.hipreader.domain.user.vo.Gender;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

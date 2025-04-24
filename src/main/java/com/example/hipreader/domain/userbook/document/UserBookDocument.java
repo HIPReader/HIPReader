@@ -5,7 +5,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import com.example.hipreader.domain.user.gender.Gender;
+import com.example.hipreader.domain.user.vo.Gender;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

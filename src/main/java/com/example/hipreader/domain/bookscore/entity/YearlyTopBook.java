@@ -17,12 +17,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "yearly_book_scores")
+@Table(name = "yearly_top_books")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class YearlyBookScore {
+public class YearlyTopBook {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -36,9 +36,4 @@ public class YearlyBookScore {
 
 	@Column(nullable = false)
 	private long totalScore;
-
-	public void updateTopBook(Book book, long totalScore) {
-		this.book = book;
-		this.totalScore = totalScore;
-	}
 }

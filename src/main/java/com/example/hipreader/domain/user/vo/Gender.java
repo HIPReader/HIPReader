@@ -1,4 +1,4 @@
-package com.example.hipreader.domain.user.gender;
+package com.example.hipreader.domain.user.vo;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

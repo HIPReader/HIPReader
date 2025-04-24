@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/statics")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserBookStatisticsController {
 
   private final UserBookStaticsService userBookStaticsService;
 
-  @GetMapping("/yearly")
+  @GetMapping("/v1/statics/yearly")
   public ResponseEntity<YearlyStaticResponseDto> getYearlyStatistics(
       @AuthenticationPrincipal AuthUser authUser,
       @RequestParam(defaultValue = "1") int page,
@@ -29,7 +29,7 @@ public class UserBookStatisticsController {
     return new ResponseEntity<>(userBookStaticsService.getYearlyStatics(authUser, page, size), HttpStatus.OK);
   }
 
-  @GetMapping("/average")
+  @GetMapping("/v1/statics/average")
   public ResponseEntity<AverageStaticResponseDto> getAverageStatics(@AuthenticationPrincipal AuthUser authUser) {
     return new ResponseEntity<>(userBookStaticsService.getAverageStatics(authUser), HttpStatus.OK);
   }
