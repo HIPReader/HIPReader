@@ -20,7 +20,7 @@ public class FindBookResponseDto {
   private String publisher;
 
   public static FindBookResponseDto toDto (Book book) {
-    String authors = book.getAuthors().stream().map(Author::toString).collect(Collectors.joining(","));
+    String authors = book.getAuthors().stream().map(Author::getName).collect(Collectors.joining(","));
 
     return FindBookResponseDto.builder()
         .id(book.getId())

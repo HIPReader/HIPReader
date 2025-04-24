@@ -30,7 +30,7 @@ public class BookResponseDto {
 	private LocalDateTime updatedAt;
 
 	public static BookResponseDto toDto (Book book) {
-		String authors = book.getAuthors().stream().map(Author::toString).collect(Collectors.joining(","));
+		String authors = book.getAuthors().stream().map(Author::getName).collect(Collectors.joining(", "));
 
 		return BookResponseDto.builder()
 				.id(book.getId())
