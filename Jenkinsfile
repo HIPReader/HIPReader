@@ -21,6 +21,12 @@ pipeline {
     AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     S3_BUCKET = credentials('S3_BUCKET')
+
+    // RabbitMQ
+    RABBITMQ_HOST = credentials('RABBITMQ_HOST')
+    RABBITMQ_PORT = credentials('RABBITMQ_PORT')
+    RABBITMQ_USERNAME = credentials('RABBITMQ_USERNAME')
+    RABBITMQ_PASSWORD = credentials('RABBITMQ_PASSWORD')
   }
 
   stages {
@@ -73,7 +79,11 @@ pipeline {
                   { "name": "AWS_ACCESS_KEY_ID", "value": "${AWS_ACCESS_KEY_ID}" },
                   { "name": "AWS_SECRET_ACCESS_KEY", "value": "${AWS_SECRET_ACCESS_KEY}" },
                   { "name": "S3_BUCKET", "value": "${S3_BUCKET}" },
-                  { "name": "AWS_REGION", "value": "${AWS_REGION}" }
+                  { "name": "AWS_REGION", "value": "${AWS_REGION}" },
+                  { "name": "RABBITMQ_HOST", "value": "${RABBITMQ_HOST}" },
+                  { "name": "RABBITMQ_PORT", "value": "${RABBITMQ_PORT}" },
+                  { "name": "RABBITMQ_USERNAME", "value": "${RABBITMQ_USERNAME}" },
+                  { "name": "RABBITMQ_PASSWORD", "value": "${RABBITMQ_PASSWORD}" }
                 ],
                 "essential": true
               }
