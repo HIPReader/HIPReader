@@ -85,6 +85,10 @@ public class JwtUtil {
 			.getBody();
 	}
 
+	public String extractNickname(String token) {
+		return extractClaims(token).get("nickname", String.class);
+	}
+
 	public boolean validateRefreshToken(String refreshToken) {
 		try {
 			if (refreshToken.startsWith(BEARER_PREFIX)) {

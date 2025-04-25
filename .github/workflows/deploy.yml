@@ -4,39 +4,52 @@ on:
   push:
     branches: [ main ] # main 브랜치에 push될 때만 실행
 
-# 전체 job에 대한 이름을 deploy로 설정
 jobs:
   deploy: 
-    runs-on: ubuntu-latest # 깃 헙에서 지원하는 최신 우분투에서 실행
+    runs-on: ubuntu-latest
 
-    #전역 환경변수 지정
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
 
-    # GitHub Actions에서 빌드/실행을 위해 소스 코드를 체크아웃
+      SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+      SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+
+      SPRING_REDIS_HOST: ${{ secrets.SPRING_REDIS_HOST }}
+      SPRING_REDIS_PORT: ${{ secrets.SPRING_REDIS_PORT }}
+
+      MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+      MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+
+      RABBITMQ_HOST: ${{ secrets.RABBITMQ_HOST }}
+      RABBITMQ_PORT: ${{ secrets.RABBITMQ_PORT }}
+      RABBITMQ_USERNAME: ${{ secrets.RABBITMQ_USERNAME }}
+      RABBITMQ_PASSWORD: ${{ secrets.RABBITMQ_PASSWORD }}
+
+      ELASTICSEARCH_URIS: ${{ secrets.ELASTICSEARCH_URIS }}
+      ELASTIC_USERNAME: ${{ secrets.ELASTIC_USERNAME }}
+      ELASTIC_PASSWORD: ${{ secrets.ELASTIC_PASSWORD }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 자바 17 버전 추가
       - name: Set up JDK 17 
         uses: actions/setup-java@v3
         with:
           java-version: '17'
 
-      # 그래들 배포을 위한 빌더
       - name: Grant permission for Gradle
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
         run: ./gradlew build
 
-      # 환경 변수가 제대로 적용 됬는지 위한 테스트
       - name: Generate env-info.txt
         run: |
-          echo "JWT_SECRET=$JWT_SECRET" > env-info.txt
+          echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" > env-info.txt
           echo "빌드 시 환경 변수 작성 완료"
 
       - name: Upload env-info.txt to S3

@@ -8,4 +8,5 @@ import lombok.RequiredArgsConstructor;
 public class SigninResponseDto {
 	private final String accessToken;
 	private final String refreshToken;
+	private final String nickname;
 }
