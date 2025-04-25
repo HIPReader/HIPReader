@@ -14,8 +14,12 @@ import io.lettuce.core.dynamic.annotation.Param;
 public interface UserRepository extends JpaRepository<User, Long> {
 
 	boolean existsUserByEmail(String email);
+
 	Optional<User> findByEmail(String email);
+
 	Optional<User> findUserById(Long userId);
+
+	Optional<User> findUsesrByNickname(String nickname);
 
 	@Query("SELECT u FROM User u WHERE u.id = :userId AND u.deletedAt IS NULL")
 	Optional<User> findActiveUserById(@Param("userId") Long userId);
