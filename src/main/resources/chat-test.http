@@ -1,0 +1,21 @@
+### room1 입장
+WEBSOCKET ws://localhost:8080/ws/chat?roomId=room1
+
+
+### room2 입장
+WEBSOCKET ws://localhost:8080/ws/chat?roomId=room2
+
+{
+  "roomId": "room2",
+  "sender": "영희",
+  "message": "안녕 room2!"
+}
+
+### room1 입장
+WEBSOCKET ws://localhost:8080/ws/chat?roomId=room1
+
+{
+  "roomId": "room1",
+  "sender": "지우",
+  "message": "안녕 철수야"
+}

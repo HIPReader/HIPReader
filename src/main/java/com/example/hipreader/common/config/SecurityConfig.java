@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -47,6 +48,9 @@ public class SecurityConfig {
 				.requestMatchers("/swagger-resources/**").permitAll()
 				.requestMatchers("/swagger-resources").permitAll()
 				.requestMatchers("/webjars/**").permitAll()
+				.requestMatchers("/ws/**").permitAll()
+				.requestMatchers("/chat.html").permitAll()
+				.requestMatchers("/login.html").permitAll()
 				.anyRequest().authenticated())
 			.formLogin(AbstractHttpConfigurer::disable)
 			.anonymous(AbstractHttpConfigurer::disable)
@@ -71,3 +75,4 @@ public class SecurityConfig {
 		);
 	}
 }
+
