@@ -27,7 +27,7 @@ public class PatchBookResponseDto {
   private LocalDateTime updatedAt;
 
   public static PatchBookResponseDto toDto (Book book) {
-    String authors = book.getAuthors().stream().map(Author::toString).collect(Collectors.joining(","));
+    String authors = book.getAuthors().stream().map(Author::getName).collect(Collectors.joining(","));
 
     return PatchBookResponseDto.builder()
         .id(book.getId())
