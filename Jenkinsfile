@@ -21,6 +21,24 @@ pipeline {
     AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     S3_BUCKET = credentials('S3_BUCKET')
+
+    // RabbitMQ
+    RABBITMQ_HOST = credentials('RABBITMQ_HOST')
+    RABBITMQ_PORT = credentials('RABBITMQ_PORT')
+    RABBITMQ_USERNAME = credentials('RABBITMQ_USERNAME')
+    RABBITMQ_PASSWORD = credentials('RABBITMQ_PASSWORD')
+
+    // Elastic Search
+    ELASTICSEARCH_URIS = credentials('ELASTICSEARCH_URIS')
+    ELASTIC_USERNAME   = credentials('ELASTIC_USERNAME')
+    ELASTIC_PASSWORD   = credentials('ELASTIC_PASSWORD')
+
+    // Google SMTP
+    MAIL_USERNAME = credentials('MAIL_USERNAME')
+    MAIL_PASSWORD = credentials('MAIL_PASSWORD')
+
+    // JWT
+    JWT_SECRET_KEY = credentials('JWT_SECRET_KEY')
   }
 
   stages {
@@ -73,7 +91,17 @@ pipeline {
                   { "name": "AWS_ACCESS_KEY_ID", "value": "${AWS_ACCESS_KEY_ID}" },
                   { "name": "AWS_SECRET_ACCESS_KEY", "value": "${AWS_SECRET_ACCESS_KEY}" },
                   { "name": "S3_BUCKET", "value": "${S3_BUCKET}" },
-                  { "name": "AWS_REGION", "value": "${AWS_REGION}" }
+                  { "name": "AWS_REGION", "value": "${AWS_REGION}" },
+                  { "name": "RABBITMQ_HOST", "value": "${RABBITMQ_HOST}" },
+                  { "name": "RABBITMQ_PORT", "value": "${RABBITMQ_PORT}" },
+                  { "name": "RABBITMQ_USERNAME", "value": "${RABBITMQ_USERNAME}" },
+                  { "name": "RABBITMQ_PASSWORD", "value": "${RABBITMQ_PASSWORD}" },
+                  { "name": "ELASTICSEARCH_URIS", "value": "${ELASTICSEARCH_URIS}" },
+                  { "name": "ELASTIC_USERNAME", "value": "${ELASTIC_USERNAME}" },
+                  { "name": "ELASTIC_PASSWORD", "value": "${ELASTIC_PASSWORD}" },
+                  { "name": "MAIL_USERNAME", "value": "${MAIL_USERNAME}" },
+                  { "name": "MAIL_PASSWORD", "value": "${MAIL_PASSWORD}" },
+                  { "name": "JWT_SECRET_KEY", "value": "${JWT_SECRET_KEY}" }
                 ],
                 "essential": true
               }
