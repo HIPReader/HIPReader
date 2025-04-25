@@ -11,6 +11,7 @@ import com.example.hipreader.auth.dto.request.SignupRequestDto;
 import com.example.hipreader.auth.dto.response.SigninResponseDto;
 import com.example.hipreader.auth.dto.response.SignupResponseDto;
 import com.example.hipreader.common.exception.BadRequestException;
+import com.example.hipreader.common.exception.ConflictException;
 import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.common.util.JwtUtil;
 import com.example.hipreader.auth.entity.RefreshToken;
@@ -37,7 +38,7 @@ public class AuthService {
 		@Valid SignupRequestDto signupRequestDto) {
 
 		if (userRepository.existsUserByEmail(signupRequestDto.getEmail())) {
-			throw new BadRequestException(USER_EMAIL_DUPLICATION);
+			throw new ConflictException(USER_EMAIL_DUPLICATION);
 		}
 
 		String encodedPassword = passwordEncoder.encode(signupRequestDto.getPassword());

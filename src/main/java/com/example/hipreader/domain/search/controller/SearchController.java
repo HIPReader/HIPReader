@@ -1,6 +1,6 @@
 package com.example.hipreader.domain.search.controller;
 
-import com.example.hipreader.domain.book.dto.response.BooksResponseDto;
+import com.example.hipreader.domain.book.dto.response.BookResponseDto;
 import com.example.hipreader.domain.search.service.SearchService;
 import java.util.Collections;
 import java.util.List;
@@ -19,11 +19,11 @@ public class SearchController {
   private final SearchService searchService;
 
   @GetMapping
-  public ResponseEntity<List<BooksResponseDto>> searchBooks(@RequestParam String keyword) {
+  public ResponseEntity<List<BookResponseDto>> searchBooks(@RequestParam String keyword) {
     if(keyword == null || keyword.trim().isEmpty()) {
       return ResponseEntity.badRequest().body(Collections.emptyList());
     }
-    List<BooksResponseDto> results = searchService.searchBooks(keyword);
+    List<BookResponseDto> results = searchService.searchBooks(keyword);
     return ResponseEntity.ok(results);
   }
 }

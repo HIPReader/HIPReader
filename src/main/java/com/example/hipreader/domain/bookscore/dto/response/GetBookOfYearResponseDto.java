@@ -2,33 +2,42 @@ package com.example.hipreader.domain.bookscore.dto.response;
 
 import com.example.hipreader.domain.book.entity.Author;
 import com.example.hipreader.domain.book.entity.Book;
+import com.example.hipreader.domain.bookscore.entity.YearlyTopBook;
 
-import jakarta.validation.constraints.Min;
+import java.util.List;
 import java.util.stream.Collectors;
-import lombok.Builder;
-import lombok.Getter;
 
-@Getter
-@Builder
-public class GetBookOfYearResponseDto {
+public record GetBookOfYearResponseDto(
+	List<BookInfo> topBooks,
+	long maxScore
+) {
+	public record BookInfo(
+		String title,
+		String author,
+		String publisher,
+		long totalScore
+	) {}
 
-	private String title;
-	private String author;
-	private String publisher;
+	public static GetBookOfYearResponseDto from(List<YearlyTopBook> yearlyTopBooks) {
+		List<BookInfo> bookInfos = yearlyTopBooks.stream()
+			.map(ytb -> convertToBookInfo(ytb.getBook(), ytb.getTotalScore()))
+			.toList();
 
-	@Min(0)
-	private final long totalScore;
+		long max = yearlyTopBooks.isEmpty() ? 0 : yearlyTopBooks.get(0).getTotalScore();
 
-	public static GetBookOfYearResponseDto from(Book book, long totalScore) {
+		return new GetBookOfYearResponseDto(bookInfos, max);
+	}
+
+	private static BookInfo convertToBookInfo(Book book, long score) {
 		String authors = book.getAuthors().stream()
-				.map(Author::getName)
-				.collect(Collectors.joining(", "));
+			.map(Author::getName)
+			.collect(Collectors.joining(", "));
 
-		return builder()
-				.title(book.getTitle())
-				.author(authors)
-				.publisher(book.getPublisher())
-				.totalScore(totalScore)
-				.build();
+		return new BookInfo(
+			book.getTitle(),
+			authors,
+			book.getPublisher(),
+			score
+		);
 	}
 }
