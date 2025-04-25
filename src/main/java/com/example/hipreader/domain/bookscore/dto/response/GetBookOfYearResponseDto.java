@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public record GetBookOfYearResponseDto(
+	int year,
 	List<BookInfo> topBooks,
 	long maxScore
 ) {
@@ -18,14 +19,14 @@ public record GetBookOfYearResponseDto(
 		long totalScore
 	) {}
 
-	public static GetBookOfYearResponseDto from(List<YearlyTopBook> yearlyTopBooks) {
+	public static GetBookOfYearResponseDto from(int year, List<YearlyTopBook> yearlyTopBooks) {
 		List<BookInfo> bookInfos = yearlyTopBooks.stream()
 			.map(ytb -> convertToBookInfo(ytb.getBook(), ytb.getTotalScore()))
-			.toList();
+			.collect(Collectors.toList());
 
 		long max = yearlyTopBooks.isEmpty() ? 0 : yearlyTopBooks.get(0).getTotalScore();
 
-		return new GetBookOfYearResponseDto(bookInfos, max);
+		return new GetBookOfYearResponseDto(year, bookInfos, max);
 	}
 
 	private static BookInfo convertToBookInfo(Book book, long score) {
