@@ -23,7 +23,7 @@ public class BookRecommendController {
 
 	private final BookRecommendService bookRecommendService;
 
-	// 연령별, 성별별, 장르별 책 추천 ( MySQL )
+	// 연령별, 성별별, 카테고리별 책 추천 ( MySQL )
 	@GetMapping("/v1/books/recommend")
 	public ResponseEntity<PageResponseDto<BookRecommendResponseDto>> recommendBooksWithoutRedis(
 		@RequestParam(required = false) Integer age,
@@ -36,7 +36,7 @@ public class BookRecommendController {
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
-	// 연령별, 성별별, 장르별 책 추천 ( Redis )
+	// 연령별, 성별별, 카테고리별 책 추천 ( Redis )
 	@GetMapping("/v2/books/recommend")
 	public ResponseEntity<PageResponseDto<BookRecommendResponseDto>> recommendBooksWithRedis(
 		@RequestParam(required = false) Integer age,
@@ -49,7 +49,7 @@ public class BookRecommendController {
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
-	// 연령별, 성별별, 장르별 책 추천 ( Redis + ES )
+	// 연령별, 성별별, 카테고리별 책 추천 ( Redis + ES )
 	@GetMapping("/v3/books/recommend")
 	public ResponseEntity<PageResponseDto<BookRecommendResponseDto>> recommendBooksWithRedisAndEs(
 		@RequestParam(required = false) Integer age,
