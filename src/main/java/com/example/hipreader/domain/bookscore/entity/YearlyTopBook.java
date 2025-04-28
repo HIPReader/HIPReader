@@ -8,6 +8,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -17,7 +18,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "yearly_top_books")
+@Table(
+	name = "yearly_top_books",
+	indexes = @Index(name = "idx_year_score", columnList = "year, totalScore DESC")  // ← 핵심 변경점
+)
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

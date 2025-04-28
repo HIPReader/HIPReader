@@ -25,7 +25,7 @@ public class YearlyTopBookService {
 
 	@Retryable(maxAttempts = 5, backoff = @Backoff(delay = 100))
 	@Transactional(timeout = 30)
-	@CacheEvict(key = "#currentYear") // 해당 년도 캐시 삭제
+	@CacheEvict(key = "T(java.time.LocalDate).now().getYear()") // 해당 년도 캐시 삭제
 	public void updateYearlyTopBook(Book book, BookScore score) {
 		int currentYear = LocalDate.now().getYear();
 		if (book.getDatePublished().getYear() != currentYear) return;
