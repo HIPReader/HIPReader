@@ -15,13 +15,10 @@ import com.example.hipreader.domain.chatmessage.entity.ChatMessage;
 import com.example.hipreader.domain.chatmessage.repository.ChatMessageRepository;
 import com.example.hipreader.domain.discussion.entity.Discussion;
 import com.example.hipreader.domain.discussion.repository.DiscussionRepository;
-import com.example.hipreader.domain.discussion.service.DiscussionService;
 import com.example.hipreader.domain.discussion.status.Status;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
-import com.example.hipreader.domain.user.service.UserCommandService;
-import com.example.hipreader.domain.user.service.UserQueryService;
-import com.example.hipreader.domain.userdiscussion.ApplicationStatus.ApplicationStatus;
+import com.example.hipreader.domain.userdiscussion.applicationStatus.ApplicationStatus;
 import com.example.hipreader.domain.userdiscussion.repository.UserDiscussionRepository;
 
 import lombok.RequiredArgsConstructor;

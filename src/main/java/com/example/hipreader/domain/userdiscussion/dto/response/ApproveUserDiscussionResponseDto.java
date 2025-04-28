@@ -2,7 +2,7 @@ package com.example.hipreader.domain.userdiscussion.dto.response;
 
 import java.time.LocalDateTime;
 
-import com.example.hipreader.domain.userdiscussion.ApplicationStatus.ApplicationStatus;
+import com.example.hipreader.domain.userdiscussion.applicationStatus.ApplicationStatus;
 import com.example.hipreader.domain.userdiscussion.entity.UserDiscussion;
 
 import lombok.AllArgsConstructor;
