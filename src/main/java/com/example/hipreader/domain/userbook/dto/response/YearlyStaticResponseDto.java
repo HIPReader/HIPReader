@@ -2,12 +2,10 @@ package com.example.hipreader.domain.userbook.dto.response;
 
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.userbook.entity.UserBook;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 @Getter
@@ -20,7 +18,7 @@ public class YearlyStaticResponseDto {
 
   private final Page<BookSummaryDto> books;
 
-  public static YearlyStaticResponseDto toDto(User user, Page<UserBook> finishedBooks, Pageable pageable) {
+  public static YearlyStaticResponseDto toDto(User user, Page<UserBook> finishedBooks) {
     long totalBooks = finishedBooks.getTotalElements();
     long totalPages = finishedBooks.stream()
         .map(UserBook::getBook)

@@ -19,21 +19,20 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserCommandService {
 
 	private final UserRepository userRepository;
 	private final PasswordValidator passwordValidator;
 
-	@Transactional
 	public UpdateUserResponseDto updateUser(AuthUser authUser, UpdateUserRequestDto updateUserRequestDto) {
 		User user = findUserOrElseThrow(authUser.getId());
 
-		user.updateProfile(updateUserRequestDto.getNickname(),updateUserRequestDto.getAge(),updateUserRequestDto.getGender());
+		user.patchProfile(updateUserRequestDto.getNickname(),updateUserRequestDto.getAge(),updateUserRequestDto.getGender());
 
 		return UpdateUserResponseDto.toDto(user);
 	}
 
-	@Transactional
 	public void changePassword(AuthUser authUser, ChangePasswordRequestDto changePasswordRequestDto) {
 		User user = findUserOrElseThrow(authUser.getId());
 
@@ -42,7 +41,6 @@ public class UserCommandService {
 		user.changePassword(passwordValidator.encode(changePasswordRequestDto.getNewPassword()));
 	}
 
-	@Transactional
 	public void deleteUser(AuthUser authUser, DeleteUserRequestDto request) {
 		User finduser = findUserOrElseThrow(authUser.getId());
 

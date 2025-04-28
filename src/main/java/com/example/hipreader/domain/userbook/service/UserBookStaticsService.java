@@ -40,7 +40,7 @@ public class UserBookStaticsService {
 
     Page<UserBook> finishedBooks = userBookRepository.findByUserAndStatusAndCreatedAtBetween(user, Status.FINISHED, start, end, pageable);
 
-    return YearlyStaticResponseDto.toDto(user, finishedBooks, pageable);
+    return YearlyStaticResponseDto.toDto(user, finishedBooks);
   }
 
   public AverageStaticResponseDto getAverageStatics(AuthUser authUser) {

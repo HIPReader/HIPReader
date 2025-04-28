@@ -12,7 +12,7 @@ import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.stereotype.Service;
 
-import com.example.hipreader.domain.user.gender.Gender;
+import com.example.hipreader.domain.user.vo.Gender;
 import com.example.hipreader.domain.userbook.document.UserBookDocument;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;

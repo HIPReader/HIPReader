@@ -2,7 +2,7 @@ package com.example.hipreader.auth.dto;
 
 import java.util.List;
 
-import com.example.hipreader.domain.user.role.UserRole;
+import com.example.hipreader.domain.user.vo.UserRole;
 
 import lombok.Getter;
 

@@ -16,11 +16,11 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserQueryService {
 
 	private final UserRepository userRepository;
 
-	@Transactional(readOnly = true)
 	public GetUserResponseDto getUser(Long userId) {
 		User user = userRepository.findActiveUserById(userId)
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
@@ -28,7 +28,6 @@ public class UserQueryService {
 		return GetUserResponseDto.toDto(user);
 	}
 
-	@Transactional(readOnly = true)
 	public Page<GetUserResponseDto> getAllUsers(int page, int size) {
 		Page<User> users = userRepository.findAllActiveUsers(PageRequest.of(page, size));
 		return users.map(GetUserResponseDto::toDto);

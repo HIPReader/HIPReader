@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>로그인</h2>
+<div>
+    <label>이메일: <input type="email" id="email"></label><br>
+    <label>비밀번호: <input type="password" id="password"></label>
+    <button onclick="login()">보내기</button>
+</div>
+</body>
+<!-- login.html -->
+<script>
+    async function login() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        const response = await fetch("http://localhost:8080/api/v1/auth/signin", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({email, password})
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+
+            localStorage.setItem("token", result.accessToken); // 토큰 저장
+            localStorage.setItem("nickname", result.nickname); // 닉네임 저장
+
+            const roomId = new URLSearchParams(window.location.search).get("roomId");
+            const token = localStorage.getItem("token");
+
+            // 입장 가능 여부 확인 fetch
+            const chatAccessResponse = await fetch(`http://localhost:8080/api/v1/chat?roomId=${roomId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (chatAccessResponse.redirected) {
+                window.location.href = chatAccessResponse.url;
+            } else if (chatAccessResponse.ok) {
+                window.location.href = `http://localhost:8080/chat.html?roomId=${roomId}`;
+            } else {
+                alert("토론방 입장 실패");
+            }
+            
+        } else {
+            alert("로그인 실패");
+        }
+    }
+</script>
+
+</html>

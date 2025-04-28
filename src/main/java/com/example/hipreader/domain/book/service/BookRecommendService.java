@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.example.hipreader.common.dto.response.PageResponseDto;
 import com.example.hipreader.domain.book.dto.response.BookRecommendResponseDto;
 import com.example.hipreader.domain.book.entity.Book;
-import com.example.hipreader.domain.user.gender.Gender;
+import com.example.hipreader.domain.user.vo.Gender;
 import com.example.hipreader.domain.userbook.document.UserBookDocument;
 import com.example.hipreader.domain.userbook.repository.UserBookRepository;
 import com.example.hipreader.domain.userbook.service.UserBookSearchService;
@@ -26,7 +26,7 @@ public class BookRecommendService {
 	private final RedisTemplate<String, Object> redisTemplate;
 	private final UserBookSearchService userBookSearchService;
 
-	// 연령별, 성별별 책 추천 ( MySQL )
+	// 연령별, 성별별, 카테고리별 책 추천 ( MySQL )
 	public PageResponseDto<BookRecommendResponseDto> recommendBooksWithoutRedis(Integer age, Gender gender,
 		String categoryName,
 		Pageable pageable) {
@@ -44,7 +44,7 @@ public class BookRecommendService {
 			.build();
 	}
 
-	// 연령별, 성별별, 장르별 책 추천 ( Redis )
+	// 연령별, 성별별, 카테고리별 책 추천 ( Redis )
 	public PageResponseDto<BookRecommendResponseDto> recommendBooksWithRedis(Integer age, Gender gender,
 		String categoryName,
 		Pageable pageable) {
@@ -79,7 +79,7 @@ public class BookRecommendService {
 		return response;
 	}
 
-	// 연령별, 성별별, 장르별 책 추천 ( Redis + Elasticsearch )
+	// 연령별, 성별별, 카테고리별 책 추천 ( Redis + Elasticsearch )
 	public PageResponseDto<BookRecommendResponseDto> recommendBooksWithRedisAndEs(Integer age, Gender gender,
 		String categoryName, Pageable pageable) {
 

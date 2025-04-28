@@ -11,14 +11,15 @@ import com.example.hipreader.auth.dto.request.SignupRequestDto;
 import com.example.hipreader.auth.dto.response.SigninResponseDto;
 import com.example.hipreader.auth.dto.response.SignupResponseDto;
 import com.example.hipreader.common.exception.BadRequestException;
+import com.example.hipreader.common.exception.ConflictException;
 import com.example.hipreader.common.exception.NotFoundException;
 import com.example.hipreader.common.util.JwtUtil;
 import com.example.hipreader.auth.entity.RefreshToken;
 import com.example.hipreader.auth.repository.RefreshTokenRepository;
 import com.example.hipreader.domain.user.entity.User;
-import com.example.hipreader.domain.user.gender.Gender;
+import com.example.hipreader.domain.user.vo.Gender;
 import com.example.hipreader.domain.user.repository.UserRepository;
-import com.example.hipreader.domain.user.role.UserRole;
+import com.example.hipreader.domain.user.vo.UserRole;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class AuthService {
 		@Valid SignupRequestDto signupRequestDto) {
 
 		if (userRepository.existsUserByEmail(signupRequestDto.getEmail())) {
-			throw new BadRequestException(USER_EMAIL_DUPLICATION);
+			throw new ConflictException(USER_EMAIL_DUPLICATION);
 		}
 
 		String encodedPassword = passwordEncoder.encode(signupRequestDto.getPassword());
@@ -56,7 +57,8 @@ public class AuthService {
 
 		User savedUser = userRepository.save(newUser);
 
-		String accessToken = jwtUtil.createAccessToken(savedUser.getId(),savedUser.getEmail(),userRole,savedUser.getNickname());
+		String accessToken = jwtUtil.createAccessToken(savedUser.getId(), savedUser.getEmail(), userRole,
+			savedUser.getNickname());
 
 		return new SignupResponseDto(accessToken);
 	}
@@ -84,7 +86,7 @@ public class AuthService {
 
 		refreshTokenRepository.save(new RefreshToken(refreshToken, user.getId()));
 
-		return new SigninResponseDto(accessToken, refreshToken);
+		return new SigninResponseDto(accessToken, refreshToken, user.getNickname());
 	}
 
 }

@@ -20,14 +20,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class AuthController {
 
 	private final AuthService authService;
 	private final RefreshTokenService refreshTokenService;
 
-	@PostMapping("/signup")
+	@PostMapping("/v1/auth/signup")
 	public ResponseEntity<SignupResponseDto> signup(
 		@Valid @RequestBody SignupRequestDto signupRequestDto
 	) {
@@ -42,7 +42,7 @@ public class AuthController {
 
 	}
 
-	@PostMapping("/signin")
+	@PostMapping("/v1/auth/signin")
 	public ResponseEntity<SigninResponseDto> signIn(
 		@Valid @RequestBody SigninRequestDto signinRequestDto
 	) {
@@ -56,7 +56,7 @@ public class AuthController {
 		return new ResponseEntity<>(signinResponseDto, headers, HttpStatus.OK);
 	}
 
-	@PostMapping("/refresh")
+	@PostMapping("/v1/auth/refresh")
 	public ResponseEntity<String> refreshAccessToken(
 		@RequestBody RefreshTokenRequestDto request) {
 

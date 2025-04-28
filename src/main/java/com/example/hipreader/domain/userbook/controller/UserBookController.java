@@ -18,13 +18,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/user_books")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserBookController {
 
 	private final UserBookService userBookService;
 
-	@PostMapping
+	@PostMapping("/v1/user_books")
 	public ResponseEntity<RegisterUSerBookResponseDto> registerUserBook(
 		@AuthenticationPrincipal AuthUser authUser,
 		@Valid @RequestBody RegisterUserBookRequestDto registerUserBookRequestDto
@@ -33,16 +33,16 @@ public class UserBookController {
 		return new ResponseEntity<>(registerUSerBookResponseDto,HttpStatus.CREATED);
 	}
 
-	@GetMapping("/my")
+	@GetMapping("/v1/user_books/my")
 	public ResponseEntity<Page<GetUserBookResponseDto>> getReadingBooks(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestParam(defaultValue = "1") int page,
 		@RequestParam(defaultValue = "10") int size
 	) {
-		return ResponseEntity.ok(userBookService.findReadingBooks(authUser, page, size));
+		return new ResponseEntity<>(userBookService.findReadingBooks(authUser, page, size), HttpStatus.OK);
 	}
 
-	@GetMapping("/{userbookId}")
+	@GetMapping("/v1/user_books/{userbookId}")
 	public ResponseEntity<GetUserBookResponseDto> getReadingBook(
 		@AuthenticationPrincipal AuthUser authUser,
 		@PathVariable Long userbookId
@@ -52,7 +52,7 @@ public class UserBookController {
 		return new ResponseEntity<>(getUserBookResponseDto,HttpStatus.OK);
 	}
 
-	@PatchMapping("/{userbookId}")
+	@PatchMapping("/v1/user_books/{userbookId}")
 	public ResponseEntity<UpdateUserBookResponseDto> updateUserBook(
 		@AuthenticationPrincipal AuthUser authUser,
 		@Valid @RequestBody UpdateUserBookRequestDto updateUserBookRequestDto,
@@ -63,7 +63,7 @@ public class UserBookController {
 		return new ResponseEntity<>(updateUserBookResponseDto,HttpStatus.OK);
 	}
 
-	@DeleteMapping("/{userbookId}")
+	@DeleteMapping("/v1/user_books/{userbookId}")
 	public ResponseEntity<Void> deleteUserBook(@AuthenticationPrincipal AuthUser authUser,
 		@PathVariable Long userbookId
 	) {
@@ -72,7 +72,7 @@ public class UserBookController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	@GetMapping("/my/wish")
+	@GetMapping("/v1/user_books/my/wish")
 	public ResponseEntity<Page<GetUserBookResponseDto>> getWishBooks(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestParam(defaultValue = "1") int page,

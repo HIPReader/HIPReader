@@ -67,6 +67,8 @@ public enum ErrorCode {
 	DISCUSSION_NOT_FOUND("해당 토론을 찾을 수 없습니다.", NOT_FOUND),
 	APPLICATION_NOT_FOUND("신청 내역을 찾을 수 없습니다.", NOT_FOUND),
 	ALREADY_APPLIED("이미 신청한 토론방입니다.", BAD_REQUEST),
+	DISCUSSION_NOT_ACTIVE("현재 참여할 수 없는 토론방입니다.", BAD_REQUEST),
+	USER_NOT_APPROVED("토론방 참여 승인이 필요합니다.", UNAUTHORIZED),
 	DISCUSSION_FULL("정원이 가득 찼습니다.", CONFLICT),
 	INVALID_REQUEST("요청이 올바르지 않습니다.", BAD_REQUEST);
 

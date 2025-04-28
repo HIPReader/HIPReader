@@ -19,4 +19,6 @@ public interface UserDiscussionRepository extends JpaRepository<UserDiscussion, 
 	long countByDiscussionAndStatus(Discussion discussion, ApplicationStatus applicationStatus);
 
 	boolean existsByUserIdAndDiscussionId(Long userId, Long discussionId);
+
+	boolean existsByUserIdAndDiscussionIdAndStatus(Long userId, Long discussionId, ApplicationStatus applicationStatus);
 }

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>독서 토론방 채팅</title>
+</head>
+<body>
+<h2>토론방 채팅</h2>
+<div>
+    <label>Room ID: <input type="text" id="roomId" value="room1"></label><br>
+    <label>닉네임: <input type="text" id="nickname"></label><br>
+    <label>메시지: <input type="text" id="message"></label>
+    <button onclick="sendMessage()">보내기</button>
+</div>
+<hr>
+<div id="chat-box" style="height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;"></div>
+<div id="chat-log" style="border:1px solid #ccc; height:300px; overflow:auto;"></div>
+
+<script>
+    let socket;
+    const token = localStorage.getItem("token"); // 로그인 시 저장됨
+    const roomId = new URLSearchParams(window.location.search).get("roomId");
+
+    // 웹소켓
+    const connect = () => {
+        if (!token || !roomId) {
+            alert("토큰 또는 방 정보가 없습니다!");
+            return;
+        }
+
+        socket = new WebSocket(`ws://localhost:8080/ws/chat?roomId=${roomId}&token=${token}`);
+
+        socket.onopen = () => {
+            document.getElementById("chat-log").innerHTML += `<div>${roomId} 입장 완료</div>`;
+        };
+
+        socket.onclose = (event) => {
+            alert("연결 종료: " + event);
+        };
+
+        socket.onmessage = (event) => {
+            const log = document.getElementById("chat-log");
+            log.innerHTML += `<div>${event.data}</div>`;
+            log.scrollTop = log.scrollHeight;
+        };
+    };
+
+    // 메시지 보내기
+    const sendMessage = () => {
+        const message = document.getElementById("message").value;
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({message}));
+        }
+    };
+
+    // 메시지 가져오기
+    const getMessages = async (discussionId) => {
+        const response = await fetch(`http://localhost:8080/api/v1/chat/history?discussionId=${discussionId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const messages = await response.json();
+            messages.forEach(msg => {
+                renderMessage(msg);  // 메시지 DOM에 추가하는 함수
+            });
+        } else {
+            console.error("히스토리 로드 실패");
+        }
+    };
+
+    // 메시지 DOM에 추가
+    function renderMessage(message) {
+        const chatBox = document.getElementById("chat-box"); // 채팅 메시지를 넣을 DOM 요소
+
+        const messageContainer = document.createElement("div");
+        messageContainer.className = "message-container";
+
+        const nicknameSpan = document.createElement("span");
+        nicknameSpan.className = "nickname";
+        nicknameSpan.textContent = message.nickname + ": ";
+
+        const messageSpan = document.createElement("span");
+        messageSpan.className = "message";
+        messageSpan.textContent = message.message;
+
+        const timeSpan = document.createElement("span");
+        timeSpan.className = "timestamp";
+        timeSpan.textContent = " (" + formatTime(message.createdAt) + ")";
+
+        messageContainer.appendChild(nicknameSpan);
+        messageContainer.appendChild(messageSpan);
+        messageContainer.appendChild(timeSpan);
+
+        chatBox.appendChild(messageContainer);
+        chatBox.scrollTop = chatBox.scrollHeight; // 스크롤 맨 아래로
+    }
+
+    function formatTime(isoString) {
+        const date = new Date(isoString);
+        return date.toLocaleTimeString(); // 예: "3:42:10 PM"
+    }
+
+    // 로드
+    window.onload = function () {
+        const nickname = localStorage.getItem("nickname");
+        if (nickname) {
+            document.getElementById("nickname").value = nickname;
+        }
+        getMessages(roomId);
+        connect();
+    };
+</script>
+
+</body>
+</html>
