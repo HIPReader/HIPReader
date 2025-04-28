@@ -10,6 +10,7 @@ import org.springframework.data.elasticsearch.core.IndexOperations;
 import org.springframework.stereotype.Service;
 
 import com.example.hipreader.domain.book.entity.Book;
+import com.example.hipreader.domain.book.repository.AuthorRepository;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.userbook.document.UserBookDocument;
 import com.example.hipreader.domain.userbook.entity.UserBook;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class UserBookDocumentMigrationService {
 
 	private final UserBookRepository userBookRepository;
+	private final AuthorRepository authorRepository;
 	private final ElasticsearchOperations elasticsearchOperations;
 
 	public void migrate() {
@@ -47,13 +49,15 @@ public class UserBookDocumentMigrationService {
 	private UserBookDocument convertToDocument(UserBook userBook) {
 		User user = userBook.getUser();
 		Book book = userBook.getBook();
+		List<Author> authorList = authorRepository.findAuthorsByBookId(book.getId());
 
-		String authors = book.getAuthors().stream()
+		String authors = authorList.stream()
 			.map(Author::getName)
 			.collect(Collectors.joining(", "));
 
 		return UserBookDocument.builder()
 			.id(user.getId() + "_" + book.getId())
+			.bookId(book.getId())
 			.title(book.getTitle())
 			.author(authors)
 			.publisher(book.getPublisher())
