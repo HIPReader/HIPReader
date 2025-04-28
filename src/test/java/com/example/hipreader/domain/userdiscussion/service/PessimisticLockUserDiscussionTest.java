@@ -212,6 +212,7 @@ public class PessimisticLockUserDiscussionTest {
 					} catch (Exception e) {
 						failedUsers.add(users.get(index).getId());
 						exceptions.add(e);
+						e.printStackTrace();
 					} finally {
 						latch.countDown();
 					}
@@ -230,8 +231,8 @@ public class PessimisticLockUserDiscussionTest {
 			resultLog.append("회차 ").append(i)
 				.append(" - 소요 시간: ").append(elapsed).append("ms")
 				.append(", 성공: ").append(success)
-				.append(", 실패:  ").append(failure)
-				.append(", 에외").append(exception).append("\n");
+				.append(", 실패: ").append(failure)
+				.append(", 예외: ").append(exception).append("\n");
 
 			totalElapsedTime += elapsed;
 			totalSuccess += success;
@@ -243,13 +244,22 @@ public class PessimisticLockUserDiscussionTest {
 			.append("평균 시간: ").append(totalElapsedTime / 10).append("ms\n")
 			.append("평균 성공 수: ").append(totalSuccess / 10).append("\n")
 			.append("평균 실패 수: ").append(totalFailure / 10).append("\n")
-			.append("평균 예외 수: ").append(totalException).append("\n");
+			.append("평균 예외 수: ").append(totalException / 10).append("\n");
 
 		// 파일로 결과 저장
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter("pessimistic_test_summary.txt", true))) {
 			writer.write(resultLog.toString());
 			writer.newLine();
 		}
+
+		// 평균 검증 (선택 사항)
+		assertThat(totalSuccess / 10)
+			.withFailMessage("평균 성공 인원이 예상보다 적거나 많습니다.")
+			.isEqualTo(MAX_PARTICIPANTS);
+
+		assertThat(totalFailure / 10)
+			.withFailMessage("평균 실패 인원이 예상과 일치하지 않습니다.")
+			.isEqualTo(totalUsers - MAX_PARTICIPANTS);
 
 		// 콘솔 출력
 		System.out.println(resultLog);
