@@ -35,7 +35,6 @@ import com.example.hipreader.domain.user.repository.UserRepository;
 import com.example.hipreader.domain.user.role.UserRole;
 import com.example.hipreader.domain.userdiscussion.ApplicationStatus.ApplicationStatus;
 import com.example.hipreader.domain.userdiscussion.dto.request.ApplyUserDiscussionRequestDto;
-import com.example.hipreader.domain.userdiscussion.entity.UserDiscussion;
 import com.example.hipreader.domain.userdiscussion.repository.UserDiscussionRepository;
 import com.example.hipreader.domain.userdiscussion.status.DiscussionMode;
 
@@ -85,14 +84,14 @@ public class OptimisticLockUserDiscussionTest {
 			.build());
 
 		// 3. 테스트용 Discussion 생성 (mode = AUTO_APPROVAL)
-		UserDiscussion host = userDiscussionRepository.findAll().get(0);
+		User host = userRepository.findAll().get(0);
 		discussion = discussionRepository.save(Discussion.builder()
 			.topic("동시성 테스트")
 			.participants(MAX_PARTICIPANTS)
 			.scheduledAt(LocalDateTime.now().plusDays(1))
 			.mode(DiscussionMode.AUTO_APPROVAL)
 			.status(Status.WAITING)
-			.userDiscussion(host)
+			.user(host)
 			.book(book)
 			.build());
 	}
