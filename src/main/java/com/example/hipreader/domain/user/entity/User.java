@@ -54,8 +54,8 @@ public class User extends TimeStamped {
 		if (gender != null) this.gender = gender;
 	}
 
-	public void changePassword(String password) {
-		this.password = password;
+	public void changePassword(String encodedPassword) {
+		this.password = encodedPassword;
 	}
 
 	public void deleteUser() {
