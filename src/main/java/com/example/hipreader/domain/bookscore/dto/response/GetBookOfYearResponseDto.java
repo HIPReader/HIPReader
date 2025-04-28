@@ -4,10 +4,12 @@ import com.example.hipreader.domain.book.entity.Author;
 import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.bookscore.entity.YearlyTopBook;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public record GetBookOfYearResponseDto(
+	int year,
 	List<BookInfo> topBooks,
 	long maxScore
 ) {
@@ -18,14 +20,15 @@ public record GetBookOfYearResponseDto(
 		long totalScore
 	) {}
 
-	public static GetBookOfYearResponseDto from(List<YearlyTopBook> yearlyTopBooks) {
+	public static GetBookOfYearResponseDto from(int year, List<YearlyTopBook> yearlyTopBooks) {
 		List<BookInfo> bookInfos = yearlyTopBooks.stream()
 			.map(ytb -> convertToBookInfo(ytb.getBook(), ytb.getTotalScore()))
-			.toList();
+			.collect(Collectors.toList());
 
+		// DB에서 이미 정렬된 데이터를 받으므로 0번 인덱스가 최대값
 		long max = yearlyTopBooks.isEmpty() ? 0 : yearlyTopBooks.get(0).getTotalScore();
 
-		return new GetBookOfYearResponseDto(bookInfos, max);
+		return new GetBookOfYearResponseDto(year, bookInfos, max);
 	}
 
 	private static BookInfo convertToBookInfo(Book book, long score) {

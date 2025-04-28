@@ -15,6 +15,9 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.example.hipreader.domain.bookscore.dto.response.StatusChangeEvent;
+import com.example.hipreader.domain.userdiscussion.dto.response.NotificationMessage;
+
 @Configuration
 public class RabbitConfig {
 
@@ -29,8 +32,8 @@ public class RabbitConfig {
 	public DefaultClassMapper classMapper() {
 		DefaultClassMapper classMapper = new DefaultClassMapper();
 		Map<String, Class<?>> idClassMapping = new HashMap<>();
-		idClassMapping.put("notificationMessage",
-			com.example.hipreader.domain.userdiscussion.dto.response.NotificationMessage.class);
+		idClassMapping.put("notificationMessage", NotificationMessage.class);
+		idClassMapping.put("statusChangeEvent", StatusChangeEvent.class);
 		classMapper.setIdClassMapping(idClassMapping);
 		return classMapper;
 	}
@@ -68,16 +71,16 @@ public class RabbitConfig {
 	}
 
 	@Bean
-	DirectExchange bookScoreExchange() {
-		return new DirectExchange("book.score.exchange");
+	DirectExchange userbookExchange() {
+		return new DirectExchange("userbook.exchange");
 	}
 
-
+	// 올바른 바인딩 설정 추가
 	@Bean
-	Binding bookScorebinding() {
+	Binding statusChangeBinding() {
 		return BindingBuilder.bind(bookScoreQueue())
-			.to(bookScoreExchange())
-			.with("book.score.routingKey");
+			.to(userbookExchange())  // 실제 사용하는 Exchange
+			.with("userbook.status.change"); // 실제 사용하는 라우팅 키
 	}
 
 	@Bean
