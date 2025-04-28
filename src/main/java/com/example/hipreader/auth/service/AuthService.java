@@ -99,16 +99,17 @@ public class AuthService {
 		return new SigninResponseDto(accessToken, refreshToken, user.getNickname());
 	}
 
+	@Transactional
 	public void requestPasswordReset(ForgotPasswordRequestDto forgotPasswordRequestDto) {
 		User user = userRepository.findByEmail(forgotPasswordRequestDto.getEmail())
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
-		passwordResetTokenRepository.deleteByEmail(forgotPasswordRequestDto.getEmail()); // 기존 토큰 삭제
+		passwordResetTokenRepository.deleteByEmail(user.getEmail()); // 기존 토큰 삭제
 
 		String token = UUID.randomUUID().toString();
-		passwordResetTokenRepository.save(new PasswordResetToken(forgotPasswordRequestDto.getEmail(), token));
+		passwordResetTokenRepository.save(new PasswordResetToken(user.getEmail(), token));
 
-		emailService.sendPasswordResetEmail(forgotPasswordRequestDto.getEmail(), token);
+		emailService.sendPasswordResetEmail(user.getEmail(), token);//이메일 발송은 외부 트랜잭션에서 하는게 좋다..
 	}
 
 	@Transactional
