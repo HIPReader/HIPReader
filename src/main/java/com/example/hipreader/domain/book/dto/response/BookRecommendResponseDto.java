@@ -5,6 +5,7 @@ import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.userbook.document.UserBookDocument;
 
 import java.util.stream.Collectors;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class BookRecommendResponseDto {
+	private Long bookId;
 	private String title;
 	private String author;
 	private String publisher;
@@ -24,10 +26,11 @@ public class BookRecommendResponseDto {
 	public static BookRecommendResponseDto toDto(Book book) {
 
 		String authors = book.getAuthors().stream()
-				.map(Author::getName)
-				.collect(Collectors.joining(", "));
+			.map(Author::getName)
+			.collect(Collectors.joining(", "));
 
 		return BookRecommendResponseDto.builder()
+			.bookId(book.getId())
 			.title(book.getTitle())
 			.author(authors)
 			.publisher(book.getPublisher())
@@ -38,6 +41,7 @@ public class BookRecommendResponseDto {
 
 	public static BookRecommendResponseDto toDto(UserBookDocument userBookDocument) {
 		return BookRecommendResponseDto.builder()
+			.bookId(userBookDocument.getBookId())
 			.title(userBookDocument.getTitle())
 			.author(userBookDocument.getAuthor())
 			.publisher(userBookDocument.getPublisher())

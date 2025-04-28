@@ -1,5 +1,6 @@
 package com.example.hipreader.domain.userbook.document;
 
+import org.springframework.boot.autoconfigure.graphql.ConditionalOnGraphQlSchema;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -21,6 +22,8 @@ public class UserBookDocument {
 
 	@Id
 	private String id;
+
+	private Long bookId;
 
 	@Field(type = FieldType.Keyword)
 	private String title;
