@@ -20,7 +20,6 @@ import com.example.hipreader.domain.userdiscussion.dto.response.ApproveUserDiscu
 import com.example.hipreader.domain.userdiscussion.dto.response.GetUserAppliedDiscussionResponseDto;
 import com.example.hipreader.domain.userdiscussion.dto.response.GetUserDiscussionResponseDto;
 import com.example.hipreader.domain.userdiscussion.dto.response.RejectUserDiscussionResponseDto;
-import com.example.hipreader.domain.userdiscussion.entity.UserDiscussion;
 import com.example.hipreader.domain.userdiscussion.service.UserDiscussionService;
 
 import lombok.RequiredArgsConstructor;
