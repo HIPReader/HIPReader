@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -194,6 +195,51 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 			.build();
 
 		userDiscussionRepository.save(userDiscussion);
+		return ApplyUserDiscussionResponseDto.toDto(userDiscussion);
+	}
+
+	@Transactional
+	public ApplyUserDiscussionResponseDto applyWithOptimisticLock(AuthUser authUser,
+		ApplyUserDiscussionRequestDto requestDto) {
+		Discussion discussion = discussionRepository.findById(requestDto.getDiscussionId())
+			.orElseThrow(() -> new NotFoundException(DISCUSSION_NOT_FOUND));
+
+		if (discussion.getMode() != DiscussionMode.AUTO_APPROVAL) {
+			throw new BadRequestException(INVALID_REQUEST);
+		}
+
+		if (userDiscussionRepository.existsByUserIdAndDiscussionId(authUser.getId(), discussion.getId())) {
+			throw new BadRequestException(ALREADY_APPLIED);
+		}
+
+		long acceptedCount = userDiscussionRepository.countByDiscussionAndStatus(discussion,
+			ApplicationStatus.APPROVED);
+		if (acceptedCount >= discussion.getParticipants()) {
+			throw new BadRequestException(DISCUSSION_FULL);
+		}
+
+		User user = userRepository.findById(authUser.getId())
+			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+
+		UserDiscussion userDiscussion = UserDiscussion.builder()
+			.discussion(discussion)
+			.user(user)
+			.status(ApplicationStatus.APPROVED)
+			.appliedAt(LocalDateTime.now())
+			.build();
+
+		try {
+			userDiscussionRepository.saveAndFlush(userDiscussion);
+		} catch (ObjectOptimisticLockingFailureException e) {
+			throw new RuntimeException("동시성 충돌이 발생했습니다. 잠시 후 다시 시도해주세요.");
+		}
+
+		long confirmedCount = userDiscussionRepository.countByDiscussionAndStatus(discussion,
+			ApplicationStatus.APPROVED);
+		if (confirmedCount > discussion.getParticipants()) {
+			throw new BadRequestException(DISCUSSION_FULL);
+		}
+
 		return ApplyUserDiscussionResponseDto.toDto(userDiscussion);
 	}
 

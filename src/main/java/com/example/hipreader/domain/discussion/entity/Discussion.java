@@ -19,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -61,6 +62,12 @@ public class Discussion extends TimeStamped {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private DiscussionMode mode;
+
+	@Version
+	private Long version;
+
+	// @OneToMany(mappedBy = "discussion", cascade = CascadeType.ALL, orphanRemoval = true)
+	// private List<UserDiscussion> userDiscussions = new ArrayList<>();
 
 	public void updateTopic(String topic) {
 		this.topic = topic;

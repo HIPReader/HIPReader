@@ -17,6 +17,8 @@ public interface UserDiscussionService {
 	ApplyUserDiscussionResponseDto applyWithPessimisticLock(AuthUser authUser,
 		ApplyUserDiscussionRequestDto requestDto);
 
+	ApplyUserDiscussionResponseDto applyWithOptimisticLock(AuthUser authUser, ApplyUserDiscussionRequestDto requestDto);
+
 	ApproveUserDiscussionResponseDto approve(Long userDiscussionId);
 
 	RejectUserDiscussionResponseDto reject(Long userDiscussionId);
