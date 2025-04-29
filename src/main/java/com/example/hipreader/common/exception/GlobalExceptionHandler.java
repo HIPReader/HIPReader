@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import lombok.extern.slf4j.Slf4j;
 
-@RestControllerAdvice(basePackages = "com.example.hipreader.api")
+@RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
 

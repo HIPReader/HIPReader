@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import com.example.hipreader.common.entity.TimeStamped;
 import com.example.hipreader.domain.discussion.entity.Discussion;
 import com.example.hipreader.domain.user.entity.User;
-import com.example.hipreader.domain.userdiscussion.ApplicationStatus.ApplicationStatus;
+import com.example.hipreader.domain.userdiscussion.applicationStatus.ApplicationStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

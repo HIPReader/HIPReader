@@ -27,12 +27,12 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api")
 public class ReviewController {
 
 	private final ReviewService reviewService;
 
-	@PostMapping("/reviews")
+	@PostMapping("/v1/reviews")
 	public ResponseEntity<CreateReviewResponseDto> createReview(
 		@RequestBody @Valid CreateReviewRequestDto requestDto,
 		@AuthenticationPrincipal AuthUser authUser
@@ -42,7 +42,7 @@ public class ReviewController {
 		return new ResponseEntity<>(createReviewResponseDto, HttpStatus.CREATED);
 	}
 
-	@GetMapping("/books/{bookId}/reviews")
+	@GetMapping("/v1/books/{bookId}/reviews")
 	public ResponseEntity<Page<ReadReviewResponseDto>> getReviews(
 		@PathVariable Long bookId,
 		@RequestParam(defaultValue = "1") int page,
@@ -53,7 +53,7 @@ public class ReviewController {
 		return new ResponseEntity<>(readReviewResponseDtos, HttpStatus.OK);
 	}
 
-	@GetMapping("/books/{bookId}/reviews/{reviewId}")
+	@GetMapping("/v1/books/{bookId}/reviews/{reviewId}")
 	public ResponseEntity<ReadReviewResponseDto> getReview(
 		@PathVariable Long bookId,
 		@PathVariable Long reviewId
@@ -62,7 +62,7 @@ public class ReviewController {
 		return new ResponseEntity<>(readReviewResponseDto, HttpStatus.OK);
 	}
 
-	@PatchMapping("/books/{bookId}/reviews/{reviewId}")
+	@PatchMapping("/v1/books/{bookId}/reviews/{reviewId}")
 	public ResponseEntity<UpdateReviewResponseDto> updateReview(
 		@PathVariable Long bookId,
 		@PathVariable Long reviewId,
@@ -75,7 +75,7 @@ public class ReviewController {
 		return new ResponseEntity<>(updateReviewResponseDto, HttpStatus.OK);
 	}
 
-	@DeleteMapping("/books/{bookId}/reviews/{reviewId}")
+	@DeleteMapping("/v1/books/{bookId}/reviews/{reviewId}")
 	public ResponseEntity<Void> deleteReview(
 		@PathVariable Long bookId,
 		@PathVariable Long reviewId,

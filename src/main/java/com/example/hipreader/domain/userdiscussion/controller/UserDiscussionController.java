@@ -17,21 +17,22 @@ import com.example.hipreader.auth.dto.AuthUser;
 import com.example.hipreader.domain.userdiscussion.dto.request.ApplyUserDiscussionRequestDto;
 import com.example.hipreader.domain.userdiscussion.dto.response.ApplyUserDiscussionResponseDto;
 import com.example.hipreader.domain.userdiscussion.dto.response.ApproveUserDiscussionResponseDto;
+import com.example.hipreader.domain.userdiscussion.dto.response.GetUserAppliedDiscussionResponseDto;
+import com.example.hipreader.domain.userdiscussion.dto.response.GetUserDiscussionResponseDto;
 import com.example.hipreader.domain.userdiscussion.dto.response.RejectUserDiscussionResponseDto;
-import com.example.hipreader.domain.userdiscussion.entity.UserDiscussion;
 import com.example.hipreader.domain.userdiscussion.service.UserDiscussionService;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/userDiscussions")
+@RequestMapping("/api")
 public class UserDiscussionController {
 
 	private final UserDiscussionService userDiscussionService;
 
 	// 토론방 신청
-	@PostMapping("/apply")
+	@PostMapping("/v1/userDiscussions/apply")
 	public ResponseEntity<ApplyUserDiscussionResponseDto> apply(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestBody ApplyUserDiscussionRequestDto requestDto
@@ -53,39 +54,41 @@ public class UserDiscussionController {
 	}
 
 	// 신청 승인
-	@PatchMapping("/{userDiscussionId}/approve")
+	@PatchMapping("/v1/userDiscussions/{userDiscussionId}/approve")
 	public ResponseEntity<ApproveUserDiscussionResponseDto> approve(
+		@AuthenticationPrincipal AuthUser authUser,
 		@PathVariable Long userDiscussionId
 	) {
-		ApproveUserDiscussionResponseDto result = userDiscussionService.approve(userDiscussionId);
+		ApproveUserDiscussionResponseDto result = userDiscussionService.approve(authUser, userDiscussionId);
 
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
 	// 신청 거부
-	@PatchMapping("/{userDiscussionId}/reject")
+	@PatchMapping("/v1/userDiscussions/{userDiscussionId}/reject")
 	public ResponseEntity<RejectUserDiscussionResponseDto> reject(
+		@AuthenticationPrincipal AuthUser authUser,
 		@PathVariable Long userDiscussionId
 	) {
-		RejectUserDiscussionResponseDto result = userDiscussionService.reject(userDiscussionId);
+		RejectUserDiscussionResponseDto result = userDiscussionService.reject(authUser, userDiscussionId);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
 	// 토론방별 신청자 목록 조회
-	@GetMapping("/by-discussion/{discussionId}")
-	public ResponseEntity<List<UserDiscussion>> findByDiscussion(
+	@GetMapping("/v1/userDiscussions/by-discussion/{discussionId}")
+	public ResponseEntity<List<GetUserDiscussionResponseDto>> findByDiscussion(
 		@PathVariable Long discussionId
 	) {
-		List<UserDiscussion> list = userDiscussionService.findByDiscussion(discussionId);
+		List<GetUserDiscussionResponseDto> list = userDiscussionService.findByDiscussion(discussionId);
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 
 	// 사용자별 신청 내역 조회
-	@GetMapping("/by-user/{userId}")
-	public ResponseEntity<List<UserDiscussion>> findByUser(
+	@GetMapping("/v1/userDiscussions/by-user/{userId}")
+	public ResponseEntity<List<GetUserAppliedDiscussionResponseDto>> findByUser(
 		@PathVariable Long userId
 	) {
-		List<UserDiscussion> list = userDiscussionService.findByUser(userId);
+		List<GetUserAppliedDiscussionResponseDto> list = userDiscussionService.findByUser(userId);
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 }

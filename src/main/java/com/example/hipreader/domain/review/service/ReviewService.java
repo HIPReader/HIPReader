@@ -99,9 +99,6 @@ public class ReviewService {
 		if (requestDto.getContent() != null) {
 			review.updateContent(requestDto.getContent());
 		}
-		if (requestDto.getContent() != null) {
-			review.updateContent(requestDto.getContent());
-		}
 
 		if (requestDto.getRating() != null) {
 			review.updateRating(requestDto.getRating());

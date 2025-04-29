@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.hipreader.auth.dto.request.ForgotPasswordRequestDto;
 import com.example.hipreader.auth.dto.request.RefreshTokenRequestDto;
+import com.example.hipreader.auth.dto.request.ResetPasswordRequestDto;
 import com.example.hipreader.auth.dto.request.SigninRequestDto;
 import com.example.hipreader.auth.dto.request.SignupRequestDto;
 import com.example.hipreader.auth.dto.response.SigninResponseDto;
@@ -66,6 +68,21 @@ public class AuthController {
 		headers.set("Authorization", newAccessToken);
 
 		return new ResponseEntity<>(headers, HttpStatus.CREATED);
+	}
+
+	@PostMapping("/v1/auth/forgot-password")
+	public ResponseEntity<Void> forgotPassword(
+		@RequestBody @Valid ForgotPasswordRequestDto forgotPasswordRequestDto) {
+		authService.requestPasswordReset(forgotPasswordRequestDto);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@PostMapping("/v1/auth/reset-password")
+	public ResponseEntity<Void> resetPassword(
+		@RequestBody @Valid ResetPasswordRequestDto resetPasswordRequestDto
+	) {
+		authService.resetPassword(resetPasswordRequestDto);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 }

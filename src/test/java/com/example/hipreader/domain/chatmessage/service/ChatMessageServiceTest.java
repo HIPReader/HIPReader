@@ -1,7 +1,6 @@
 package com.example.hipreader.domain.chatmessage.service;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.time.LocalDate;
@@ -29,7 +28,7 @@ import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
 import com.example.hipreader.domain.user.vo.Gender;
 import com.example.hipreader.domain.user.vo.UserRole;
-import com.example.hipreader.domain.userdiscussion.ApplicationStatus.ApplicationStatus;
+import com.example.hipreader.domain.userdiscussion.applicationStatus.ApplicationStatus;
 import com.example.hipreader.domain.userdiscussion.repository.UserDiscussionRepository;
 
 @ExtendWith(MockitoExtension.class)
