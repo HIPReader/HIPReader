@@ -84,11 +84,11 @@ public class UserDiscussionController {
 	}
 
 	// 사용자별 신청 내역 조회
-	@GetMapping("/v1/userDiscussions/by-user/{userId}")
+	@GetMapping("/v1/userDiscussions/by-user")
 	public ResponseEntity<List<GetUserAppliedDiscussionResponseDto>> findByUser(
-		@PathVariable Long userId
+		@AuthenticationPrincipal AuthUser authUser
 	) {
-		List<GetUserAppliedDiscussionResponseDto> list = userDiscussionService.findByUser(userId);
+		List<GetUserAppliedDiscussionResponseDto> list = userDiscussionService.findByUser(authUser);
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 }

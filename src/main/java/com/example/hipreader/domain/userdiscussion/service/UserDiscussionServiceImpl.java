@@ -310,8 +310,8 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 	}
 
 	@Override
-	public List<GetUserAppliedDiscussionResponseDto> findByUser(Long userId) {
-		User user = userRepository.findById(userId)
+	public List<GetUserAppliedDiscussionResponseDto> findByUser(AuthUser authUser) {
+		User user = userRepository.findById(authUser.getId())
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 		List<UserDiscussion> userDiscussions = userDiscussionRepository.findByUserWithDiscussion(user);
 		return userDiscussions.stream()

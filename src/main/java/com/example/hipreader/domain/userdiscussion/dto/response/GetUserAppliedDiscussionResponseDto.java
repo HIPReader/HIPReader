@@ -15,7 +15,10 @@ public class GetUserAppliedDiscussionResponseDto {
 	private final Long userDiscussionId;
 	private final Long discussionId;
 	private final String discussionTopic;
-	private final String status;
+	private final Integer participants;
+	private final String discussionStatus;
+	private final String applicationStatus;
+	private final LocalDateTime scheduledAt;
 	private final LocalDateTime appliedAt;
 
 	public static GetUserAppliedDiscussionResponseDto toDto(UserDiscussion userDiscussion) {
@@ -23,7 +26,10 @@ public class GetUserAppliedDiscussionResponseDto {
 			.userDiscussionId(userDiscussion.getId())
 			.discussionId(userDiscussion.getDiscussion().getId())
 			.discussionTopic(userDiscussion.getDiscussion().getTopic())
-			.status(userDiscussion.getStatus().name())
+			.participants(userDiscussion.getDiscussion().getParticipants())
+			.discussionStatus(userDiscussion.getDiscussion().getStatus().name())
+			.applicationStatus(userDiscussion.getStatus().name())
+			.scheduledAt(userDiscussion.getDiscussion().getScheduledAt())
 			.appliedAt(userDiscussion.getAppliedAt())
 			.build();
 	}

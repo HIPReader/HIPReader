@@ -12,12 +12,20 @@ import com.example.hipreader.domain.userdiscussion.dto.response.RejectUserDiscus
 
 public interface UserDiscussionService {
 	ApplyUserDiscussionResponseDto apply(AuthUser authUser, ApplyUserDiscussionRequestDto requestDto);
+
 	ApproveUserDiscussionResponseDto approve(AuthUser authUser, Long userDiscussionId);
+
 	RejectUserDiscussionResponseDto reject(AuthUser authUser, Long userDiscussionId);
+
 	List<GetUserDiscussionResponseDto> findByDiscussion(Long discussionId);
-	List<GetUserAppliedDiscussionResponseDto> findByUser(Long userId);
+
+	List<GetUserAppliedDiscussionResponseDto> findByUser(AuthUser authUser);
+
 	ApplyUserDiscussionResponseDto autoApply(AuthUser authUser, ApplyUserDiscussionRequestDto requestDto);
-	ApplyUserDiscussionResponseDto applyWithPessimisticLock(AuthUser authUser, ApplyUserDiscussionRequestDto requestDto);
+
+	ApplyUserDiscussionResponseDto applyWithPessimisticLock(AuthUser authUser,
+		ApplyUserDiscussionRequestDto requestDto);
+
 	ApplyUserDiscussionResponseDto applyWithOptimisticLock(AuthUser authUser, ApplyUserDiscussionRequestDto requestDto);
 
 }
