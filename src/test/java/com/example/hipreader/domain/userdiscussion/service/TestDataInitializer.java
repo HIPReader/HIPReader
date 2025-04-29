@@ -12,8 +12,7 @@ import com.example.hipreader.domain.discussion.repository.DiscussionRepository;
 import com.example.hipreader.domain.discussion.status.Status;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
-import com.example.hipreader.domain.user.role.UserRole;
-import com.example.hipreader.domain.userdiscussion.entity.UserDiscussion;
+import com.example.hipreader.domain.user.vo.UserRole;
 import com.example.hipreader.domain.userdiscussion.repository.UserDiscussionRepository;
 import com.example.hipreader.domain.userdiscussion.status.DiscussionMode;
 
@@ -72,14 +71,14 @@ public class TestDataInitializer {
 			.build());
 
 		// 3. 테스트용 Discussion 생성 (mode = AUTO_APPROVAL)
-		UserDiscussion host = userDiscussionRepository.findAll().get(0);
+		User host = userRepository.findAll().get(0);
 		return discussionRepository.save(Discussion.builder()
 			.topic("동시성 테스트")
 			.participants(MAX_PARTICIPANTS)
 			.scheduledAt(LocalDateTime.now().plusDays(1))
 			.mode(DiscussionMode.AUTO_APPROVAL)
 			.status(Status.WAITING)
-			.userDiscussion(host)
+			.user(host)
 			.book(book)
 			.build());
 	}

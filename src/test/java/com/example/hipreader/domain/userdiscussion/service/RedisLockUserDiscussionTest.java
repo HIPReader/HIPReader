@@ -28,7 +28,7 @@ import com.example.hipreader.domain.discussion.repository.DiscussionRepository;
 import com.example.hipreader.domain.discussion.status.Status;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
-import com.example.hipreader.domain.userdiscussion.ApplicationStatus.ApplicationStatus;
+import com.example.hipreader.domain.userdiscussion.applicationStatus.ApplicationStatus;
 import com.example.hipreader.domain.userdiscussion.dto.request.ApplyUserDiscussionRequestDto;
 import com.example.hipreader.domain.userdiscussion.repository.UserDiscussionRepository;
 import com.example.hipreader.domain.userdiscussion.status.DiscussionMode;
