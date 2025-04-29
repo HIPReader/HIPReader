@@ -42,4 +42,15 @@ public class EmailService {
 			throw new RuntimeException("메일 전송 실패", e);
 		}
 	}
+
+	public void sendPasswordResetEmail(String email, String token) {
+		Context context = new Context();
+		context.setVariable("token", token);
+		sendHtmlEmail(
+			email,
+			"[HipReader] 비밀번호 재설정 안내",
+			"email/password-reset",
+			context
+		);
+	}
 }
