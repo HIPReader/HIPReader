@@ -2,6 +2,8 @@ package com.example.hipreader.domain.discussion.dto.request;
 
 import java.time.LocalDateTime;
 
+import com.example.hipreader.domain.userdiscussion.status.DiscussionMode;
+
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -25,6 +27,9 @@ public class CreateDiscussionRequestDto {
 	@NotNull(message = "토론 예정 시간은 필수입니다.")
 	@Future(message = "토론 시간은 현재보다 이후여야 합니다.")
 	private LocalDateTime scheduledAt;
+
+	@NotNull(message = "참여 방식은 필수입니다.")
+	private DiscussionMode mode;
 
 	@NotNull(message = "책 ID는 필수입니다.")
 	private Long bookId;

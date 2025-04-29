@@ -6,6 +6,7 @@ import com.example.hipreader.common.entity.TimeStamped;
 import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.discussion.status.Status;
 import com.example.hipreader.domain.user.entity.User;
+import com.example.hipreader.domain.userdiscussion.status.DiscussionMode;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -57,6 +59,16 @@ public class Discussion extends TimeStamped {
 	@JoinColumn(name = "book_id", nullable = false)
 	private Book book;
 
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private DiscussionMode mode;
+
+	@Version
+	private Long version;
+
+	// @OneToMany(mappedBy = "discussion", cascade = CascadeType.ALL, orphanRemoval = true)
+	// private List<UserDiscussion> userDiscussions = new ArrayList<>();
+
 	public void updateTopic(String topic) {
 		this.topic = topic;
 	}
@@ -71,5 +83,9 @@ public class Discussion extends TimeStamped {
 
 	public void updateStatus(Status status) {
 		this.status = status;
+	}
+
+	public void updateMode(DiscussionMode mode) {
+		this.mode = mode;
 	}
 }

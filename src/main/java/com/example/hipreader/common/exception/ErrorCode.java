@@ -69,7 +69,9 @@ public enum ErrorCode {
 	ALREADY_APPLIED("이미 신청한 토론방입니다.", BAD_REQUEST),
 	DISCUSSION_NOT_ACTIVE("현재 참여할 수 없는 토론방입니다.", BAD_REQUEST),
 	ONLY_CAN_HOST("방장만 승인/거절 할 수 있습니다.", UNAUTHORIZED),
-	USER_NOT_APPROVED("토론방 참여 승인이 필요합니다.", UNAUTHORIZED);
+	USER_NOT_APPROVED("토론방 참여 승인이 필요합니다.", UNAUTHORIZED),
+	DISCUSSION_FULL("정원이 가득 찼습니다.", CONFLICT),
+	INVALID_REQUEST("요청이 올바르지 않습니다.", BAD_REQUEST);
 
 	private final String message;
 	private final HttpStatus status;

@@ -4,7 +4,11 @@ import static com.example.hipreader.common.exception.ErrorCode.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +31,7 @@ import com.example.hipreader.domain.userdiscussion.dto.response.RejectUserDiscus
 import com.example.hipreader.domain.userdiscussion.entity.UserDiscussion;
 import com.example.hipreader.domain.userdiscussion.producer.NotificationProducer;
 import com.example.hipreader.domain.userdiscussion.repository.UserDiscussionRepository;
+import com.example.hipreader.domain.userdiscussion.status.DiscussionMode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,6 +44,7 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 	private final UserRepository userRepository;
 	private final DiscussionRepository discussionRepository;
 	private final NotificationProducer notificationProducer;
+	private final RedissonClient redissonClient;
 
 	@Override
 	@Transactional
@@ -71,6 +77,171 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 				LocalDateTime.now()
 			)
 		);
+
+		return ApplyUserDiscussionResponseDto.toDto(userDiscussion);
+	}
+
+	@Override
+	@Transactional
+	public ApplyUserDiscussionResponseDto autoApply(AuthUser authUser, ApplyUserDiscussionRequestDto requestDto) {
+		// 1. 요청한 토론방 조회
+		Discussion discussion = discussionRepository.findById(requestDto.getDiscussionId()).orElseThrow(
+			() -> new NotFoundException(DISCUSSION_NOT_FOUND)
+		);
+
+		// 2. 자동 참여 방인지 확인
+		if (discussion.getMode() != DiscussionMode.AUTO_APPROVAL) {
+			throw new BadRequestException(INVALID_REQUEST);
+		}
+
+		// 3. Redis 분산 락 획득 시도
+		String lockKey = "discussion:lock:" + discussion.getId();
+		RLock lock = redissonClient.getLock(lockKey);
+
+		try {
+			// 4. 락을 획득하지 못하면 에러
+			if (!lock.tryLock(10, TimeUnit.SECONDS)) {
+				throw new RuntimeException("참여 요청이 몰리고 있습니다. 잠시 후 다시 시도해주세요.");
+			}
+
+			// 5. 유저가 이미 신청했는지 확인
+			boolean alreadyJoined =
+				userDiscussionRepository.existsByUserIdAndDiscussionId(authUser.getId(), discussion.getId());
+			if (alreadyJoined) {
+				throw new BadRequestException(ALREADY_APPLIED);
+			}
+
+			// 6. 현재 참여 승인된 인원 수 조회
+
+			// 7. 유저 정보 조회
+			User user = userRepository.findById(authUser.getId()).orElseThrow(
+				() -> new NotFoundException(USER_NOT_FOUND)
+			);
+
+			// 8. 참여 정보 생성
+			UserDiscussion userDiscussion = UserDiscussion.builder()
+				.discussion(discussion)
+				.user(user)
+				.status(ApplicationStatus.APPROVED)
+				.appliedAt(LocalDateTime.now())
+				.statusUpdatedAt(LocalDateTime.now())
+				.build();
+
+			// 9. DB 저장 전 정원 확인
+			long acceptedCount =
+				userDiscussionRepository.countByDiscussionAndStatus(discussion, ApplicationStatus.APPROVED);
+			if (acceptedCount >= discussion.getParticipants()) {
+				throw new BadRequestException(DISCUSSION_FULL);
+			}
+
+			// 10. DB 저장
+			userDiscussionRepository.saveAndFlush(userDiscussion);
+
+			long confirmedCount =
+				userDiscussionRepository.countByDiscussionAndStatus(discussion, ApplicationStatus.APPROVED);
+			if (confirmedCount > discussion.getParticipants()) {
+				throw new BadRequestException(DISCUSSION_FULL);
+			}
+
+			// // 11. 알림 전송
+			// notificationProducer.sendNotification(
+			// 	new NotificationMessage(
+			// 		userDiscussion.getUser().getId(),
+			// 		userDiscussion.getDiscussion().getId(),
+			// 		"APPROVED",
+			// 		LocalDateTime.now()
+			// 	)
+			// );
+
+			// 12. 응답 DTO 반환
+			return ApplyUserDiscussionResponseDto.toDto(userDiscussion);
+
+		} catch (InterruptedException e) {
+			throw new RuntimeException("락 처리 중 오류가 발생했습니다.");
+		} finally {
+			// 13. 락 해제
+			if (lock.isHeldByCurrentThread()) {
+				lock.unlock();
+			}
+		}
+	}
+
+	@Transactional
+	public ApplyUserDiscussionResponseDto applyWithPessimisticLock(AuthUser authUser,
+		ApplyUserDiscussionRequestDto requestDto) {
+		Discussion discussion = discussionRepository.findByIdWithPessimisticLock(requestDto.getDiscussionId())
+			.orElseThrow(() -> new NotFoundException(DISCUSSION_NOT_FOUND));
+
+		if (discussion.getMode() != DiscussionMode.AUTO_APPROVAL) {
+			throw new BadRequestException(INVALID_REQUEST);
+		}
+
+		if (userDiscussionRepository.existsByUserIdAndDiscussionId(authUser.getId(), discussion.getId())) {
+			throw new BadRequestException(ALREADY_APPLIED);
+		}
+
+		long acceptedCount = userDiscussionRepository.countByDiscussionAndStatus(discussion,
+			ApplicationStatus.APPROVED);
+		if (acceptedCount >= discussion.getParticipants()) {
+			throw new BadRequestException(DISCUSSION_FULL);
+		}
+
+		User user = userRepository.findById(authUser.getId())
+			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+
+		UserDiscussion userDiscussion = UserDiscussion.builder()
+			.discussion(discussion)
+			.user(user)
+			.status(ApplicationStatus.APPROVED)
+			.appliedAt(LocalDateTime.now())
+			.statusUpdatedAt(LocalDateTime.now())
+			.build();
+
+		userDiscussionRepository.save(userDiscussion);
+		return ApplyUserDiscussionResponseDto.toDto(userDiscussion);
+	}
+
+	@Transactional
+	public ApplyUserDiscussionResponseDto applyWithOptimisticLock(AuthUser authUser,
+		ApplyUserDiscussionRequestDto requestDto) {
+		Discussion discussion = discussionRepository.findById(requestDto.getDiscussionId())
+			.orElseThrow(() -> new NotFoundException(DISCUSSION_NOT_FOUND));
+
+		if (discussion.getMode() != DiscussionMode.AUTO_APPROVAL) {
+			throw new BadRequestException(INVALID_REQUEST);
+		}
+
+		if (userDiscussionRepository.existsByUserIdAndDiscussionId(authUser.getId(), discussion.getId())) {
+			throw new BadRequestException(ALREADY_APPLIED);
+		}
+
+		long acceptedCount = userDiscussionRepository.countByDiscussionAndStatus(discussion,
+			ApplicationStatus.APPROVED);
+		if (acceptedCount >= discussion.getParticipants()) {
+			throw new BadRequestException(DISCUSSION_FULL);
+		}
+
+		User user = userRepository.findById(authUser.getId())
+			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+
+		UserDiscussion userDiscussion = UserDiscussion.builder()
+			.discussion(discussion)
+			.user(user)
+			.status(ApplicationStatus.APPROVED)
+			.appliedAt(LocalDateTime.now())
+			.build();
+
+		try {
+			userDiscussionRepository.saveAndFlush(userDiscussion);
+		} catch (ObjectOptimisticLockingFailureException e) {
+			throw new RuntimeException("동시성 충돌이 발생했습니다. 잠시 후 다시 시도해주세요.");
+		}
+
+		long confirmedCount = userDiscussionRepository.countByDiscussionAndStatus(discussion,
+			ApplicationStatus.APPROVED);
+		if (confirmedCount > discussion.getParticipants()) {
+			throw new BadRequestException(DISCUSSION_FULL);
+		}
 
 		return ApplyUserDiscussionResponseDto.toDto(userDiscussion);
 	}
@@ -139,8 +310,8 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 	}
 
 	@Override
-	public List<GetUserAppliedDiscussionResponseDto> findByUser(Long userId) {
-		User user = userRepository.findById(userId)
+	public List<GetUserAppliedDiscussionResponseDto> findByUser(AuthUser authUser) {
+		User user = userRepository.findById(authUser.getId())
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 		List<UserDiscussion> userDiscussions = userDiscussionRepository.findByUserWithDiscussion(user);
 		return userDiscussions.stream()

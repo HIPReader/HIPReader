@@ -53,6 +53,7 @@ public class DiscussionService {
 			.status(Status.WAITING)
 			.user(user)
 			.book(book)
+			.mode(requestDto.getMode())
 			.build();
 
 		Discussion saved = discussionRepository.save(discussion);
@@ -112,6 +113,10 @@ public class DiscussionService {
 
 		if (updateDiscussionRequestDto.getStatus() != null) {
 			discussion.updateStatus(updateDiscussionRequestDto.getStatus());
+		}
+
+		if (updateDiscussionRequestDto.getMode() != null) {
+			discussion.updateMode(updateDiscussionRequestDto.getMode());
 		}
 
 		return UpdateDiscussionResponseDto.toDto(discussion);

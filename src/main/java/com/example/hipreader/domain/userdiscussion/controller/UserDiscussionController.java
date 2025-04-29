@@ -42,6 +42,17 @@ public class UserDiscussionController {
 		return new ResponseEntity<>(result, HttpStatus.CREATED);
 	}
 
+	// 토론방 선착순
+	@PostMapping("/auto-apply")
+	public ResponseEntity<ApplyUserDiscussionResponseDto> autoApply(
+		@AuthenticationPrincipal AuthUser authUser,
+		@RequestBody ApplyUserDiscussionRequestDto requestDto
+	) {
+		ApplyUserDiscussionResponseDto result = userDiscussionService.autoApply(authUser, requestDto);
+
+		return new ResponseEntity<>(result, HttpStatus.CREATED);
+	}
+
 	// 신청 승인
 	@PatchMapping("/v1/userDiscussions/{userDiscussionId}/approve")
 	public ResponseEntity<ApproveUserDiscussionResponseDto> approve(
@@ -73,11 +84,11 @@ public class UserDiscussionController {
 	}
 
 	// 사용자별 신청 내역 조회
-	@GetMapping("/v1/userDiscussions/by-user/{userId}")
+	@GetMapping("/v1/userDiscussions/by-user")
 	public ResponseEntity<List<GetUserAppliedDiscussionResponseDto>> findByUser(
-		@PathVariable Long userId
+		@AuthenticationPrincipal AuthUser authUser
 	) {
-		List<GetUserAppliedDiscussionResponseDto> list = userDiscussionService.findByUser(userId);
+		List<GetUserAppliedDiscussionResponseDto> list = userDiscussionService.findByUser(authUser);
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 }

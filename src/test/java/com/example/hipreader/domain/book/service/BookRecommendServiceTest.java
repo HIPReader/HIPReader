@@ -1,22 +1,17 @@
 package com.example.hipreader.domain.book.service;
 
-import static java.time.LocalTime.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -25,8 +20,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
 import com.example.hipreader.common.dto.response.PageResponseDto;
-import com.example.hipreader.common.filter.JwtAuthenticationFilter;
-import com.example.hipreader.common.util.JwtUtil;
 import com.example.hipreader.domain.book.dto.response.BookRecommendResponseDto;
 import com.example.hipreader.domain.book.entity.Book;
 import com.example.hipreader.domain.user.vo.Gender;
@@ -138,9 +131,9 @@ class BookRecommendServiceTest {
 		when(valueOperations.get(key)).thenReturn(fakeCached);
 
 		List<UserBookDocument> bookDocumentList = Arrays.asList(
-			new UserBookDocument("1_1", "타이틀1", "작가1", "출판사1", null, "소설", "FEMALE", 10),
-			new UserBookDocument("1_2", "타이틀2", "작가2", "출판사2", null, "소설", "FEMALE", 10),
-			new UserBookDocument("1_3", "타이틀3", "작가3", "출판사3", null, "소설", "FEMALE", 10)
+			new UserBookDocument("1_1", 1L, "타이틀1", "작가1", "출판사1", null, "소설", "FEMALE", 10),
+			new UserBookDocument("1_2", 2L, "타이틀2", "작가2", "출판사2", null, "소설", "FEMALE", 10),
+			new UserBookDocument("1_3", 3L, "타이틀3", "작가3", "출판사3", null, "소설", "FEMALE", 10)
 		);
 
 		Page<UserBookDocument> bookDocumentPage = new PageImpl<>(bookDocumentList, pageable, bookDocumentList.size());
