@@ -186,7 +186,7 @@ class UserBookServiceTest {
     when(userBookRepository.findByUser(eq(user), any(Pageable.class))).thenReturn(page);
 
     // when
-    Page<GetUserBookResponseDto> result = userBookService.findReadingBooks(authUser, 1, 10);
+    Page<GetUserBookResponseDto> result = userBookService.findAllUserBooks(authUser, 1, 10);
 
     // then
     assertThat(result.getTotalElements()).isEqualTo(1);
@@ -219,7 +219,7 @@ class UserBookServiceTest {
     when(userBookRepository.findByIdAndUser(bookId, user)).thenReturn(userBook);
 
     // when
-    GetUserBookResponseDto response = userBookService.findReadingBook(authUser, bookId);
+    GetUserBookResponseDto response = userBookService.findUserBook(authUser, bookId);
 
     // then
     assertThat(response.getTitle()).isEqualTo("title");
