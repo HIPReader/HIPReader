@@ -36,7 +36,7 @@ public class QUserDiscussion extends EntityPathBase<UserDiscussion> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final EnumPath<com.example.hipreader.domain.userdiscussion.ApplicationStatus.ApplicationStatus> status = createEnum("status", com.example.hipreader.domain.userdiscussion.ApplicationStatus.ApplicationStatus.class);
+    public final EnumPath<com.example.hipreader.domain.userdiscussion.applicationStatus.ApplicationStatus> status = createEnum("status", com.example.hipreader.domain.userdiscussion.applicationStatus.ApplicationStatus.class);
 
     public final DateTimePath<java.time.LocalDateTime> statusUpdatedAt = createDateTime("statusUpdatedAt", java.time.LocalDateTime.class);
 
