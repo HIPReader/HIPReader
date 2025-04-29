@@ -77,4 +77,9 @@ public class UserController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
+	@GetMapping("/v1/users/my")
+	public ResponseEntity<GetUserResponseDto> getMyUserInfo(@AuthenticationPrincipal AuthUser authUser) {
+		GetUserResponseDto response = userQueryService.getUser(authUser.getId());
+		return ResponseEntity.ok(response);
+	}
 }

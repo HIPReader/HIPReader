@@ -65,7 +65,7 @@ public class UserBookService {
 	}
 
 	@Transactional
-	public Page<GetUserBookResponseDto> findReadingBooks(AuthUser authUser, int page, int size) {
+	public Page<GetUserBookResponseDto> findAllUserBooks(AuthUser authUser, int page, int size) {
 		User user = userRepository.findUserById(authUser.getId())
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
@@ -77,13 +77,35 @@ public class UserBookService {
 	}
 
 	@Transactional
-	public GetUserBookResponseDto findReadingBook(AuthUser authUser, Long userbookId) {
+	public GetUserBookResponseDto findUserBook(AuthUser authUser, Long userbookId) {
 		User user = userRepository.findUserById(authUser.getId())
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
 		UserBook userBook = userBookRepository.findByIdAndUser(userbookId, user);
 
 		return GetUserBookResponseDto.toDto(userBook);
+	}
+
+	@Transactional
+	public Page<GetUserBookResponseDto> findReadingBooks(AuthUser authUser, int page, int size) {
+		User user = userRepository.findUserById(authUser.getId())
+				.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+
+		Pageable pageable = PageRequest.of(page-1, size);
+		Page<UserBook> userBooks = userBookRepository.findByUserAndStatus(user, Status.READING, pageable);
+
+		return userBooks.map(GetUserBookResponseDto::toDto);
+	}
+
+	@Transactional
+	public Page<GetUserBookResponseDto> findFinishedBooks(AuthUser authUser, int page, int size) {
+		User user = userRepository.findUserById(authUser.getId())
+				.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+
+		Pageable pageable = PageRequest.of(page-1, size);
+		Page<UserBook> userBooks = userBookRepository.findByUserAndStatus(user, Status.FINISHED, pageable);
+
+		return userBooks.map(GetUserBookResponseDto::toDto);
 	}
 
 	@Transactional
