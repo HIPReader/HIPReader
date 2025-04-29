@@ -11,14 +11,17 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.hipreader.auth.dto.AuthUser;
 import com.example.hipreader.common.exception.BadRequestException;
 import com.example.hipreader.common.exception.NotFoundException;
+import com.example.hipreader.common.exception.UnauthorizedException;
 import com.example.hipreader.domain.discussion.entity.Discussion;
 import com.example.hipreader.domain.discussion.repository.DiscussionRepository;
 import com.example.hipreader.domain.user.entity.User;
 import com.example.hipreader.domain.user.repository.UserRepository;
-import com.example.hipreader.domain.userdiscussion.ApplicationStatus.ApplicationStatus;
+import com.example.hipreader.domain.userdiscussion.applicationStatus.ApplicationStatus;
 import com.example.hipreader.domain.userdiscussion.dto.request.ApplyUserDiscussionRequestDto;
 import com.example.hipreader.domain.userdiscussion.dto.response.ApplyUserDiscussionResponseDto;
 import com.example.hipreader.domain.userdiscussion.dto.response.ApproveUserDiscussionResponseDto;
+import com.example.hipreader.domain.userdiscussion.dto.response.GetUserAppliedDiscussionResponseDto;
+import com.example.hipreader.domain.userdiscussion.dto.response.GetUserDiscussionResponseDto;
 import com.example.hipreader.domain.userdiscussion.dto.response.NotificationMessage;
 import com.example.hipreader.domain.userdiscussion.dto.response.RejectUserDiscussionResponseDto;
 import com.example.hipreader.domain.userdiscussion.entity.UserDiscussion;
@@ -74,9 +77,13 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 
 	@Override
 	@Transactional
-	public ApproveUserDiscussionResponseDto approve(Long userDiscussionId) {
+	public ApproveUserDiscussionResponseDto approve(AuthUser authUser, Long userDiscussionId) {
 		UserDiscussion userDiscussion = userDiscussionRepository.findById(userDiscussionId)
 			.orElseThrow(() -> new NotFoundException(APPLICATION_NOT_FOUND));
+
+		if (!userDiscussion.getDiscussion().getUser().getId().equals(authUser.getId())) {
+			throw new UnauthorizedException(ONLY_CAN_HOST);
+		}
 		userDiscussion.setStatus(ApplicationStatus.APPROVED);
 		userDiscussion.setStatusUpdatedAt(LocalDateTime.now());
 
@@ -95,11 +102,15 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 
 	@Override
 	@Transactional
-	public RejectUserDiscussionResponseDto reject(Long userDiscussionId) {
+	public RejectUserDiscussionResponseDto reject(AuthUser authUser, Long userDiscussionId) {
 		UserDiscussion userDiscussion = userDiscussionRepository.findById(userDiscussionId)
 			.orElseThrow(() -> new NotFoundException(APPLICATION_NOT_FOUND));
 		userDiscussion.setStatus(ApplicationStatus.REJECTED);
 		userDiscussion.setStatusUpdatedAt(LocalDateTime.now());
+
+		if (!userDiscussion.getDiscussion().getUser().getId().equals(authUser.getId())) {
+			throw new UnauthorizedException(ONLY_CAN_HOST);
+		}
 
 		//알림발송
 		notificationProducer.sendNotification(
@@ -115,18 +126,25 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 	}
 
 	@Override
-	public List<UserDiscussion> findByDiscussion(Long discussionId) {
+	public List<GetUserDiscussionResponseDto> findByDiscussion(Long discussionId) {
 		Discussion discussion = discussionRepository.findById(discussionId)
 			.orElseThrow(() -> new NotFoundException(DISCUSSION_NOT_FOUND));
+		// 1. UserDiscussion 리스트 조회
+		List<UserDiscussion> userDiscussions = userDiscussionRepository.findByDiscussionWithUser(discussion);
 
-		return userDiscussionRepository.findByDiscussion(discussion);
+		// 2. DTO 변환 및 반환
+		return userDiscussions.stream()
+			.map(GetUserDiscussionResponseDto::toDto)
+			.toList();
 	}
 
 	@Override
-	public List<UserDiscussion> findByUser(Long userId) {
+	public List<GetUserAppliedDiscussionResponseDto> findByUser(Long userId) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
-
-		return userDiscussionRepository.findByUser(user);
+		List<UserDiscussion> userDiscussions = userDiscussionRepository.findByUserWithDiscussion(user);
+		return userDiscussions.stream()
+			.map(GetUserAppliedDiscussionResponseDto::toDto)
+			.toList();
 	}
 }
