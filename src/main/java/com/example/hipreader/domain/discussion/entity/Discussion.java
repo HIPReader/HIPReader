@@ -66,8 +66,8 @@ public class Discussion extends TimeStamped {
 	@Version
 	private Long version;
 
-	// @OneToMany(mappedBy = "discussion", cascade = CascadeType.ALL, orphanRemoval = true)
-	// private List<UserDiscussion> userDiscussions = new ArrayList<>();
+	@Column(nullable = false)
+	private Integer currentParticipants = 0;
 
 	public void updateTopic(String topic) {
 		this.topic = topic;
@@ -87,5 +87,9 @@ public class Discussion extends TimeStamped {
 
 	public void updateMode(DiscussionMode mode) {
 		this.mode = mode;
+	}
+
+	public void increaseCurrentParticipants() {
+		this.currentParticipants++;
 	}
 }

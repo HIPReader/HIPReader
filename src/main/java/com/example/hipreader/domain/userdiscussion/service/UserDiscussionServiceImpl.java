@@ -186,6 +186,9 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 			throw new BadRequestException(DISCUSSION_FULL);
 		}
 
+		discussion.increaseCurrentParticipants();
+		discussionRepository.saveAndFlush(discussion);
+
 		User user = userRepository.findById(authUser.getId())
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
@@ -204,26 +207,42 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 	@Transactional
 	public ApplyUserDiscussionResponseDto applyWithOptimisticLock(AuthUser authUser,
 		ApplyUserDiscussionRequestDto requestDto) {
+
+		// 1. Discussion 조회
 		Discussion discussion = discussionRepository.findById(requestDto.getDiscussionId())
 			.orElseThrow(() -> new NotFoundException(DISCUSSION_NOT_FOUND));
 
+		// 2. 자동 참여 방인지 확인
 		if (discussion.getMode() != DiscussionMode.AUTO_APPROVAL) {
 			throw new BadRequestException(INVALID_REQUEST);
 		}
 
+		// 3. 중복 신청 여부 확인
 		if (userDiscussionRepository.existsByUserIdAndDiscussionId(authUser.getId(), discussion.getId())) {
 			throw new BadRequestException(ALREADY_APPLIED);
 		}
 
+		// 4. 현재 인원 확인
 		long acceptedCount = userDiscussionRepository.countByDiscussionAndStatus(discussion,
 			ApplicationStatus.APPROVED);
 		if (acceptedCount >= discussion.getParticipants()) {
 			throw new BadRequestException(DISCUSSION_FULL);
 		}
 
+		try {
+			// 5. 현재 참여자 수 증가
+			discussion.increaseCurrentParticipants();
+			// 6. Discussion 저장(버전 증가 발생)
+			discussionRepository.saveAndFlush(discussion);
+		} catch (ObjectOptimisticLockingFailureException e) {
+			throw new ObjectOptimisticLockingFailureException(Discussion.class, discussion.getId(), e);
+		}
+
+		//7. 유저 조회
 		User user = userRepository.findById(authUser.getId())
 			.orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
+		// 8. UserDiscussion 생성
 		UserDiscussion userDiscussion = UserDiscussion.builder()
 			.discussion(discussion)
 			.user(user)
@@ -231,18 +250,17 @@ public class UserDiscussionServiceImpl implements UserDiscussionService {
 			.appliedAt(LocalDateTime.now())
 			.build();
 
-		try {
-			userDiscussionRepository.saveAndFlush(userDiscussion);
-		} catch (ObjectOptimisticLockingFailureException e) {
-			throw new RuntimeException("동시성 충돌이 발생했습니다. 잠시 후 다시 시도해주세요.");
-		}
+		// 9. UserDiscussion 저장 (별도 버전 X)
+		userDiscussionRepository.save(userDiscussion);
 
+		// // 10. 최종 인원 초과 확인(예외를 막기 위한 double-check)
 		long confirmedCount = userDiscussionRepository.countByDiscussionAndStatus(discussion,
 			ApplicationStatus.APPROVED);
 		if (confirmedCount > discussion.getParticipants()) {
 			throw new BadRequestException(DISCUSSION_FULL);
 		}
 
+		// 11. 응답 반환
 		return ApplyUserDiscussionResponseDto.toDto(userDiscussion);
 	}
 
