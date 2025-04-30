@@ -34,23 +34,41 @@ public class UserBookController {
 	}
 
 	@GetMapping("/v1/user_books/my")
-	public ResponseEntity<Page<GetUserBookResponseDto>> getReadingBooks(
+	public ResponseEntity<Page<GetUserBookResponseDto>> getAllUserBooks(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestParam(defaultValue = "1") int page,
 		@RequestParam(defaultValue = "10") int size
 	) {
-		return new ResponseEntity<>(userBookService.findReadingBooks(authUser, page, size), HttpStatus.OK);
+		return new ResponseEntity<>(userBookService.findAllUserBooks(authUser, page, size), HttpStatus.OK);
 	}
 
 	@GetMapping("/v1/user_books/{userbookId}")
-	public ResponseEntity<GetUserBookResponseDto> getReadingBook(
+	public ResponseEntity<GetUserBookResponseDto> getUserBook(
 		@AuthenticationPrincipal AuthUser authUser,
 		@PathVariable Long userbookId
 	) {
-		GetUserBookResponseDto getUserBookResponseDto = userBookService.findReadingBook(authUser, userbookId);
+		GetUserBookResponseDto getUserBookResponseDto = userBookService.findUserBook(authUser, userbookId);
 
 		return new ResponseEntity<>(getUserBookResponseDto,HttpStatus.OK);
 	}
+
+  @GetMapping("/v1/user_books/my/reading")
+  public ResponseEntity<Page<GetUserBookResponseDto>> getReadingBooks(
+      @AuthenticationPrincipal AuthUser authUser,
+      @RequestParam(defaultValue = "1") int page,
+      @RequestParam(defaultValue = "10") int size
+  ) {
+    return new ResponseEntity<>(userBookService.findReadingBooks(authUser, page, size), HttpStatus.OK);
+  }
+
+  @GetMapping("/v1/user_books/my/finished")
+  public ResponseEntity<Page<GetUserBookResponseDto>> getFinishedBooks(
+      @AuthenticationPrincipal AuthUser authUser,
+      @RequestParam(defaultValue = "1") int page,
+      @RequestParam(defaultValue = "10") int size
+  ) {
+    return new ResponseEntity<>(userBookService.findFinishedBooks(authUser, page, size), HttpStatus.OK);
+  }
 
 	@PatchMapping("/v1/user_books/{userbookId}")
 	public ResponseEntity<UpdateUserBookResponseDto> updateUserBook(
