@@ -37,6 +37,8 @@ import com.example.hipreader.domain.userdiscussion.repository.UserDiscussionRepo
 import com.example.hipreader.domain.userdiscussion.status.DiscussionMode;
 import com.example.hipreader.domain.userdiscussion.support.TestResultCollector;
 
+import jakarta.persistence.EntityManagerFactory;
+
 @SpringBootTest(properties = {"spring.profiles.active=test"})
 @AutoConfigureMockMvc
 @Commit
@@ -56,6 +58,9 @@ public class OptimisticLockUserDiscussionTest {
 
 	@Autowired
 	private BookRepository bookRepository;
+
+	@Autowired
+	private EntityManagerFactory entityManagerFactory;
 
 	private Discussion discussion;
 	private int totalUsers = 1000;
@@ -99,6 +104,9 @@ public class OptimisticLockUserDiscussionTest {
 	@BeforeEach
 	void setUp() {
 		createTestDiscussionDate();
+
+		SessionFactory sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
+		sessionFactory.getStatistics().setStatisticsEnabled(true);
 	}
 
 	@DisplayName("[Optimistic] 자동 참여방에 1000명 동시 신청 시 성공 10명/실패 990명")
@@ -169,5 +177,17 @@ public class OptimisticLockUserDiscussionTest {
 			userDiscussionRepository.countByDiscussionAndStatus(discussionCopy, ApplicationStatus.APPROVED);
 
 		assertThat(savedCount).isEqualTo(MAX_PARTICIPANTS);
+
+		SessionFactory sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
+		Statistics stats = sessionFactory.getStatistics();
+
+		System.out.println("[Hibernate 통계]");
+		System.out.println("총 실행 쿼리 수: " + stats.getQueryExecutionCount());
+		System.out.println("총 트랜잭션 수: " + stats.getTransactionCount());
+		System.out.println("성공한 트랜잭션 수: " + stats.getSuccessfulTransactionCount());
+		System.out.println("플러시 수(flush 호출 수): " + stats.getFlushCount());
+		System.out.println("엔티티 insert 수: " + stats.getEntityInsertCount());
+		System.out.println("엔티티 update 수: " + stats.getEntityUpdateCount());
+		System.out.println("엔티티 delete 수: " + stats.getEntityDeleteCount());
 	}
 }
