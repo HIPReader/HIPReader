@@ -31,7 +31,7 @@ public class YearlyTopBookService {
 		if (book.getDatePublished().getYear() != currentYear) return;
 
 		long totalScore = score.getTotalScore();
-		List<YearlyTopBook> currentTopBooks = yearlyTopBookRepository.findByYearWithLock(currentYear);
+		List<YearlyTopBook> currentTopBooks = yearlyTopBookRepository.findByYear(currentYear);
 		long currentMaxScore = currentTopBooks.stream()
 			.mapToLong(YearlyTopBook::getTotalScore)
 			.max().orElse(0L);
