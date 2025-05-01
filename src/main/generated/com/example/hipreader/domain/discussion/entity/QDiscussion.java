@@ -29,6 +29,8 @@ public class QDiscussion extends EntityPathBase<Discussion> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final NumberPath<Integer> currentParticipants = createNumber("currentParticipants", Integer.class);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> deletedAt = _super.deletedAt;
 
