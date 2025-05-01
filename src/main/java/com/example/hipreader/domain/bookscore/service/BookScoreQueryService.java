@@ -14,13 +14,13 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class BookScoreQueryService {
 	private final YearlyTopBookRepository yearlyTopBookRepository;
 
 	@Cacheable(value = "yearlyTopBooks",key = "#year")
 	public GetBookOfYearResponseDto getBookOfTheYear(int year) {
-		List<YearlyTopBook> topBooks = yearlyTopBookRepository.findByYearWithLock(year);
+		List<YearlyTopBook> topBooks = yearlyTopBookRepository.findByYear(year);
 		return GetBookOfYearResponseDto.from(year,topBooks);
 	}
 }
