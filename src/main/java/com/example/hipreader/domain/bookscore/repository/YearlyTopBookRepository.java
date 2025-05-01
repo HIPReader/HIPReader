@@ -13,9 +13,8 @@ import io.lettuce.core.dynamic.annotation.Param;
 import jakarta.persistence.LockModeType;
 
 public interface YearlyTopBookRepository extends JpaRepository<YearlyTopBook, Long> {
-	@Lock(LockModeType.PESSIMISTIC_WRITE)
-	@Query("SELECT y FROM YearlyTopBook y WHERE y.year = :year ORDER BY y.totalScore DESC")  // ← 핵심 변경점
-	List<YearlyTopBook> findByYearWithLock(@Param("year") int year);
+	@Query("SELECT y FROM YearlyTopBook y WHERE y.year = :year ORDER BY y.totalScore DESC")
+	List<YearlyTopBook> findByYear(@Param("year") int year);
 
 	@Modifying
 	@Query("DELETE FROM YearlyTopBook y WHERE y.year = :year")
