@@ -46,6 +46,7 @@
 <details>
 <summary>등록 이미지</summary>
 <div markdown="1">
+    
 ![image](https://github.com/user-attachments/assets/66e5b623-e763-4c9f-b4ba-57470be8b773)
 
     
