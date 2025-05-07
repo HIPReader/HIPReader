@@ -12,13 +12,18 @@
 
 하나의 주제를 가지고 **토론**할 수 있도록 만든 서비스입니다.
 
-- **TextHip이란?**
-    
-    '텍스트힙(Text Hip)'은 '글자'를 뜻하는 '텍스트(Text)'와 '힙하다(Hip, 멋있다', '개성 있다)'를 합성한 신조어로, ‘독서 행위가 멋지고 세련된 활동으로 인식되는 현상’을 의미한다. 이는 특히 디지털 기기에 익숙한 MZ세대)에서 두드러지게 나타나는 동향으로, 독서를 단순한 취미 활동을 넘어 자기표현과 소통의 수단으로 활용하는 것을 포함한다 
+<details>
+<summary>**TextHip이란?**</summary>
+<div markdown="1">
+
+'텍스트힙(Text Hip)'은 '글자'를 뜻하는 '텍스트(Text)'와 '힙하다(Hip, 멋있다', '개성 있다)'를 합성한 신조어로, ‘독서 행위가 멋지고 세련된 활동으로 인식되는 현상’을 의미한다. 이는 특히 디지털 기기에 익숙한 MZ세대)에서 두드러지게 나타나는 동향으로, 독서를 단순한 취미 활동을 넘어 자기표현과 소통의 수단으로 활용하는 것을 포함한다 
     
     (출처: 국립중앙도서관 https://librarian.nl.go.kr/LI/contents/L30103000000.do?schM=view&page=1&viewCount=10&id=50181&schBdcode=&schGroupCode=)
     
-
+</div>
+</details>
+- 
+    
 ---
 
 ## 🗣️ 주요 기능
@@ -32,8 +37,10 @@
 
     
 - 그 외에 없는 도서는 직접 등록도 가능합니다
-- 등록 이미지
-    
+- 
+  <details>
+<summary>등록 이미지</summary>
+<div markdown="1">
 ![image](https://github.com/user-attachments/assets/66e5b623-e763-4c9f-b4ba-57470be8b773)
 
     
@@ -41,6 +48,9 @@
 
     
 ![image](https://github.com/user-attachments/assets/b492b86b-f15e-49f5-855c-b09d791d182d)
+
+</div>
+</details>  
 
     
 
@@ -89,7 +99,6 @@
 
 ![image](https://github.com/user-attachments/assets/b42e2340-7f55-450d-bf9a-102d88abf601)
 
-
 ---
 
 ## 📃 API 명세서
@@ -127,13 +136,13 @@
 
 ## 📚 기술 스택
 
-[제목 없음](https://www.notion.so/1e62dc3ef514802eaccadecf486da139?pvs=21)
+[기술스택](https://www.notion.so/1e62dc3ef514802eaccadecf486da139?pvs=21)
 
 ---
 
 ## 👥  팀 소개
 
-[제목 없음](https://www.notion.so/1e62dc3ef51480f7b512e01b8dd52c3e?pvs=21)
+[팀소개](https://www.notion.so/1e62dc3ef51480f7b512e01b8dd52c3e?pvs=21)
 
 ## 🔍  프로젝트 더 보기
 
