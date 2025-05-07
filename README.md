@@ -1,125 +1,132 @@
-# HIPReader - 독서 커뮤니티 플랫폼
+![image (3).png](attachment:476bf1b1-e96e-492d-b895-b2d96054dd01:image_(3).png)
 
-책을 사랑하는 사람들을 위한 독서 커뮤니티 플랫폼, **HIPReader**입니다.
-리뷰 작성, 토론방 참여, 찜하기, 도서 추천, 올해의 책 선정 등 독서 경험을 풍부하게 만드는 다양한 기능을 제공합니다.
-
----
-
-## 프로젝트 링크
-
-- **홈페이지**: [HIPReader](https://HIPReader.com)
-- **기획/정리 문서(Notion)**: [Notion 기획 문서](https://teamsparta.notion.site/6-1ce2dc3ef514814e9f6cf33e0b804f13)
+- 이미지
+    
+    ![힙한리더_.JPG](attachment:e5a08792-eed5-4077-9911-712eac0c0272:힙한리더_.jpg)
+    
+    ![logo.png](attachment:222ba6a5-d9cb-4d91-ac13-cd2a37c322fd:logo.png)
+    
 
 ---
 
-## 시스템 아키텍처
+## 🔹 개요
 
-### 아키텍처 다이어그램
-![Architecture](./docs/images/architecture.png)
+**기록하고 소통하자 우리가 리드하는 HIP-Reader!**
 
-- **Spring Boot 기반 백엔드 애플리케이션**
-- **MySQL**을 RDB로 사용하여 데이터 영속성 보장
-- **Redis**를 활용해 토론방 자동참여 동시성 제어 구현
-- **RabbitMQ**를 통한 비동기 알림 처리(토론방 승인/거절 시)
-- **WebSocket** 기반 토론방 실시간 채팅 기능
-- **JWT 기반 인증 시스템** (Spring Security)
-- **Elasticsearch**를 통한 책 검색 및 추천
-- **SMTP(Gmail)**를 이용한 이메일 인증 및 알림
-- **Jenkins + Docker + AWS EC2**를 통한 CI/CD 자동화
+한강작가가 노벨상을 받은 이후로 우리나라에서도 **TextHip**현상이 더욱 많이 생겼습니다.
 
-### 주요 흐름 요약
+저희 Hip-Reader는 그 수요를 이용해서 읽고 싶은 책을 **검색**하고 **기록**하며, 서로 **소통** 할 수 있도록 하였고,
 
-- 사용자 요청 -> Spring Controller -> Service -> Repository
-- 성능 이슈가 예상되는 참여/통계 로직은 **Redis 또는 MQ 기반 처리**
-- 토론방 채팅은 WebSocket 연결을 통해 실시간 처리
-- 주요 변경 이벤트 발생 시, MQ를 통해 알림 및 통계 갱신 비동기 처리
-  
----
+하나의 주제를 가지고 **토론**할 수 있도록 만든 서비스입니다.
 
-## ERD & 플로우차트
-
-- [ERD 보기](https://erdcloud.com/...)
-- [토론방 참여 흐름도](https://draw.io/...)
+- **TextHip이란?**
+    
+    '텍스트힙(Text Hip)'은 '글자'를 뜻하는 '텍스트(Text)'와 '힙하다(Hip, 멋있다', '개성 있다)'를 합성한 신조어로, ‘독서 행위가 멋지고 세련된 활동으로 인식되는 현상’을 의미한다. 이는 특히 디지털 기기에 익숙한 MZ세대)에서 두드러지게 나타나는 동향으로, 독서를 단순한 취미 활동을 넘어 자기표현과 소통의 수단으로 활용하는 것을 포함한다 
+    
+    (출처: 국립중앙도서관 https://librarian.nl.go.kr/LI/contents/L30103000000.do?schM=view&page=1&viewCount=10&id=50181&schBdcode=&schGroupCode=)
+    
 
 ---
 
-## 🔧 사용 기술
+## 🗣️ 주요 기능
 
-### Backend
-- Java 17, Spring Boot 3, JPA, Spring Security, JWT
-- Redis, MySQL, Elasticsearch, RabbitMQ, WebSocket
+### 🔍 책 검색
 
-### Infra
-- AWS EC2, RDS, S3, Route 53, Nginx
-- Docker, Jenkins, GitHub Actions
+- 읽고 싶은 책에 대한 정보를 검색할 수 있습니다. (알라딘API)
+- 검색 이미지
+    
+    ![image.png](attachment:22fdfbd8-3eea-455f-94a0-2f11bf7321dc:image.png)
+    
+- 그 외에 없는 도서는 직접 등록도 가능합니다
+- 등록 이미지
+    
+    ![image.png](attachment:0e971c2a-7af9-4781-8597-e39a4d8e753c:image.png)
+    
+    ![image.png](attachment:dceea10d-ed61-4756-b1bd-06447d3bd4a7:image.png)
+    
+    ![image.png](attachment:a21dcee2-d239-4105-b087-14fcafc55694:image.png)
+    
 
-### Monitoring & Test
-- Spring Actuator, JUnit5, TestContainers
-- Kibana
+### 📝 책 읽기 기록하기
 
-### Collaboration
-- GitHub, Notion, Slack
+- 읽고싶은 책을 찜해두고, 읽기 시작하면 진행도를 저장할 수 있습니다.
+- 다 읽은 책은 따로 목록이 저장되며, 추후에 토론도 가능합니다.
 
----
+### 💓 책 추천
 
-## 💻 주요 기능
+- 위시리스트 데이터를 기반으로 연령, 성별, 카테고리별로 책을 추천해줍니다.
+- 이미지
+    
+    ![스크린샷 2025-05-02 오전 10.36.53.png](attachment:8edb3f58-1995-46bf-904f-a9d3f825f34d:스크린샷_2025-05-02_오전_10.36.53.png)
+    
 
-| 분류       | 기능 설명 |
-|------------|-----------|
-| 회원       | 회원가입, 로그인, 권한 검증 (JWT 기반) |
-| 유저북     | TO_READ / READING / FINISHED 관리 |
-| 책         | 책 등록, 조회, 검색, 추천 |
-| 리뷰       | 리뷰 작성, 수정, 삭제, 페이징 조회 |
-| 자유게시판 | 게시글 CRUD, 댓글 기능 예정 |
-| 토론방     | 생성, 신청, 자동/수동 승인, 참여 상태 관리 |
-| 올해의 책 | 유저북 상태 기반 점수 집계 → 인기 책 선정 |
-| 찜 기능    | 관심 도서 찜/취소 |
-| 실시간 채팅 | 토론방 WebSocket 채팅 |
-| 알림       | 토론방 승인/거절 시 이메일 발송 (SMTP) |
-| 비동기 처리 | RabbitMQ 기반 이벤트 처리 |
-| 통계       | 연도별 독서량, 평균 독서 시간 계산 |
+### 🏅 올해의 책
 
----
+- 찜, 읽는중, 다읽음 상태에 각각 가산점을 부여하여 점수가 가장 높은 책을 보여줍니다.
+- 이미지
+    
+    ![스크린샷 2025-05-02 오후 3.57.08.png](attachment:398aca43-a47f-4141-8aae-9d88dc911354:스크린샷_2025-05-02_오후_3.57.08.png)
+    
 
-## 🧭 기술적 의사 결정 및 성능 개선
+### 🔊 토론방
 
-- Redis 기반 분산락: 선착순 토론방 입장 제어
-- Pessimistic & Optimistic Lock: DB 경쟁 제어 비교
-- Elasticsearch: 책 검색 및 추천 기능에 활용
-- RabbitMQ: 비동기 알림, 이벤트 흐름 분리
-- CI/CD 자동화: Jenkins, Docker 기반 배포 자동화
-- JWT + Spring Security: 인증/인가 처리
-
----
-
-## 😵 트러블슈팅
-
-| 문제 상황 | 해결 방법 |
-|-----------|------------|
-| 동시성 충돌 | Redis Lock 도입, save vs saveAndFlush 시점 비교 |
-| 이메일 미발송 | SMTP 설정 검토 및 Gmail 보안 설정 확인 |
-| 참여 실패 케이스 | 분산락 성능 테스트 및 경합 조건 수정 |
-| 테스트 실패 | TestContainers 도입 및 Mock 설정 |
-| 연관 엔티티 삭제 오류 | Cascade 정책 정리 및 soft delete 적용 |
+- 다 읽은 책을 가지고 주제를 선정하여 여러사람과 실시간 채팅이 가능합니다.
+- 이미지
+    
+    ![스크린샷 2025-05-02 오후 3.48.01.png](attachment:ae4301a7-39ea-4892-979b-9813d331676d:스크린샷_2025-05-02_오후_3.48.01.png)
+    
 
 ---
 
-## 👥 팀원 소개
+## 🖍️  ERD 다이어그램
 
-| 이름     | 역할                                | GitHub | Blog |
-|----------|-------------------------------------|--------|------|
-| 전영환   | 리뷰, 토론방, 동시성 제어, 성능 테스트 | [GitHub](https://github.com/younghwan314) | [Velog] |
-| 팀원 A   | WebSocket 채팅, 통계 기능           | [GitHub](...) | [...] |
-| 팀원 B   | 책 추천(Elasticsearch), 검색 API    | [...] | [...] |
-| 팀원 C   | CI/CD, SMTP, RabbitMQ               | [...] | [...] |
+![image.png](attachment:d162d245-b5c3-47db-86a6-5d5327e65f28:image.png)
 
 ---
 
-## 🧪 로컬 실행 및 모니터링
+## 🏗️  아키텍처
 
-```bash
-# 1. 빌드
-./gradlew build
+![image.png](attachment:24469ce8-4a52-4015-a6b6-819c3729042f:image.png)
 
-# 2. 도커 실행
-docker-compose up
+---
+
+## 📃 API 명세서
+
+- API 명세서
+    
+    [https://www.notion.so/teamsparta/6-1ce2dc3ef514814e9f6cf33e0b804f13?pvs=4#1ce2dc3ef5148199ae4dc9878666e1f8](https://www.notion.so/6-1ce2dc3ef514814e9f6cf33e0b804f13?pvs=21)
+    
+
+---
+
+## 🔧 기술적 의사 결정 및 개선
+
+[제목 없음](https://www.notion.so/1e62dc3ef51480efbfbde83f4ec948de?pvs=21)
+
+---
+
+## 💣  트러블 슈팅
+
+---
+
+[제목 없음](https://www.notion.so/1e72dc3ef5148054b297d776c79f4f04?pvs=21)
+
+---
+
+## 📚 기술 스택
+
+[제목 없음](https://www.notion.so/1e62dc3ef514802eaccadecf486da139?pvs=21)
+
+---
+
+## 👥  팀 소개
+
+[제목 없음](https://www.notion.so/1e62dc3ef51480f7b512e01b8dd52c3e?pvs=21)
+
+## 🔍  프로젝트 더 보기
+
+📎 [GitHub 링크](https://github.com/HIPReader/HIPReader)
+
+📎 [프로젝트를 하면서 기록한 자료 모음](https://www.notion.so/5-1ce2dc3ef5148158861be342ae97e7ac?pvs=21)
+
+---
