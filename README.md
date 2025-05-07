@@ -106,12 +106,7 @@
 
 ---
 
-## 📃 API 명세서
-
-- API 명세서
-    
-    [https://www.notion.so/teamsparta/6-1ce2dc3ef514814e9f6cf33e0b804f13?pvs=4#1ce2dc3ef5148199ae4dc9878666e1f8](https://www.notion.so/6-1ce2dc3ef514814e9f6cf33e0b804f13?pvs=21)
-    
+## 📃 [API 명세서](https://www.notion.so/6-1ce2dc3ef514814e9f6cf33e0b804f13?pvs=21)
 
 ---
 
