@@ -2,6 +2,11 @@
 
 ---
 
+## 🔹 팀소개
+<table> <tr> <td align="center" width="200px"> <img src="https://avatars.githubusercontent.com/Kimg-1111" width="100"><br><br> <b>김기홍</b><br>🌟 리더<br> <ul align="left"> <li>회원 인증/인가</li> <li>올해의 책</li> <li>알림, 메시징 처리</li> </ul> <a href="https://github.com/Kimg-1111">GitHub</a> | <a href="https://velog.io/@rl...">Blog</a> </td> <td align="center" width="200px"> <img src="https://avatars.githubusercontent.com/Shin-i-Hwan" width="100"><br><br> <b>신기환</b><br>🛠 부리더<br> <ul align="left"> <li>AWS 인프라 구성</li> <li>Jenkins를 활용한 CI/CD 구축</li> </ul> <a href="https://github.com/Shin-i-Hwan">GitHub</a> | <a href="https://dev-sunflower.tistory.com/">Blog</a> </td> </tr> <tr> <td align="center" width="200px"> <img src="https://avatars.githubusercontent.com/jjieun0123" width="100"><br><br> <b>이지은</b><br>👤 팀원<br> <ul align="left"> <li>책 추천 기능 구현</li> <li>토론방 실시간 채팅 기능 구현</li> </ul>  Kibana, Redis, ElasticSearch<br> <a href="https://github.com/jjieun0123">GitHub</a> | <a href="https://velog.io/@co...">Blog</a> </td> <td align="center" width="200px"> <img src="https://avatars.githubusercontent.com/SuhyeonB" width="100"><br><br> <b>봉수현</b><br>👤 팀원<br> <ul align="left"> <li>검색 기능</li> <li>읽은 책 통계</li> <li>프론트엔드 작업</li> </ul> <a href="https://github.com/SuhyeonB">GitHub</a> | <a href="https://velog.io/@si...">Blog</a> </td> <td align="center" width="200px"> <img src="https://avatars.githubusercontent.com/you-wan314" width="100"><br><br> <b>전영환</b><br>👤 팀원<br> <ul align="left"> <li>리뷰 기능 구현</li> <li>독서 토론방 구현</li> <li>동시성 제어</li> </ul> <a href="https://github.com/you-wan314">GitHub</a> | <a href="https://velog.io/@yo...">Blog</a> </td> </tr> </table>
+
+-----
+
 ## 🔹 개요
 
 **기록하고 소통하자 우리가 리드하는 HIP-Reader!**
@@ -140,10 +145,6 @@
 | ![Java](https://img.shields.io/badge/Java-007396?style=flat\&logo=java\&logoColor=white) <br> ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat\&logo=spring-boot\&logoColor=white) <br> ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat\&logo=mysql\&logoColor=white) <br> ![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?style=flat\&logo=rabbitmq\&logoColor=white) <br> ![Gradle](https://img.shields.io/badge/Gradle-02303A?style=flat\&logo=gradle\&logoColor=white) <br> ![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat\&logo=redis\&logoColor=white) | ![React](https://img.shields.io/badge/React-61DAFB?style=flat\&logo=react\&logoColor=black) <br> ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat\&logo=typescript\&logoColor=white) | ![EC2](https://img.shields.io/badge/AWS_EC2-FF9900?style=flat\&logo=amazon-aws\&logoColor=white) <br> ![Route 53](https://img.shields.io/badge/AWS_Route_53-FF9900?style=flat\&logo=amazon-aws\&logoColor=white) <br> ![ALB](https://img.shields.io/badge/AWS_ALB-FF9900?style=flat\&logo=amazon-aws\&logoColor=white) <br> ![Elasticsearch](https://img.shields.io/badge/Elasticsearch-005571?style=flat\&logo=elasticsearch\&logoColor=white) <br> ![Kibana](https://img.shields.io/badge/Kibana-005571?style=flat\&logo=kibana\&logoColor=white) <br> ![RDS](https://img.shields.io/badge/AWS_RDS-527FFF?style=flat\&logo=amazon-aws\&logoColor=white) <br> 기타 | ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat\&logo=github\&logoColor=white) <br> ![Slack](https://img.shields.io/badge/Slack-4A154B?style=flat\&logo=slack\&logoColor=white) <br> ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=flat\&logo=postman\&logoColor=white) <br> ![JMeter](https://img.shields.io/badge/JMeter-D22128?style=flat\&logo=apache-jmeter\&logoColor=white) <br> 기타|
 
 ---
-
-## 👥  팀 소개
-
-[팀소개](https://www.notion.so/1e62dc3ef51480f7b512e01b8dd52c3e?pvs=21)
 
 ## 🔍  프로젝트 더 보기
 
