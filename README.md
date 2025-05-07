@@ -1,11 +1,4 @@
-![image (3).png](attachment:476bf1b1-e96e-492d-b895-b2d96054dd01:image_(3).png)
-
-- 이미지
-    
-    ![힙한리더_.JPG](attachment:e5a08792-eed5-4077-9911-712eac0c0272:힙한리더_.jpg)
-    
-    ![logo.png](attachment:222ba6a5-d9cb-4d91-ac13-cd2a37c322fd:logo.png)
-    
+![image (3) (1)](https://github.com/user-attachments/assets/2c4da9d6-d35e-4597-bb34-8cd9c1ce832d)
 
 ---
 
@@ -35,16 +28,20 @@
 - 읽고 싶은 책에 대한 정보를 검색할 수 있습니다. (알라딘API)
 - 검색 이미지
     
-    ![image.png](attachment:22fdfbd8-3eea-455f-94a0-2f11bf7321dc:image.png)
+![image](https://github.com/user-attachments/assets/d0b2534b-5922-4c17-a562-b60006680437)
+
     
 - 그 외에 없는 도서는 직접 등록도 가능합니다
 - 등록 이미지
     
-    ![image.png](attachment:0e971c2a-7af9-4781-8597-e39a4d8e753c:image.png)
+![image](https://github.com/user-attachments/assets/66e5b623-e763-4c9f-b4ba-57470be8b773)
+
     
-    ![image.png](attachment:dceea10d-ed61-4756-b1bd-06447d3bd4a7:image.png)
+![image](https://github.com/user-attachments/assets/e809af65-a4ed-416a-98a5-15076e1ecea1)
+
     
-    ![image.png](attachment:a21dcee2-d239-4105-b087-14fcafc55694:image.png)
+![image](https://github.com/user-attachments/assets/b492b86b-f15e-49f5-855c-b09d791d182d)
+
     
 
 ### 📝 책 읽기 기록하기
@@ -57,7 +54,8 @@
 - 위시리스트 데이터를 기반으로 연령, 성별, 카테고리별로 책을 추천해줍니다.
 - 이미지
     
-    ![스크린샷 2025-05-02 오전 10.36.53.png](attachment:8edb3f58-1995-46bf-904f-a9d3f825f34d:스크린샷_2025-05-02_오전_10.36.53.png)
+![image](https://github.com/user-attachments/assets/b9f995eb-8b8e-43fa-a883-1c115253d287)
+
     
 
 ### 🏅 올해의 책
@@ -65,7 +63,8 @@
 - 찜, 읽는중, 다읽음 상태에 각각 가산점을 부여하여 점수가 가장 높은 책을 보여줍니다.
 - 이미지
     
-    ![스크린샷 2025-05-02 오후 3.57.08.png](attachment:398aca43-a47f-4141-8aae-9d88dc911354:스크린샷_2025-05-02_오후_3.57.08.png)
+![image](https://github.com/user-attachments/assets/acfd9a47-f27e-4ca4-946a-6aee46bc263e)
+
     
 
 ### 🔊 토론방
@@ -73,20 +72,23 @@
 - 다 읽은 책을 가지고 주제를 선정하여 여러사람과 실시간 채팅이 가능합니다.
 - 이미지
     
-    ![스크린샷 2025-05-02 오후 3.48.01.png](attachment:ae4301a7-39ea-4892-979b-9813d331676d:스크린샷_2025-05-02_오후_3.48.01.png)
+![image](https://github.com/user-attachments/assets/ac773042-070e-4554-983d-818267548528)
+
     
 
 ---
 
 ## 🖍️  ERD 다이어그램
 
-![image.png](attachment:d162d245-b5c3-47db-86a6-5d5327e65f28:image.png)
+![image](https://github.com/user-attachments/assets/bab3a114-904a-4d8d-ab54-96f79d906522)
+
 
 ---
 
 ## 🏗️  아키텍처
 
-![image.png](attachment:24469ce8-4a52-4015-a6b6-819c3729042f:image.png)
+![image](https://github.com/user-attachments/assets/b42e2340-7f55-450d-bf9a-102d88abf601)
+
 
 ---
 
