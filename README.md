@@ -115,27 +115,11 @@
 
 ---
 
-## 🔧 기술적 의사 결정 및 개선
-<details>
-<summary>기술적 의사 결정 및 개선</summary>
-<div markdown="1">
-[기술적 의사 결정 및 개선](https://www.notion.so/1e62dc3ef51480efbfbde83f4ec948de?pvs=21)
-
-</div>
-</details>
+## 🔧 [기술적 의사 결정 및 개선](https://www.notion.so/1e62dc3ef51480efbfbde83f4ec948de?pvs=21)
 
 ---
 
-## 💣  트러블 슈팅
-
----
-<details>
-<summary>트러블 슈팅</summary>
-<div markdown="1">
-[트러블 슈팅](https://www.notion.so/1e72dc3ef5148054b297d776c79f4f04?pvs=21)
-
-</div>
-</details>
+## 💣  [트러블 슈팅](https://www.notion.so/1e72dc3ef5148054b297d776c79f4f04?pvs=21)
 
 ---
 
