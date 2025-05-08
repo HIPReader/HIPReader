@@ -67,6 +67,7 @@ public class Discussion extends TimeStamped {
 	private Long version;
 
 	@Column(nullable = false)
+	@Builder.Default
 	private Integer currentParticipants = 0;
 
 	public void updateTopic(String topic) {

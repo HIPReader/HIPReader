@@ -7,6 +7,7 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.DefaultClassMapper;
@@ -67,7 +68,10 @@ public class RabbitConfig {
 
 	@Bean
 	Queue bookScoreQueue() {
-		return new Queue("book.score.queue", true);
+		return QueueBuilder.durable("book.score.queue")
+			.withArgument("x-dead-letter-exchange", "x.dlx.book.score") // DLX 지정
+			.withArgument("x-dead-letter-routing-key", "book.score.dlq.routingKey") // DLQ 라우팅 키
+			.build();
 	}
 
 	@Bean
@@ -85,7 +89,10 @@ public class RabbitConfig {
 
 	@Bean
 	Queue notificationQueue() {
-		return new Queue("notification.queue", true); // durable 큐
+		return QueueBuilder.durable("notification.queue")
+			.withArgument("x-dead-letter-exchange", "x.dlx.notification")
+			.withArgument("x-dead-letter-routing-key", "notification.dlq.routingKey")
+			.build();
 	}
 
 	@Bean
@@ -98,6 +105,42 @@ public class RabbitConfig {
 		return BindingBuilder.bind(notificationQueue())
 			.to(notificationExchange())
 			.with("notification.routingKey");
+	}
+
+	// Book Score 관련 DLQ 설정
+	@Bean
+	public DirectExchange dlxBookScore() {
+		return new DirectExchange("x.dlx.book.score");
+	}
+
+	@Bean
+	public Queue dlqBookScore() {
+		return new Queue("q.dlq.book.score", true); // durable 큐
+	}
+
+	@Bean
+	public Binding dlqBindingBookScore() {
+		return BindingBuilder.bind(dlqBookScore())
+			.to(dlxBookScore())
+			.with("book.score.dlq.routingKey");
+	}
+
+	// Notification 관련 DLQ 설정
+	@Bean
+	public DirectExchange dlxNotification() {
+		return new DirectExchange("x.dlx.notification");
+	}
+
+	@Bean
+	public Queue dlqNotification() {
+		return new Queue("q.dlq.notification", true);
+	}
+
+	@Bean
+	public Binding dlqBindingNotification() {
+		return BindingBuilder.bind(dlqNotification())
+			.to(dlxNotification())
+			.with("notification.dlq.routingKey");
 	}
 
 }
