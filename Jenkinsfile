@@ -101,7 +101,7 @@ pipeline {
                   { "name": "ELASTIC_PASSWORD", "value": "${ELASTIC_PASSWORD}" },
                   { "name": "MAIL_USERNAME", "value": "${MAIL_USERNAME}" },
                   { "name": "MAIL_PASSWORD", "value": "${MAIL_PASSWORD}" },
-                  { "name": "JWT_SECRET_KEY", "value": "${JWT_SECRET_KEY}
+                  { "name": "JWT_SECRET_KEY", "value": "${JWT_SECRET_KEY} }
                 ],
                 "essential": true
               }
